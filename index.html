@@ -385,24 +385,6 @@
   .emergency-number:hover { color: #ffccdd; }
   .emergency-number span { color: #ffccdd; }
 
-  /* ── STEP BOX (교육사전준비) ── */
-  .step-box {
-    background: #f7f7f7;
-    padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .step-num {
-    color: #a50034;
-    font-weight: 700;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     .header-top { padding: 12px 20px; }
@@ -412,6 +394,8 @@
     .access-inout-grid { grid-template-columns: 1fr !important; }
     .checkin-grid { grid-template-columns: 1fr !important; }
     .meal-grid { grid-template-columns: 1fr !important; }
+    .building-grid { grid-template-columns: 1fr !important; }
+    .amenity-grid { grid-template-columns: repeat(2, 1fr) !important; }
   }
 </style>
 </head>
@@ -431,8 +415,8 @@
     <button class="tab-btn tab-notice active" onclick="showTab('notice', this)">
       <span class="tab-icon">🚨</span>[필독] 안전수칙
     </button>
-    <button class="tab-btn" onclick="showTab('prep', this)">
-      <span class="tab-icon">📋</span>교육사전준비
+    <button class="tab-btn" onclick="showTab('map', this)">
+      <span class="tab-icon">🏢</span>건물배치도
     </button>
     <button class="tab-btn" onclick="showTab('access', this)">
       <span class="tab-icon">🗺️</span>오시는 길
@@ -442,9 +426,6 @@
     </button>
     <button class="tab-btn" onclick="showTab('amenity', this)">
       <span class="tab-icon">🏪</span>편의시설 안내
-    </button>
-    <button class="tab-btn" onclick="showTab('map', this)">
-      <span class="tab-icon">🏢</span>건물배치도
     </button>
   </nav>
 </header>
@@ -639,7 +620,7 @@
             </div>
           </div>
           <div style="font-size:13px; font-weight:700; color:#555; letter-spacing:2px; margin-bottom:10px;">✅ 동종사고 예방대책</div>
-          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:8px;">
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
             <div style="background:#fff; border-radius:6px; padding:10px 12px; font-size:14px; color:#444; display:flex; align-items:center; gap:8px; border:1px solid #e8e8e8;"><span>🍷</span> 회식 중 과도한 음주 금지</div>
             <div style="background:#fff; border-radius:6px; padding:10px 12px; font-size:14px; color:#444; display:flex; align-items:center; gap:8px; border:1px solid #e8e8e8;"><span>🩴</span> 슬리퍼 등 미끄러운 신발 착용 자제</div>
             <div style="background:#fff; border-radius:6px; padding:10px 12px; font-size:14px; color:#444; display:flex; align-items:center; gap:8px; border:1px solid #e8e8e8;"><span>🌧️</span> 눈·비 오는 날 미끄럼 주의</div>
@@ -662,125 +643,7 @@
 
 
   <!-- ════════════════════════════════════════
-       TAB 1: 교육사전준비
-       ════════════════════════════════════════ -->
-  <div id="tab-prep" class="tab-content">
-    <div class="section-title"><span class="icon">📋</span>교육사전준비</div>
-
-    <!-- ① 출결 안내 -->
-    <div class="sub-section">
-      <div class="sub-title">
-        ① 출결 안내 · 비콘 출결준비
-        <span style="color:#ffb3c6; font-size:13px; font-weight:700; margin-left:6px;">필수</span>
-      </div>
-      <div class="card">
-        <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
-          <div style="font-size:40px;">💻</div>
-          <div style="flex:1; min-width:250px;">
-            <div style="font-size:16px; font-weight:900; margin-bottom:10px;">고용24 가입 및 어플 설치</div>
-            <div style="font-size:14px; line-height:1.8; margin-bottom:14px;">
-              교육참가 전 <strong>고용24 회원 가입 및 출결관리 어플</strong>을 다운로드 완료해주세요.
-            </div>
-            <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="step-box">
-                <span class="step-num">①</span>
-                <strong>고용24</strong> (https://www.work24.go.kr) 개인회원 가입
-              </div>
-              <div class="step-box">
-                <span class="step-num">②</span>
-                회원가입 후 즉시 <strong>실명인증</strong> 진행
-              </div>
-              <div class="step-box">
-                <span class="step-num">③</span>
-                <strong>고용24 직업훈련 출결관리</strong> 어플 설치 후 로그인 확인
-              </div>
-            </div>
-
-            <!-- 비콘 안내 -->
-            <div style="margin-top:25px; border-top:1px solid #eee; padding-top:20px;">
-              <div style="font-size:15px; font-weight:800; margin-bottom:10px;">📡 교육당일 비콘(Beacon) 출결 안내</div>
-              <div style="font-size:14px; line-height:1.8; margin-bottom:10px;">
-                교육장 입·퇴실 시 <strong>고용24 직업훈련 출결관리</strong> 어플을 통해 반드시 입실·퇴실 체크를 해주세요.
-              </div>
-              <div class="step-box">
-                <span class="step-num">①</span>
-                어플 실행 후 <strong>비콘 출결</strong> 클릭
-              </div>
-              <div class="step-box">
-                <span class="step-num">②</span>
-                <strong>입실(퇴실)</strong> 버튼 클릭
-              </div>
-              <div class="step-box">
-                <span class="step-num">③</span>
-                입실(퇴실) 시간 확인 후 어플 종료
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ② 모바일 EP 설치 -->
-    <div class="sub-section">
-      <div class="sub-title">② 모바일 EP 설치</div>
-      <div class="card">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px;">
-          <div style="display:flex; align-items:flex-start; gap:12px;">
-            <div style="font-size:36px;">📲</div>
-            <div>
-              <div style="font-size:16px; font-weight:900; color:var(--navy); margin-bottom:6px;">모바일 EP (교육 포털) 앱</div>
-              <div style="font-size:14px; color:#444;"><strong>모바일 EP 앱</strong>은 사전 설치가 필수입니다.</div>
-            </div>
-          </div>
-          <a href="https://moffice.lge.com" target="_blank"
-             style="background:var(--lg-red); color:#fff; padding:10px 18px; border-radius:6px; font-size:14px; font-weight:700; text-decoration:none; white-space:nowrap;">
-            설치하기 →
-          </a>
-        </div>
-        <div style="background:#f7f7f7; border-radius:8px; padding:18px; border-left:4px solid var(--lg-red); font-size:13px; color:#333; line-height:1.7;">
-          <div style="font-weight:700; margin-bottom:10px; color:var(--navy);">📌 설치 방법</div>
-          1. <strong>moffice.lge.com</strong> 접속<br>
-          2. 로그인<br>
-          &nbsp;&nbsp;- ID : Email ID (@lge.com 제외) 입력<br>
-          &nbsp;&nbsp;- PW : AD (PC 로그인 비밀번호)와 동일<br><br>
-          3. 앱 설치하기를 통해 Mobile EP 설치 후 로그인<br>
-          &nbsp;&nbsp;- ID : Email ID (@lge.com 제외) 입력<br>
-          &nbsp;&nbsp;- PW : AD 비밀번호 변경 시 자동 변경됩니다.
-        </div>
-        <div style="margin-top:14px; background:#fff0f4; border:1px solid #ffb3c6; border-radius:6px; padding:10px 14px; font-size:13px; color:var(--lg-red);">
-          ※ 기존 설치된 경우 최신 버전으로 업데이트를 권장합니다.
-        </div>
-      </div>
-    </div>
-
-    <!-- ③ 교육참가 확인서 (탭 맨 아래 단독 배치) -->
-    <div class="sub-section">
-      <div class="sub-title">③ 교육참가 확인서 출력</div>
-      <div class="card">
-        <div style="display:flex; align-items:flex-start; gap:16px; margin-bottom:16px;">
-          <div style="font-size:40px; flex-shrink:0;">📄</div>
-          <div style="flex:1;">
-            <div style="font-size:16px; font-weight:900; color:var(--navy); margin-bottom:8px;">교육참가 확인서</div>
-            <div style="font-size:14px; color:#444; line-height:1.8;">
-              정문·서문 Gate 통과 시 <strong>교육참가 확인서</strong>를 지참해야 합니다.<br>
-              아래 버튼을 클릭하여 정보를 입력한 후 PDF로 출력해 주세요.
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center;">
-          <button onclick="document.getElementById('certModal').style.display='flex'"
-            style="background:var(--lg-red); color:#fff; border:none; border-radius:6px; padding:14px 32px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Noto Sans KR',sans-serif; display:inline-flex; align-items:center; gap:8px; letter-spacing:0.3px;">
-            🖨️ 교육참가 확인서 출력하기
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /tab-prep -->
-
-
-  <!-- ════════════════════════════════════════
-       TAB 2: 오시는 길
+       TAB 1: 오시는 길
        ════════════════════════════════════════ -->
   <div id="tab-access" class="tab-content">
     <div class="section-title"><span class="icon">🗺️</span>러닝센터 오시는 길</div>
@@ -914,7 +777,7 @@
 
 
   <!-- ════════════════════════════════════════
-       TAB 3: 숙박안내
+       TAB 2: 숙박안내
        ════════════════════════════════════════ -->
   <div id="tab-stay" class="tab-content">
     <div class="section-title"><span class="icon">🏨</span>숙박안내</div>
@@ -966,7 +829,7 @@
     <div class="sub-section">
       <div class="sub-title">구비물품</div>
       <div class="card">
-        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap:10px; margin-bottom:16px;">
+        <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:16px;" class="amenity-grid">
           <div style="background:#f7f7f7; border-radius:8px; padding:14px 10px; text-align:center; border-top:2px solid var(--lg-red);"><div style="font-size:24px; margin-bottom:6px;">🛁</div><div style="font-size:14px; font-weight:700; color:var(--text);">수건</div></div>
           <div style="background:#f7f7f7; border-radius:8px; padding:14px 10px; text-align:center; border-top:2px solid var(--lg-red);"><div style="font-size:24px; margin-bottom:6px;">💇</div><div style="font-size:14px; font-weight:700; color:var(--text);">헤어드라이기</div></div>
           <div style="background:#f7f7f7; border-radius:8px; padding:14px 10px; text-align:center; border-top:2px solid var(--lg-red);"><div style="font-size:24px; margin-bottom:6px;">🧴</div><div style="font-size:14px; font-weight:700; color:var(--text);">샴푸 · 린스</div></div>
@@ -999,7 +862,7 @@
 
 
   <!-- ════════════════════════════════════════
-       TAB 4: 편의시설 안내
+       TAB 3: 편의시설 안내
        ════════════════════════════════════════ -->
   <div id="tab-amenity" class="tab-content">
     <div class="section-title"><span class="icon">🏪</span>편의시설 안내</div>
@@ -1103,10 +966,38 @@
 
 
   <!-- ════════════════════════════════════════
-       TAB 5: 건물배치도
+       TAB 4: 건물배치도
        ════════════════════════════════════════ -->
   <div id="tab-map" class="tab-content">
     <div class="section-title"><span class="icon">🏢</span>러닝센터 건물배치도</div>
+
+    <!-- 주요 건물 안내 -->
+    <div class="sub-section">
+      <div class="sub-title">🗺️ 주요 건물 안내</div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:8px;" class="building-grid">
+
+        <div class="card" style="margin-bottom:0; text-align:center; padding:28px 20px;">
+          <div style="font-size:40px; margin-bottom:12px;">🏛️</div>
+          <div style="font-size:18px; font-weight:900; color:var(--text); margin-bottom:8px;">나눔관</div>
+          <div style="font-size:14px; color:#666; line-height:1.8;">대강당 · OT/강연</div>
+        </div>
+
+        <div class="card" style="margin-bottom:0; text-align:center; padding:28px 20px;">
+          <div style="font-size:40px; margin-bottom:12px;">📚🛏️🏪</div>
+          <div style="font-size:18px; font-weight:900; color:var(--text); margin-bottom:8px;">채움관</div>
+          <div style="font-size:14px; color:#666; line-height:1.8;">분반 강의실/실습 · 숙소 · 편의시설</div>
+        </div>
+
+        <div class="card" style="margin-bottom:0; text-align:center; padding:28px 20px;">
+          <div style="font-size:40px; margin-bottom:12px;">🍽️</div>
+          <div style="font-size:18px; font-weight:900; color:var(--text); margin-bottom:8px;">HOUSE 1958</div>
+          <div style="font-size:14px; color:#666; line-height:1.8;">식당 (Dining Hall)</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 배치도 이미지 -->
     <div style="background:#fff; border-radius:8px; overflow:hidden; border:1px solid var(--gray-light); box-shadow:0 2px 12px rgba(10,22,40,0.08);">
       <img src="IMG_5537.jpeg" alt="건물배치도" style="width:100%; display:block;">
     </div>
@@ -1124,98 +1015,6 @@
     btn.classList.add('active');
   }
 </script>
-
-
-<!-- ════════ 교육참가 확인서 모달 ════════ -->
-<div id="certModal" onclick="if(event.target===this)this.style.display='none'"
-  style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:16px; overflow-y:auto;">
-  <div style="background:#fff; border-radius:12px; max-width:560px; width:100%; max-height:92vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,0.4); display:flex; flex-direction:column;">
-    <div style="background:var(--lg-red); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; border-radius:12px 12px 0 0;">
-      <div style="font-size:15px; font-weight:900; color:#fff;">📄 교육참가 확인서 작성</div>
-      <button onclick="document.getElementById('certModal').style.display='none'"
-        style="background:rgba(255,255,255,0.2); border:none; color:#fff; width:32px; height:32px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
-    </div>
-    <div style="padding:24px; display:flex; flex-direction:column; gap:14px;" id="certForm">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">소속</label>
-          <input id="cf_dept" type="text" placeholder="소속 입력" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-        </div>
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">사번</label>
-          <input id="cf_empno" type="text" placeholder="사번 입력" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-        </div>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">성명</label>
-          <input id="cf_name" type="text" placeholder="성명 입력" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-        </div>
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">연락처</label>
-          <input id="cf_phone" type="text" placeholder="010-0000-0000" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-        </div>
-      </div>
-      <div>
-        <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">과정명</label>
-        <input id="cf_course" type="text" placeholder="과정명 입력" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">교육 시작일</label>
-          <div style="position:relative;">
-            <input id="cf_start_text" type="text" placeholder="YYYY-MM-DD" maxlength="10" oninput="syncFromText('start')"
-              style="width:100%; padding:9px 40px 9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-            <input id="cf_start" type="date" onchange="syncFromPicker('start')"
-              style="position:absolute; right:6px; top:50%; transform:translateY(-50%); width:24px; height:24px; opacity:0; cursor:pointer; border:none; padding:0;">
-            <span style="position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:18px; pointer-events:none;">📅</span>
-          </div>
-          <div id="cf_start_day" style="font-size:12px; color:var(--lg-red); font-weight:700; margin-top:4px; min-height:16px;"></div>
-        </div>
-        <div>
-          <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">교육 종료일</label>
-          <div style="position:relative;">
-            <input id="cf_end_text" type="text" placeholder="YYYY-MM-DD" maxlength="10" oninput="syncFromText('end')"
-              style="width:100%; padding:9px 40px 9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333;">
-            <input id="cf_end" type="date" onchange="syncFromPicker('end')"
-              style="position:absolute; right:6px; top:50%; transform:translateY(-50%); width:24px; height:24px; opacity:0; cursor:pointer; border:none; padding:0;">
-            <span style="position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:18px; pointer-events:none;">📅</span>
-          </div>
-          <div id="cf_end_day" style="font-size:12px; color:var(--lg-red); font-weight:700; margin-top:4px; min-height:16px;"></div>
-        </div>
-      </div>
-      <div style="font-size:12px; color:#888; margin-top:-8px;">※ 직접 입력하거나 📅 아이콘을 눌러 날짜를 선택하세요</div>
-      <div>
-        <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">장소</label>
-        <select id="cf_place" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333; background:#fff;">
-          <option value="">-- 선택 --</option>
-          <option>LG디지털파크 러닝센터 나눔관</option>
-          <option>LG디지털파크 러닝센터 이음관</option>
-          <option>LG디지털파크 러닝센터 채움관</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-size:13px; font-weight:700; color:#444; display:block; margin-bottom:6px;">담당자</label>
-        <select id="cf_manager" style="width:100%; padding:9px 12px; border:1px solid #ddd; border-radius:6px; font-size:14px; font-family:'Noto Sans KR',sans-serif; color:#333; background:#fff;">
-          <option value="">-- 선택 --</option>
-          <option value="김용예 (yongye.kim)">김용예 (yongye.kim)</option>
-          <option value="공선윤 (seonyun.gong)">공선윤 (seonyun.gong)</option>
-          <option value="이능경 (ngyeong.lee)">이능경 (ngyeong.lee)</option>
-          <option value="이윤지 (yoonji2.lee)">이윤지 (yoonji2.lee)</option>
-          <option value="이헌정 (heonjeong.lee)">이헌정 (heonjeong.lee)</option>
-          <option value="조은선 (eunsun.cho)">조은선 (eunsun.cho)</option>
-          <option value="최부경 (bugyeong.choi)">최부경 (bugyeong.choi)</option>
-          <option value="최예림 (yerim.choi)">최예림 (yerim.choi)</option>
-          <option value="허린 (linn.heo)">허린 (linn.heo)</option>
-        </select>
-      </div>
-      <button onclick="printCert()"
-        style="background:var(--lg-red); color:#fff; border:none; border-radius:8px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Noto Sans KR',sans-serif; margin-top:4px; letter-spacing:0.3px;">
-        🖨️ PDF 출력하기
-      </button>
-    </div>
-  </div>
-</div>
 
 
 <!-- ════════ 식당 이동경로 모달 ════════ -->
@@ -1237,79 +1036,6 @@
 <!-- ════════ JS ════════ -->
 <script>
 const DAYS = ['(일)','(월)','(화)','(수)','(목)','(금)','(토)'];
-
-function showDay(dateStr, labelId) {
-  const el = document.getElementById(labelId);
-  if (!el) return;
-  if (!dateStr || dateStr.length < 10) { el.textContent = ''; return; }
-  const d = new Date(dateStr);
-  if (isNaN(d)) { el.textContent = ''; return; }
-  el.textContent = dateStr + ' ' + DAYS[d.getDay()];
-}
-
-function syncFromText(which) {
-  const textEl = document.getElementById('cf_' + which + '_text');
-  const pickerEl = document.getElementById('cf_' + which);
-  let v = textEl.value.replace(/\D/g, '');
-  if (v.length >= 5) v = v.slice(0,4) + '-' + v.slice(4);
-  if (v.length >= 8) v = v.slice(0,7) + '-' + v.slice(7);
-  textEl.value = v.slice(0,10);
-  if (textEl.value.length === 10) {
-    pickerEl.value = textEl.value;
-    showDay(textEl.value, 'cf_' + which + '_day');
-  } else {
-    showDay('', 'cf_' + which + '_day');
-  }
-}
-
-function syncFromPicker(which) {
-  const pickerEl = document.getElementById('cf_' + which);
-  const textEl = document.getElementById('cf_' + which + '_text');
-  textEl.value = pickerEl.value;
-  showDay(pickerEl.value, 'cf_' + which + '_day');
-}
-
-function printCert() {
-  const get = id => document.getElementById(id);
-  const dept = get('cf_dept').value.trim();
-  const empno = get('cf_empno').value.trim();
-  const name = get('cf_name').value.trim();
-  const phone = get('cf_phone').value.trim();
-  const course = get('cf_course').value.trim();
-  const start = get('cf_start_text').value.trim();
-  const end = get('cf_end_text').value.trim();
-  const place = get('cf_place').value;
-  const manager = get('cf_manager').value;
-
-  if (!dept || !empno || !name || !phone || !course || !start || !end || !place || !manager) {
-    alert('모든 항목을 입력/선택해 주세요.');
-    return;
-  }
-
-  const fmt = d => d.replace(/-/g, '.');
-  const dayStr = d => { const dt = new Date(d); return isNaN(dt) ? '' : ' ' + DAYS[dt.getDay()]; };
-
-  const w = window.open('', '_blank', 'width=800,height=900');
-  w.document.write('<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>교육참가 확인서<\/title>');
-  w.document.write('<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">');
-  w.document.write('<style>@page{margin:18mm;size:A4 portrait;}*{margin:0;padding:0;box-sizing:border-box;}body{font-family:\'Noto Sans KR\',sans-serif;background:#fff;color:#000;padding:20px;}h1{text-align:center;font-size:30px;font-weight:900;letter-spacing:10px;margin-bottom:40px;}table{width:100%;border-collapse:collapse;margin-bottom:36px;}td{border:1px solid #aaa;padding:16px 20px;font-size:15px;}.label{background:rgb(240,236,228);font-weight:700;text-align:center;width:28%;color:#000;}.value{background:#fff;color:#000;}.confirm{text-align:center;font-size:15px;color:#333;margin-bottom:14px;}.issuer{text-align:center;font-size:22px;font-weight:900;margin-bottom:48px;}.process-section{background:rgb(240,236,228);border:1px solid #bbb;border-radius:4px;padding:16px 18px;margin-top:20px;}.process-title{font-size:14px;font-weight:700;color:#c00;margin-bottom:10px;}ul{padding-left:18px;font-size:13px;color:#333;line-height:2.2;margin:0 0 10px 0;}.addr{font-size:13px;color:#333;}<\/style><\/head><body>');
-  w.document.write('<h1>교 육 참 가 확 인 서<\/h1>');
-  w.document.write('<table>');
-  w.document.write('<tr><td class="label">소속 / 사번<\/td><td class="value">' + dept + ' / ' + empno + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">성명<\/td><td class="value">' + name + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">연락처<\/td><td class="value">' + phone + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">과정명<\/td><td class="value">' + course + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">교육기간<\/td><td class="value">' + fmt(start) + dayStr(start) + ' ~ ' + fmt(end) + dayStr(end) + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">장소<\/td><td class="value">' + place + '<\/td><\/tr>');
-  w.document.write('<tr><td class="label">담당자 및 연락처<\/td><td class="value">' + manager + '<\/td><\/tr>');
-  w.document.write('<\/table>');
-  w.document.write('<p class="confirm">러닝센터에서 운영하는 교육과정 참석자임을 확인합니다.<\/p>');
-  w.document.write('<p class="issuer">인재육성담당<\/p>');
-  w.document.write('<div class="process-section"><p class="process-title">출입 Process<\/p><ul><li>차량은 서문 Gate 앞 주차장에 주차 후 입소<\/li><li>교육참가 확인서 출력 후 서문 Gate 제출/확인<\/li><li>임직원은 ID Card 체크 후 출입<\/li><\/ul><p class="addr">주소 : 경기 평택시 진위면 엘지로222 LG전자 <strong>디지털파크 서문<\/strong><\/p><\/div>');
-  w.document.write('<scr' + 'ipt>window.onload=function(){window.print();};<\/scr' + 'ipt>');
-  w.document.write('<\/body><\/html>');
-  w.document.close();
-}
 </script>
 
 </body>
