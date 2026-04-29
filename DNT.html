@@ -190,13 +190,7 @@
     background: white; margin: -14px 14px 0;
     border-radius: 16px 16px 0 0; padding: 30px 22px 22px; position: relative; z-index: 1;
   }
-  .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 22px; }
-  .avatar {
-    width: 76px; height: 76px; border-radius: 50%;
-    background: var(--lg-red-light); border: 3px solid var(--lg-red);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; font-weight: 600; color: var(--lg-red); margin-bottom: 14px;
-  }
+  .name-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 18px; padding-top: 4px; }
   .badge-name { font-size: 30px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.8px; }
   .divider { height: 1px; background: var(--border); margin: 18px 0; }
 
@@ -252,20 +246,20 @@
     margin-top: 18px;
   }
   .quick-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: row; align-items: center; justify-content: center;
     gap: 6px;
-    padding: 16px 10px;
-    border-radius: 14px;
+    padding: 11px 8px;
+    border-radius: 12px;
     text-decoration: none;
     cursor: pointer;
     border: 1.5px solid;
     background: white;
     transition: transform 0.1s, box-shadow 0.15s;
-    min-height: 80px;
+    min-height: 44px;
     -webkit-tap-highlight-color: transparent;
   }
   .quick-btn:active { transform: scale(0.97); }
-  .quick-btn .qb-icon { font-size: 24px; line-height: 1; }
+  .quick-btn .qb-icon { font-size: 16px; line-height: 1; flex-shrink: 0; }
   .quick-btn .qb-label { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
 
   /* 비활성 (URL 없음) */
@@ -538,13 +532,7 @@
     margin: -18px 16px 0; border-radius: 18px 18px 0 0;
     background: white; padding: 32px 24px 24px; position: relative; z-index: 1;
   }
-  .fs-avatar-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
-  .fs-avatar {
-    width: 104px; height: 104px; border-radius: 50%;
-    background: var(--lg-red-light); border: 3px solid var(--lg-red);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; font-weight: 600; color: var(--lg-red); margin-bottom: 16px;
-  }
+  .fs-name-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; padding-top: 8px; }
   .fs-name { font-size: 44px; font-weight: 600; color: #111; letter-spacing: -1.2px; }
   .fs-divider { height: 1px; background: #ebebeb; margin: 22px 0; }
   .fs-info-list { display: flex; flex-direction: column; gap: 16px; }
@@ -638,8 +626,7 @@
           </div>
         </div>
         <div class="badge-body">
-          <div class="avatar-section">
-            <div class="avatar" id="badgeAvatar"></div>
+          <div class="name-section">
             <div class="badge-name" id="badgeName"></div>
           </div>
           <div class="divider"></div>
@@ -659,21 +646,21 @@
 
           <!-- 2x2 빠른 버튼 그리드 -->
           <div class="quick-actions">
-            <button type="button" class="quick-btn qb-dining" id="qbDining" onclick="openDining(event)">
-              <div class="qb-icon">🎫</div>
-              <div class="qb-label">식권</div>
-            </button>
             <a class="quick-btn qb-preot" id="qbPreot" href="#" target="_blank" onclick="handleQuickClick(event,'preot')">
               <div class="qb-icon">📋</div>
               <div class="qb-label">사전안내문</div>
             </a>
-            <a class="quick-btn qb-facility" id="qbFacility" href="#" target="_blank" onclick="handleQuickClick(event,'facility')">
-              <div class="qb-icon">🏢</div>
-              <div class="qb-label">러닝센터 안내</div>
-            </a>
             <a class="quick-btn qb-survey" id="qbSurvey" href="#" target="_blank" onclick="handleQuickClick(event,'survey')">
               <div class="qb-icon">📝</div>
               <div class="qb-label">설문</div>
+            </a>
+            <button type="button" class="quick-btn qb-dining" id="qbDining" onclick="openDining(event)">
+              <div class="qb-icon">🎫</div>
+              <div class="qb-label">식권</div>
+            </button>
+            <a class="quick-btn qb-facility" id="qbFacility" href="#" target="_blank" onclick="handleQuickClick(event,'facility')">
+              <div class="qb-icon">🏢</div>
+              <div class="qb-label">러닝센터 안내</div>
             </a>
           </div>
         </div>
@@ -793,8 +780,7 @@
       </div>
     </div>
     <div class="fs-card-body">
-      <div class="fs-avatar-row">
-        <div class="fs-avatar" id="fsAvatar"></div>
+      <div class="fs-name-row">
         <div class="fs-name" id="fsName"></div>
       </div>
       <div class="fs-divider"></div>
@@ -861,7 +847,6 @@
     const s = formatDateRange(d.startDate, d.endDate);
     document.getElementById('badgeSchedule').textContent = [r, s].filter(Boolean).join('  ·  ');
     document.getElementById('badgeName').textContent = d.name || '';
-    document.getElementById('badgeAvatar').textContent = d.name ? d.name[0] : '?';
     document.getElementById('badgeGrade').textContent = d.grade || '-';
     document.getElementById('badgeDept').textContent = d.dept || '-';
     document.getElementById('badgeBanTeam').textContent = [d.ban, d.team].filter(Boolean).join(' / ') || '-';
@@ -1104,7 +1089,6 @@
     if (isFlipped) return;
     document.getElementById('fsCourseName').textContent = document.getElementById('badgeCourseName').textContent;
     document.getElementById('fsSchedule').textContent   = document.getElementById('badgeSchedule').textContent;
-    document.getElementById('fsAvatar').textContent     = document.getElementById('badgeAvatar').textContent;
     document.getElementById('fsName').textContent       = document.getElementById('badgeName').textContent;
     document.getElementById('fsGrade').textContent      = document.getElementById('badgeGrade').textContent;
     document.getElementById('fsDept').textContent       = document.getElementById('badgeDept').textContent;
