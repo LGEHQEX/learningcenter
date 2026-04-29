@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LG Electronics 러닝센터 모바일 명찰</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --lg-red: #A50034;
+    --lg-red-light: #FFF0F3;
+    --lg-red-border: #F5C0CC;
+    --bg: #f0efed;
+    --card-bg: #ffffff;
+    --text-primary: #111111;
+    --text-secondary: #666666;
+    --text-muted: #aaaaaa;
+    --border: #e8e8e8;
+    --input-border: #d0d0d0;
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg); min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── 상단 바 ── */
+  .top-bar { width: 100%; max-width: 420px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+  .top-bar .lg-mark {
+    width: 36px; height: 36px; background: var(--lg-red); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: white; letter-spacing: -0.5px;
+  }
+  .top-bar .site-title { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+
+  /* ── 조회 카드 ── */
+  .lookup-card {
+    width: 100%; max-width: 420px; background: var(--card-bg);
+    border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 20px;
+    overflow: hidden; transition: all 0.3s ease;
+  }
+  .lookup-card-inner { padding: 24px 20px; }
+  .lookup-card h2 { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 16px; }
+
+  /* 접힌 상태 */
+  .lookup-card.collapsed .lookup-card-inner { display: none; }
+  .lookup-card-summary {
+    display: none; padding: 14px 20px;
+    align-items: center; justify-content: space-between;
+    cursor: pointer;
+  }
+  .lookup-card.collapsed .lookup-card-summary { display: flex; }
+  .lookup-summary-sano { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .lookup-summary-name { font-size: 13px; color: var(--text-muted); }
+  .lookup-expand-btn {
+    font-size: 12px; color: var(--lg-red);
+    background: var(--lg-red-light); border: none;
+    padding: 4px 10px; border-radius: 20px; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .input-row input {
+    flex: 1; height: 44px; border: 1px solid var(--input-border); border-radius: 10px;
+    padding: 0 14px; font-size: 15px; color: var(--text-primary);
+    outline: none; transition: border-color 0.15s; -webkit-appearance: none;
+  }
+  .input-row input:focus { border-color: var(--lg-red); }
+  .input-row input::placeholder { color: var(--text-muted); }
+  .btn-search {
+    height: 44px; padding: 0 18px; background: var(--lg-red); color: white;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 500;
+    cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
+  }
+  .btn-search:active { opacity: 0.8; }
+  .course-wrap { display: none; }
+  .course-wrap.visible { display: block; }
+  .course-wrap label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .course-wrap select {
+    width: 100%; height: 44px; border: 1px solid var(--input-border); border-radius: 10px;
+    padding: 0 14px; font-size: 14px; color: var(--text-primary); background: white;
+    outline: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23aaa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .course-wrap select:focus { border-color: var(--lg-red); }
+  .error-msg { display: none; font-size: 13px; color: var(--lg-red); margin-top: 8px; }
+  .error-msg.visible { display: block; }
+  .loading { display: none; text-align: center; padding: 12px 0; font-size: 13px; color: var(--text-muted); }
+  .loading.visible { display: block; }
+
+  /* ── 최근 사번 ── */
+  .recent-wrap { display: none; margin-top: 12px; }
+  .recent-wrap.visible { display: block; }
+  .recent-label { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; }
+  .recent-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .recent-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px 4px 12px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+  }
+  .recent-chip:active { border-color: var(--lg-red); color: var(--lg-red); }
+  .recent-chip .chip-del { font-size: 11px; color: var(--text-muted); line-height: 1; padding: 1px 2px; }
+
+  /* ── 명찰 플립 ── */
+  .badge-wrap { width: 100%; max-width: 420px; display: none; }
+  .badge-wrap.visible { display: block; animation: fadeUp 0.35s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .badge-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .btn-dining-badge {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--lg-red); color: white;
+    border: none; border-radius: 20px; padding: 6px 14px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: opacity 0.15s;
+  }
+  .btn-dining-badge:active { opacity: 0.8; }
+  .btn-expand {
+    display: flex; align-items: center; gap: 5px;
+    background: white; border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 12px;
+    font-size: 12px; color: var(--text-secondary);
+    cursor: pointer; transition: border-color 0.15s;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  }
+  .btn-expand:active { border-color: var(--lg-red); color: var(--lg-red); }
+  .btn-expand svg { width: 13px; height: 13px; }
+
+  .flip-container { perspective: 1200px; width: 100%; }
+  .flipper {
+    position: relative; width: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1);
+  }
+  .flipper.flipped { transform: rotateY(180deg); }
+  .badge-face {
+    width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: var(--card-bg);
+  }
+  .badge-front { position: relative; z-index: 2; }
+  .badge-back { position: absolute; top: 0; left: 0; transform: rotateY(180deg); width: 100%; }
+
+  /* 앞면 */
+  .badge-header {
+    background: var(--lg-red); padding: 18px 20px 30px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .badge-header .lg-logo {
+    width: 42px; height: 42px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: var(--lg-red); letter-spacing: -0.5px; flex-shrink: 0;
+  }
+  .badge-header .event-info { color: white; }
+  .badge-header .event-name { font-size: 24px; font-weight: 700; line-height: 1.3; }
+  .event-schedule-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+  .badge-header .event-schedule { font-size: 16px; opacity: 0.75; }
+  .role-pill {
+    display: inline-block; background: rgba(255,255,255,0.25); color: white;
+    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    border-radius: 20px; border: 1px solid rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+  .badge-body {
+    background: white; margin: -12px 14px 0;
+    border-radius: 14px 14px 0 0; padding: 28px 22px 20px; position: relative; z-index: 1;
+  }
+  .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+  .avatar {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--lg-red-light); border: 2.5px solid var(--lg-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 500; color: var(--lg-red); margin-bottom: 14px;
+  }
+  .badge-name { font-size: 26px; font-weight: 500; color: var(--text-primary); letter-spacing: -0.5px; }
+  .divider { height: 0.5px; background: var(--border); margin: 16px 0; }
+  .info-list { display: flex; flex-direction: column; gap: 10px; }
+  .info-item { display: flex; align-items: center; gap: 10px; }
+  .info-label { font-size: 14px; color: var(--text-muted); width: 56px; flex-shrink: 0; }
+  .info-value {
+    font-size: 17px; font-weight: 500; color: var(--text-primary);
+    flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; display: inline-block;
+  }
+
+  /* 뒷면 */
+  .btn-preot {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 16px 0 4px;
+    padding: 12px 16px;
+    background: var(--lg-red-light);
+    border: 1.5px solid var(--lg-red-border);
+    border-radius: 12px;
+    font-size: 14px; font-weight: 600; color: var(--lg-red);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .btn-preot:active { background: var(--lg-red); color: white; }
+
+  .back-header {
+    background: #1a1a1a; padding: 18px 20px 30px; display: flex; align-items: center; gap: 12px;
+  }
+  .back-header .lg-logo-dark {
+    width: 42px; height: 42px; background: var(--lg-red); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: white; letter-spacing: -0.5px; flex-shrink: 0;
+  }
+  .back-header .back-title { color: white; font-size: 17px; font-weight: 500; }
+  .back-header .back-sub { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 3px; }
+  .back-body {
+    background: white; margin: -12px 14px 0;
+    border-radius: 14px 14px 0 0; padding: 28px 22px 8px; position: relative; z-index: 1;
+  }
+  .back-name-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .back-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--lg-red-light); border: 2px solid var(--lg-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 500; color: var(--lg-red); flex-shrink: 0;
+  }
+  .back-name { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+  .back-dept { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .back-divider { height: 0.5px; background: var(--border); margin-bottom: 20px; }
+  .btn-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 4px; }
+  .action-btn {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; padding: 16px 18px;
+    border: 1.5px solid var(--border); border-radius: 14px;
+    background: white; cursor: pointer; text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .action-btn:active { background: var(--lg-red-light); border-color: var(--lg-red-border); }
+  .action-btn .btn-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .action-btn.survey .btn-icon { background: #FFF0F3; }
+  .action-btn.facility .btn-icon { background: #EEF4FF; }
+  .action-btn .btn-text { text-align: left; }
+  .action-btn .btn-label { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+  .action-btn .btn-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .action-btn .btn-arrow { margin-left: auto; font-size: 16px; color: var(--text-muted); }
+  .back-footer { background: white; margin: 0 14px 14px; padding: 12px 22px 22px; border-radius: 0 0 14px 14px; }
+  .flip-back-btn {
+    width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 10px;
+    background: white; font-size: 13px; color: var(--text-muted); cursor: pointer;
+  }
+  .flip-back-btn:active { background: var(--bg); }
+  .flip-hint { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+  .btn-preot {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin: 16px 0 4px; width: 100%;
+    padding: 12px; border-radius: 12px;
+    background: var(--lg-red-light); border: 1.5px solid var(--lg-red-border);
+    color: var(--lg-red); font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-preot:active { background: var(--lg-red); color: white; }
+  .action-btn.dining {
+    border: none; width: 100%; text-align: left;
+    background: #F5F0FF;
+    border: 1.5px solid #D9CEFF;
+  }
+  .action-btn.dining .btn-label { color: #5B3FD4; }
+  .action-btn.dining .btn-desc { color: #9B8EC4; }
+  .action-btn.dining .btn-icon { background: #EDE8FF; }
+  .action-btn.dining .btn-arrow { color: #8B6FE8; }
+
+  /* ── 식당이용 가로화면 오버레이 ── */
+  .dining-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: white;
+  }
+  .dining-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
+
+  /* 세로 기기일 때 90도 회전해서 가로처럼 보이게 */
+  .dining-landscape {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+  }
+  @media (orientation: portrait) {
+    .dining-landscape {
+      width: 100vh; height: 100vw;
+      transform: rotate(90deg);
+      transform-origin: center center;
+      position: absolute;
+      top: 50%; left: 50%;
+      margin-top: -50vw; margin-left: -50vh;
+    }
+    .dining-close {
+      transform: rotate(-90deg);
+      top: auto !important; right: auto !important;
+      bottom: 16px !important; left: 16px !important;
+    }
+  }
+
+  .dining-close {
+    position: absolute; top: 16px; right: 16px; z-index: 10;
+    width: 40px; height: 40px; background: rgba(0,0,0,0.15);
+    border-radius: 50%; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: white;
+  }
+
+  /* 상단 배지 (가로 레이아웃에서 좌측 상단 작게) */
+  .dining-badge {
+    padding: 16px 24px 12px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .dining-badge-logo {
+    width: 32px; height: 32px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .dining-badge-text { color: white; }
+  .dining-badge-title { font-size: 13px; font-weight: 600; }
+  .dining-badge-sub   { font-size: 11px; opacity: 0.7; margin-top: 1px; }
+
+  /* 본문: 가로 레이아웃 중앙 */
+  .dining-inner {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 0 48px 20px; gap: 16px;
+  }
+
+  /* 과정 정보 */
+  .dining-course { color: white; width: 100%; text-align: center; }
+  .dining-course-name {
+    font-size: clamp(32px, 8vw, 72px);
+    font-weight: 700; line-height: 1.15;
+    letter-spacing: -1px; margin-bottom: 16px;
+    word-break: keep-all;
+  }
+  .dining-divider {
+    width: 48px; height: 3px; background: rgba(255,255,255,0.6);
+    border-radius: 2px; margin: 0 auto 16px;
+  }
+  .dining-schedule {
+    font-size: clamp(28px, 6.5vw, 56px);
+    color: white; font-weight: 700; opacity: 0.9;
+  }
+
+  /* 이름/직급/부서 */
+  .dining-person {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; flex-wrap: wrap;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px; padding: 12px 28px;
+  }
+  .dining-person-name { font-size: clamp(16px, 3vw, 26px); font-weight: 600; color: white; }
+  .dining-person-sep  { font-size: clamp(13px, 2vw, 20px); color: rgba(255,255,255,0.4); }
+  .dining-person-info { font-size: clamp(13px, 2vw, 22px); color: rgba(255,255,255,0.8); }
+
+  /* 마퀴 */
+  .dining-marquee-wrap {
+    width: 100%; overflow: hidden;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 0; flex-shrink: 0;
+  }
+  .dining-marquee-track {
+    display: flex; white-space: nowrap;
+    animation: marqueeScroll 12s linear infinite;
+  }
+  .dining-marquee-track span {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    padding-right: 80px; flex-shrink: 0;
+  }
+  @keyframes marqueeScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── QR 확대 오버레이 ── */
+  .qr-zoom-overlay {
+    display: none; position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+  }
+  .qr-zoom-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
+  .qr-zoom-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .qr-zoom-box {
+    background: white; border-radius: 24px; padding: 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+  .qr-zoom-box img { display: block; }
+  .qr-zoom-tip { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+  .fs-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: #111; flex-direction: column; align-items: stretch; justify-content: flex-start;
+    overflow-y: auto;
+  }
+  .fs-overlay.open { display: flex; animation: fsFadeIn 0.22s ease; }
+  @keyframes fsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .fs-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; flex-shrink: 0;
+  }
+  .fs-topbar-left { display: flex; align-items: center; gap: 8px; }
+  .fs-topbar-logo {
+    width: 28px; height: 28px; background: var(--lg-red); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: white; letter-spacing: -0.5px;
+  }
+  .fs-topbar-title { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .fs-close-btn {
+    width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: white; cursor: pointer; border: none;
+  }
+  .fs-card {
+    margin: 0 16px 32px; border-radius: 28px; overflow: hidden;
+    background: white; flex-shrink: 0;
+  }
+  .fs-card-header {
+    background: var(--lg-red); padding: 28px 24px 44px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .fs-card-logo {
+    width: 56px; height: 56px; background: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 700; color: var(--lg-red); flex-shrink: 0;
+  }
+  .fs-card-course { color: white; }
+  .fs-card-course-name { font-size: 24px; font-weight: 700; line-height: 1.3; }
+  .fs-card-schedule { font-size: 15px; opacity: 0.72; margin-top: 5px; }
+  .fs-card-body {
+    margin: -18px 16px 0; border-radius: 18px 18px 0 0;
+    background: white; padding: 32px 24px 24px; position: relative; z-index: 1;
+  }
+  .fs-avatar-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+  .fs-avatar {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: var(--lg-red-light); border: 3px solid var(--lg-red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 500; color: var(--lg-red); margin-bottom: 16px;
+  }
+  .fs-name { font-size: 42px; font-weight: 500; color: #111; letter-spacing: -1px; }
+  .fs-divider { height: 0.5px; background: #ebebeb; margin: 20px 0; }
+  .fs-info-list { display: flex; flex-direction: column; gap: 14px; }
+  .fs-info-item { display: flex; align-items: center; gap: 12px; }
+  .fs-info-label { font-size: 16px; color: #bbb; width: 64px; flex-shrink: 0; }
+  .fs-info-value {
+    font-size: 24px; font-weight: 500; color: #111;
+    flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; display: inline-block;
+  }
+  .fs-card-footer { background: white; margin: 0 16px 16px; padding: 0 24px 28px; border-radius: 0 0 18px 18px; }
+  .fs-role-pill {
+    display: inline-block; background: var(--lg-red-light); color: var(--lg-red);
+    font-size: 16px; font-weight: 500; padding: 7px 18px; border-radius: 20px; border: 1px solid var(--lg-red-border);
+  }
+</style>
+
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="lg-mark">LG</div>
+  <span class="site-title">LG Electronics 러닝센터 모바일 명찰</span>
+</div>
+
+<!-- 조회 카드 -->
+
+<div class="lookup-card" id="lookupCard">
+  <!-- 접힌 상태 요약 -->
+  <div class="lookup-card-summary" onclick="expandLookupCard()">
+    <div>
+      <div class="lookup-summary-sano" id="summarySano"></div>
+      <div class="lookup-summary-name" id="summaryName"></div>
+    </div>
+    <button class="lookup-expand-btn">다시 조회</button>
+  </div>
+  <!-- 펼쳐진 상태 -->
+  <div class="lookup-card-inner">
+    <h2>사번으로 명찰 불러오기</h2>
+    <div class="input-row">
+      <input type="text" id="sanoInput" placeholder="사번 입력" maxlength="20">
+      <button class="btn-search" onclick="lookupEmployee()">조회</button>
+    </div>
+    <div class="loading" id="loading">조회 중...</div>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="recent-wrap" id="recentWrap">
+      <div class="recent-label">최근 조회</div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+    <div class="course-wrap" id="courseWrap">
+      <label>참가 과정 선택</label>
+      <select id="courseSelect" onchange="renderBadge()">
+        <option value="">-- 과정을 선택하세요 --</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- 명찰 -->
+
+<div class="badge-wrap" id="badgeWrap">
+
+  <div class="badge-actions" id="badgeActions" style="display:none !important">
+    <button class="btn-dining-badge" id="btnDiningBadge" onclick="openDining(event)">
+      🎫 식권
+    </button>
+    <button class="btn-expand" onclick="openFullscreen()">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      크게 보기
+    </button>
+  </div>
+
+  <div class="flip-container">
+    <div class="flipper" id="flipper">
+
+```
+  <!-- 앞면 -->
+  <div class="badge-face badge-front" onclick="flipCard()">
+    <div class="badge-header">
+      <div class="lg-logo">LG</div>
+      <div class="event-info">
+        <div class="event-name" id="badgeCourseName"></div>
+        <div class="event-schedule-row">
+          <div class="event-schedule" id="badgeSchedule"></div>
+          <div class="role-pill" id="rolePill">교육생</div>
+        </div>
+      </div>
+    </div>
+    <div class="badge-body">
+      <div class="avatar-section">
+        <div class="avatar" id="badgeAvatar"></div>
+        <div class="badge-name" id="badgeName"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="info-list">
+        <div class="info-item"><span class="info-label">직급</span><span class="info-value" id="badgeGrade"></span></div>
+        <div class="info-item"><span class="info-label">소속부서</span><span class="info-value" id="badgeDept"></span></div>
+        <div class="info-item"><span class="info-label">반/팀</span><span class="info-value" id="badgeBanTeam"></span></div>
+        <div class="info-item" id="badgeIdRow" style="display:none"><span class="info-label">ID</span><span class="info-value" id="badgeId"></span></div>
+        <div class="info-item" id="badgePwRow" style="display:none"><span class="info-label">PW</span><span class="info-value" id="badgePw"></span></div>
+      </div>
+      <a class="btn-preot" id="preOtBtn" href="#" target="_blank" style="display:none">
+        📋 사전안내문 확인하기
+      </a>
+    </div>
+  </div>
+
+  <!-- 뒷면 -->
+  <div class="badge-face badge-back">
+    <div class="back-header">
+      <div class="lg-logo-dark">LG</div>
+      <div>
+        <div class="back-title">바로가기</div>
+        <div class="back-sub">앞면으로 돌아가려면 아래 버튼을 누르세요</div>
+      </div>
+    </div>
+    <div class="back-body">
+      <div class="back-name-row">
+        <div class="back-avatar" id="backAvatar"></div>
+        <div>
+          <div class="back-name" id="backName"></div>
+          <div class="back-dept" id="backDept"></div>
+        </div>
+      </div>
+      <div class="back-divider"></div>
+      <div class="btn-list">
+        <button class="action-btn dining" onclick="openDining(event)">
+          <div class="btn-icon">🎫</div>
+          <div class="btn-text">
+            <div class="btn-label">식권</div>
+            <div class="btn-desc">식당 이용 식권을 확인하세요</div>
+          </div>
+          <span class="btn-arrow">›</span>
+        </button>
+        <a class="action-btn survey" id="surveyBtn" href="#" target="_blank" onclick="handleBtnClick(event,'survey')">
+          <div class="btn-icon">📋</div>
+          <div class="btn-text">
+            <div class="btn-label">설문 바로가기</div>
+            <div class="btn-desc">교육 만족도 설문에 참여해주세요</div>
+          </div>
+          <span class="btn-arrow">›</span>
+        </a>
+        <a class="action-btn facility" id="facilityBtn" href="#" target="_blank" onclick="handleBtnClick(event,'facility')">
+          <div class="btn-icon">🏢</div>
+          <div class="btn-text">
+            <div class="btn-label">러닝센터 안내</div>
+            <div class="btn-desc">시설 이용 안내를 확인하세요</div>
+          </div>
+          <span class="btn-arrow">›</span>
+        </a>
+      </div>
+    </div>
+    <div class="back-footer">
+      <button class="flip-back-btn" onclick="flipCard()">← 앞면으로 돌아가기</button>
+    </div>
+  </div>
+
+</div>
+```
+
+  </div>
+  <div class="flip-hint" id="flipHint">탭하면 뒤집어서 바로가기를 볼 수 있어요</div>
+</div>
+
+<!-- 식당이용 가로화면 -->
+
+<div class="dining-overlay" id="diningOverlay">
+  <button class="dining-close" onclick="closeDining()">✕</button>
+
+  <div class="dining-landscape" id="diningLandscape">
+    <!-- 상단 배지 -->
+    <div class="dining-badge" id="diningBadge">
+      <div class="dining-badge-logo" id="diningBadgeLogo">LG</div>
+      <div class="dining-badge-text">
+        <div class="dining-badge-title">러닝센터 식당 이용</div>
+        <div class="dining-badge-sub">본 화면을 직원에게 제시해주세요</div>
+      </div>
+    </div>
+
+```
+<!-- 본문 -->
+<div class="dining-inner">
+  <div class="dining-course">
+    <div class="dining-course-name" id="diningCourseName"></div>
+    <div class="dining-divider" id="diningDivider"></div>
+    <div class="dining-schedule" id="diningSchedule"></div>
+  </div>
+  <div class="dining-person">
+    <span class="dining-person-name" id="diningName"></span>
+    <span class="dining-person-sep">·</span>
+    <span class="dining-person-info" id="diningGrade"></span>
+    <span class="dining-person-sep">·</span>
+    <span class="dining-person-info" id="diningDept"></span>
+  </div>
+</div>
+
+<div class="dining-marquee-wrap">
+  <div class="dining-marquee-track">
+    <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
+    <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
+    <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
+    <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- QR 확대 오버레이 -->
+
+<div class="qr-zoom-overlay" id="qrZoomOverlay" onclick="closeQrZoom()">
+  <div class="qr-zoom-inner">
+    <div class="qr-zoom-box" id="qrZoomBox"></div>
+    <div class="qr-zoom-tip">탭하면 닫힙니다</div>
+  </div>
+</div>
+
+<!-- 전체화면 -->
+
+<div class="fs-overlay" id="fsOverlay">
+  <div class="fs-topbar">
+    <div class="fs-topbar-left">
+      <div class="fs-topbar-logo">LG</div>
+      <span class="fs-topbar-title">모바일 명찰</span>
+    </div>
+    <button class="fs-close-btn" onclick="closeFullscreen()">✕</button>
+  </div>
+  <div class="fs-card">
+    <div class="fs-card-header">
+      <div class="fs-card-logo">LG</div>
+      <div class="fs-card-course">
+        <div class="fs-card-course-name" id="fsCourseName"></div>
+        <div class="fs-card-schedule" id="fsSchedule"></div>
+      </div>
+    </div>
+    <div class="fs-card-body">
+      <div class="fs-avatar-row">
+        <div class="fs-avatar" id="fsAvatar"></div>
+        <div class="fs-name" id="fsName"></div>
+      </div>
+      <div class="fs-divider"></div>
+      <div class="fs-info-list">
+        <div class="fs-info-item"><span class="fs-info-label">직급</span><span class="fs-info-value" id="fsGrade"></span></div>
+        <div class="fs-info-item"><span class="fs-info-label">소속부서</span><span class="fs-info-value" id="fsDept"></span></div>
+        <div class="fs-info-item"><span class="fs-info-label">반/팀</span><span class="fs-info-value" id="fsBanTeam"></span></div>
+        <div class="fs-info-item" id="fsIdRow" style="display:none"><span class="fs-info-label">ID</span><span class="fs-info-value" id="fsId"></span></div>
+        <div class="fs-info-item" id="fsPwRow" style="display:none"><span class="fs-info-label">PW</span><span class="fs-info-value" id="fsPw"></span></div>
+      </div>
+    </div>
+    <div class="fs-card-footer">
+      <div class="fs-role-pill" id="fsRolePill">교육생</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxxyWohpMhNKwxljDS7dxM7SpoYvI7D5yqKJ97oRD9QL9Ae9DW20E4NnCK-ZngwAPn1/exec';
+  let employeeData = [], currentData = null, isFlipped = false;
+  let currentQR = null;
+
+  async function lookupEmployee() {
+    const sano = document.getElementById('sanoInput').value.trim();
+    if (!sano) { showError('사번을 입력해주세요.'); return; }
+    showLoading(true); hideError(); hideBadge();
+    try {
+      const res = await fetch(`${API_URL}?action=lookup&sano=${encodeURIComponent(sano)}`);
+      const json = await res.json();
+      if (!json.success) { showError(json.message || '조회 결과가 없습니다.'); showLoading(false); return; }
+      employeeData = json.data;
+      saveRecentSano(sano);
+      if (employeeData.length === 1) {
+        document.getElementById('courseWrap').classList.remove('visible');
+        renderBadgeFromData(employeeData[0]);
+      } else {
+        const select = document.getElementById('courseSelect');
+        select.innerHTML = '<option value="">-- 과정을 선택하세요 --</option>';
+        employeeData.forEach((d, i) => {
+          const opt = document.createElement('option');
+          opt.value = i;
+          const r = formatRound(d.round), s = formatDateRange(d.startDate, d.endDate);
+          opt.textContent = [d.courseName, r, s ? `(${s})` : ''].filter(Boolean).join('  ');
+          select.appendChild(opt);
+        });
+        document.getElementById('courseWrap').classList.add('visible');
+        hideBadge();
+      }
+    } catch { showError('서버 연결에 실패했습니다. API URL을 확인해주세요.'); }
+    showLoading(false);
+  }
+
+  function renderBadge() {
+    const idx = document.getElementById('courseSelect').value;
+    if (idx === '') { hideBadge(); return; }
+    renderBadgeFromData(employeeData[parseInt(idx)]);
+  }
+
+  function renderBadgeFromData(d) {
+    currentData = d;
+    document.getElementById('badgeCourseName').textContent = d.courseName || '';
+    const r = formatRound(d.round);
+    const s = formatDateRange(d.startDate, d.endDate);
+    document.getElementById('badgeSchedule').textContent = [r, s].filter(Boolean).join('  ·  ');
+    document.getElementById('badgeName').textContent = d.name || '';
+    document.getElementById('badgeAvatar').textContent = d.name ? d.name[0] : '?';
+    document.getElementById('badgeGrade').textContent = d.grade || '';
+    document.getElementById('badgeDept').textContent = d.dept || '';
+    document.getElementById('badgeBanTeam').textContent = [d.ban, d.team].filter(Boolean).join(' / ') || '-';
+
+    const showId = !!d.loginId;
+    const showPw = !!d.loginPw;
+    document.getElementById('badgeIdRow').style.display = showId ? 'flex' : 'none';
+    document.getElementById('badgePwRow').style.display = showPw ? 'flex' : 'none';
+    document.getElementById('badgeId').textContent = d.loginId || '';
+    document.getElementById('badgePw').textContent = d.loginPw || '';
+
+    const combined = (d.ban + ' ' + d.team).trim();
+    let role = '교육생';
+    if (combined.includes('담당자')) role = '담당자';
+    else if (combined.includes('강사')) role = '강사';
+    else if (combined.includes('운영자')) role = '운영자';
+    document.getElementById('rolePill').textContent = role;
+    document.getElementById('fsRolePill').textContent = role;
+
+    // 운영 역할이면 뱃지 스타일 다르게
+    const pill   = document.getElementById('rolePill');
+    const fsPill = document.getElementById('fsRolePill');
+    const isOps  = ['담당자', '강사', '운영자'].includes(role);
+    if (isOps) {
+      pill.style.background  = 'rgba(255,255,255,0.9)';
+      pill.style.color       = 'var(--lg-red)';
+      pill.style.borderColor = 'rgba(255,255,255,0.9)';
+      fsPill.style.background = 'var(--lg-red-light)';
+      fsPill.style.color      = 'var(--lg-red)';
+    } else {
+      pill.style.background  = 'rgba(255,255,255,0.25)';
+      pill.style.color       = 'white';
+      pill.style.borderColor = 'rgba(255,255,255,0.4)';
+      fsPill.style.background = 'var(--lg-red-light)';
+      fsPill.style.color      = 'var(--lg-red)';
+    }
+
+    document.getElementById('backAvatar').textContent = d.name ? d.name[0] : '?';
+    document.getElementById('backName').textContent = d.name || '';
+    document.getElementById('backDept').textContent = [d.dept, [d.ban, d.team].filter(Boolean).join(' / ')].filter(Boolean).join(' · ');
+
+    const surveyBtn   = document.getElementById('surveyBtn');
+    const facilityBtn = document.getElementById('facilityBtn');
+    const preOtBtn    = document.getElementById('preOtBtn');
+    surveyBtn.href   = d.surveyUrl || '#';
+    surveyBtn.style.opacity      = d.surveyUrl   ? '1' : '0.4';
+    surveyBtn.style.pointerEvents = d.surveyUrl  ? 'auto' : 'none';
+    facilityBtn.href = d.facilityUrl || '#';
+    facilityBtn.style.opacity      = d.facilityUrl ? '1' : '0.4';
+    facilityBtn.style.pointerEvents = d.facilityUrl ? 'auto' : 'none';
+    if (d.preOtUrl) {
+      preOtBtn.href = d.preOtUrl;
+      preOtBtn.style.display = 'flex';
+    } else {
+      preOtBtn.style.display = 'none';
+    }
+
+    isFlipped = false;
+    document.getElementById('flipper').classList.remove('flipped');
+    document.getElementById('flipHint').textContent = '탭하면 뒤집어서 바로가기를 볼 수 있어요';
+
+    // ── 교육구분별 색상 테마 적용 ──
+    applyTheme(d.category || '');
+
+    // 식권 뱃지 색상
+    const theme = THEMES[d.category] || THEMES['본사'];
+    document.getElementById('btnDiningBadge').style.background = theme.main;
+
+    const wrap = document.getElementById('badgeWrap');
+    wrap.classList.remove('visible');
+    void wrap.offsetWidth;
+    wrap.classList.add('visible');
+    document.getElementById('badgeActions').setAttribute('style', 'display:flex');
+
+    // 명찰 뜨면 조회 카드 접기
+    const sano = document.getElementById('sanoInput').value.trim();
+    collapseLookupCard(sano, d.name);
+
+    setTimeout(() => {
+      autoScaleInfoValues();
+      document.getElementById('flipper').style.height = document.querySelector('.badge-front').scrollHeight + 'px';
+    }, 50);
+  }
+
+  // ── 교육구분별 색상 테마 ──
+  const THEMES = {
+    '본사':    { main: '#A50034', light: '#FFF0F3', border: '#F5C0CC' },
+    '아카데미': { main: '#0057B8', light: '#EEF4FF', border: '#B8D4F8' },
+    '임대사':  { main: '#00825A', light: '#E6F5EF', border: '#A0D9C3' },
+    '세일즈':  { main: '#6B21A8', light: '#F5F0FF', border: '#D9CEFF' },
+  };
+
+  function applyTheme(category) {
+    const theme = THEMES[category] || THEMES['본사'];
+    const root = document.documentElement;
+    root.style.setProperty('--lg-red',        theme.main);
+    root.style.setProperty('--lg-red-light',  theme.light);
+    root.style.setProperty('--lg-red-border', theme.border);
+  }
+
+  function flipCard() {
+    isFlipped = !isFlipped;
+    const flipper = document.getElementById('flipper');
+    flipper.classList.toggle('flipped', isFlipped);
+    const front = document.querySelector('.badge-front');
+    const back = document.querySelector('.badge-back');
+    flipper.style.height = (isFlipped ? back.scrollHeight : front.scrollHeight) + 'px';
+    document.getElementById('flipHint').textContent = isFlipped
+      ? '앞면으로 돌아가려면 아래 버튼을 누르세요'
+      : '탭하면 뒤집어서 바로가기를 볼 수 있어요';
+  }
+
+  function handleBtnClick(e, type) {
+    e.stopPropagation();
+    const btn = document.getElementById(type === 'survey' ? 'surveyBtn' : 'facilityBtn');
+    if (!btn.href || btn.href.endsWith('#')) { e.preventDefault(); }
+  }
+
+  let wakeLock = null;
+
+  function generateDiningQR() {
+    const container = document.getElementById('diningQrCode');
+    container.innerHTML = '';
+
+    const courseName = document.getElementById('badgeCourseName').textContent;
+    const schedule   = document.getElementById('badgeSchedule').textContent;
+    const today      = new Date().toISOString().slice(0, 10);
+
+    const qrData = JSON.stringify({
+      course: courseName,
+      schedule: schedule,
+      date: today,
+      category: (currentData && currentData.category) || ''
+    });
+
+    // 구글 차트 API로 QR 이미지 생성 (라이브러리 불필요)
+    const encoded = encodeURIComponent(qrData);
+    const img = document.createElement('img');
+    img.width  = 200;
+    img.height = 200;
+    img.style.display = 'block';
+    img.src = `https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${encoded}&choe=UTF-8&chld=M|1`;
+    img.onerror = () => {
+      // 구글 API 실패 시 qr-server.com으로 폴백
+      img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}`;
+    };
+    container.appendChild(img);
+  }
+
+  async function openDining(e) {
+    e.stopPropagation();
+    const d = currentData || {};
+    const r = formatRound(d.round);
+    const s = formatDateRange(d.startDate, d.endDate);
+    document.getElementById('diningCourseName').textContent = d.courseName || '';
+    document.getElementById('diningSchedule').textContent   = [r, s].filter(Boolean).join('  ·  ');
+    document.getElementById('diningName').textContent       = d.name || '';
+    document.getElementById('diningGrade').textContent      = d.grade || '';
+    document.getElementById('diningDept').textContent       = d.dept || '';
+
+    // 대구분 색상 → 전체 배경 + 배지 로고
+    const theme = THEMES[d.category] || THEMES['본사'];
+    const landscape = document.getElementById('diningLandscape');
+    const logo      = document.getElementById('diningBadgeLogo');
+    landscape.style.background  = theme.main;
+    logo.style.color             = theme.main;
+
+    document.getElementById('diningOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // 가로 회전 완료 후 텍스트 크기 조절
+    autoFitDiningText();
+    setTimeout(autoFitDiningText, 100);
+    setTimeout(autoFitDiningText, 350);
+
+    try {
+      if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+    } catch {}
+  }
+
+  function autoFitDiningText() {
+    // 과정명 - 컨테이너 너비에 꽉 차게
+    const nameEl = document.getElementById('diningCourseName');
+    const container = nameEl.parentElement;
+    const maxW = container.clientWidth;
+    if (!maxW) return;
+
+    nameEl.style.fontSize = '72px';
+    let size = 72;
+    while (nameEl.scrollWidth > maxW && size > 24) {
+      size -= 1;
+      nameEl.style.fontSize = size + 'px';
+    }
+
+    // 일정 - 과정명보다 작게, 비율 유지
+    const scheduleEl = document.getElementById('diningSchedule');
+    scheduleEl.style.fontSize = '72px';
+    let schedSize = 72;
+    while (scheduleEl.scrollWidth > maxW && schedSize > 20) {
+      schedSize -= 1;
+      scheduleEl.style.fontSize = schedSize + 'px';
+    }
+    // 일정은 과정명보다 최대 80% 크기
+    scheduleEl.style.fontSize = Math.min(schedSize, size * 0.8) + 'px';
+  }
+
+  function openQrZoom() {
+    const box = document.getElementById('qrZoomBox');
+    box.innerHTML = '';
+    const courseName = document.getElementById('badgeCourseName').textContent;
+    const schedule   = document.getElementById('badgeSchedule').textContent;
+    const today      = new Date().toISOString().slice(0, 10);
+    const qrData     = JSON.stringify({ course: courseName, schedule, date: today });
+    const encoded    = encodeURIComponent(qrData);
+    const size       = Math.min(window.innerWidth - 80, 300);
+    const img        = document.createElement('img');
+    img.width  = size;
+    img.height = size;
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encoded}`;
+    box.appendChild(img);
+    document.getElementById('qrZoomOverlay').classList.add('open');
+  }
+
+  function closeQrZoom() {
+    document.getElementById('qrZoomOverlay').classList.remove('open');
+  }
+
+  function closeDining() {
+    document.getElementById('diningOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  }
+
+  function openFullscreen() {
+    if (isFlipped) return;
+    document.getElementById('fsCourseName').textContent = document.getElementById('badgeCourseName').textContent;
+    document.getElementById('fsSchedule').textContent   = document.getElementById('badgeSchedule').textContent;
+    document.getElementById('fsAvatar').textContent     = document.getElementById('badgeAvatar').textContent;
+    document.getElementById('fsName').textContent       = document.getElementById('badgeName').textContent;
+    document.getElementById('fsGrade').textContent      = document.getElementById('badgeGrade').textContent;
+    document.getElementById('fsDept').textContent       = document.getElementById('badgeDept').textContent;
+    document.getElementById('fsBanTeam').textContent    = document.getElementById('badgeBanTeam').textContent;
+
+    const showId = document.getElementById('badgeIdRow').style.display !== 'none';
+    const showPw = document.getElementById('badgePwRow').style.display !== 'none';
+    document.getElementById('fsIdRow').style.display = showId ? 'flex' : 'none';
+    document.getElementById('fsPwRow').style.display = showPw ? 'flex' : 'none';
+    document.getElementById('fsId').textContent = document.getElementById('badgeId').textContent;
+    document.getElementById('fsPw').textContent = document.getElementById('badgePw').textContent;
+    document.getElementById('fsOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(autoScaleFsValues, 50);
+  }
+
+  function closeFullscreen() {
+    document.getElementById('fsOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function formatDate(val) {
+    if (!val) return '';
+    const str = String(val).trim();
+    if (!str || str === 'undefined' || str === 'null') return '';
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) return `${d.getMonth()+1}/${d.getDate()}`;
+    return str;
+  }
+
+  function formatDateRange(startDate, endDate) {
+    const s = formatDate(startDate);
+    const e = formatDate(endDate);
+    if (!s && !e) return '';
+    if (!e || s === e) return s;
+    return `${s} ~ ${e}`;
+  }
+
+  function formatRound(val) {
+    if (!val || String(val).trim() === '') return '';
+    const str = String(val).trim();
+    return str.includes('차') ? str : str + '차';
+  }
+
+  function autoScaleInfoValues() {
+    document.querySelectorAll('.info-value').forEach(el => {
+      el.style.fontSize = '17px'; let size = 17;
+      while (el.scrollWidth > el.offsetWidth && size > 11) { size -= 0.5; el.style.fontSize = size + 'px'; }
+    });
+  }
+  function autoScaleFsValues() {
+    document.querySelectorAll('.fs-info-value').forEach(el => {
+      el.style.fontSize = '24px'; let size = 24;
+      while (el.scrollWidth > el.offsetWidth && size > 14) { size -= 0.5; el.style.fontSize = size + 'px'; }
+    });
+  }
+
+  function collapseLookupCard(sano, name) {
+    document.getElementById('summarySano').textContent = sano;
+    document.getElementById('summaryName').textContent = name || '';
+    document.getElementById('lookupCard').classList.add('collapsed');
+  }
+
+  function expandLookupCard() {
+    document.getElementById('lookupCard').classList.remove('collapsed');
+  }
+
+  function hideBadge() {
+    document.getElementById('badgeWrap').classList.remove('visible');
+    document.getElementById('badgeActions').setAttribute('style', 'display:none !important');
+    expandLookupCard();
+  }
+  function showLoading(v) { document.getElementById('loading').classList.toggle('visible', v); }
+  function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('visible'); }
+  function hideError()    { document.getElementById('errorMsg').classList.remove('visible'); }
+
+  const RECENT_KEY = 'lg_badge_recent_sanos';
+  function getRecentSanos() { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch { return []; } }
+  function saveRecentSano(sano) {
+    let list = getRecentSanos().filter(s => s !== sano);
+    list.unshift(sano); if (list.length > 5) list = list.slice(0, 5);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(list)); renderRecentList();
+  }
+  function removeRecentSano(sano) {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(getRecentSanos().filter(s => s !== sano))); renderRecentList();
+  }
+  function renderRecentList() {
+    const list = getRecentSanos();
+    const wrap = document.getElementById('recentWrap');
+    const container = document.getElementById('recentList');
+    if (!list.length) { wrap.classList.remove('visible'); return; }
+    wrap.classList.add('visible');
+    container.innerHTML = '';
+    list.forEach(sano => {
+      const chip = document.createElement('div');
+      chip.className = 'recent-chip';
+      chip.innerHTML = `<span onclick="selectRecentSano('${sano}')">${sano}</span><span class="chip-del" onclick="removeRecentSano('${sano}')">✕</span>`;
+      container.appendChild(chip);
+    });
+  }
+  function selectRecentSano(sano) { document.getElementById('sanoInput').value = sano; lookupEmployee(); }
+
+  renderRecentList();
+  document.getElementById('sanoInput').addEventListener('keydown', e => { if (e.key === 'Enter') lookupEmployee(); });
+</script>
+
+</body>
+</html>
