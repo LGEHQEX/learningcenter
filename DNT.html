@@ -633,7 +633,7 @@
           <div class="info-list">
             <div class="info-item"><span class="info-label">직급</span><span class="info-value" id="badgeGrade"></span></div>
             <div class="info-item"><span class="info-label">소속부서</span><span class="info-value" id="badgeDept"></span></div>
-            <div class="info-item" id="badgePlaceRow" style="display:none"><span class="info-label">교육장소</span><span class="info-value" id="badgePlace"></span></div>
+            <div class="info-item" id="badgePlaceRow" style="display:none"><span class="info-label">장소</span><span class="info-value" id="badgePlace"></span></div>
             <div class="info-item"><span class="info-label">반/팀</span><span class="info-value" id="badgeBanTeam"></span></div>
           </div>
 
@@ -787,7 +787,7 @@
       <div class="fs-info-list">
         <div class="fs-info-item"><span class="fs-info-label">직급</span><span class="fs-info-value" id="fsGrade"></span></div>
         <div class="fs-info-item"><span class="fs-info-label">소속부서</span><span class="fs-info-value" id="fsDept"></span></div>
-        <div class="fs-info-item" id="fsPlaceRow" style="display:none"><span class="fs-info-label">교육장소</span><span class="fs-info-value" id="fsPlace"></span></div>
+        <div class="fs-info-item" id="fsPlaceRow" style="display:none"><span class="fs-info-label">장소</span><span class="fs-info-value" id="fsPlace"></span></div>
         <div class="fs-info-item"><span class="fs-info-label">반/팀</span><span class="fs-info-value" id="fsBanTeam"></span></div>
         <div class="fs-info-item" id="fsIdRow" style="display:none"><span class="fs-info-label">ID</span><span class="fs-info-value" id="fsId"></span></div>
         <div class="fs-info-item" id="fsPwRow" style="display:none"><span class="fs-info-label">PW</span><span class="fs-info-value" id="fsPw"></span></div>
@@ -800,7 +800,7 @@
 </div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyn21SvqdRjpBK-sGo7-B5B9kh72P0IR0N2YJlDKUhcuT8x-rkZKjtppl-lecRAHk2a/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxsfEa5vrmq4Dm95lAk3rdtNcDrVDD0nRC7RWjQsC5Ti2J-AXysN4jglOtxJlb7BGR7/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
 
@@ -851,10 +851,11 @@
     document.getElementById('badgeDept').textContent = d.dept || '-';
     document.getElementById('badgeBanTeam').textContent = [d.ban, d.team].filter(Boolean).join(' / ') || '-';
 
-    // 교육장소 (있을 때만 표시)
+    // 장소 = 교육장소 · 강의장 (둘 중 하나라도 있으면 표시)
     const placeRow = document.getElementById('badgePlaceRow');
-    if (d.place) {
-      document.getElementById('badgePlace').textContent = d.place;
+    const placeText = [d.place, d.room].filter(Boolean).join(' · ');
+    if (placeText) {
+      document.getElementById('badgePlace').textContent = placeText;
       placeRow.style.display = 'flex';
     } else {
       placeRow.style.display = 'none';
@@ -1026,11 +1027,12 @@
     document.getElementById('diningGrade').textContent      = d.grade || '';
     document.getElementById('diningDept').textContent       = d.dept || '';
 
-    // 교육장소 (있을 때만)
+    // 장소 = 교육장소 · 강의장
     const diningPlaceSep = document.getElementById('diningPlaceSep');
     const diningPlace    = document.getElementById('diningPlace');
-    if (d.place) {
-      diningPlace.textContent = d.place;
+    const diningPlaceText = [d.place, d.room].filter(Boolean).join(' · ');
+    if (diningPlaceText) {
+      diningPlace.textContent = diningPlaceText;
       diningPlace.style.display = 'inline';
       diningPlaceSep.style.display = 'inline';
     } else {
