@@ -871,12 +871,12 @@
     document.getElementById('badgeId').textContent = d.loginId || '';
     document.getElementById('badgePw').textContent = d.loginPw || '';
 
-    // 역할 판별 - 이름에 '강사/담당자/운영자'가 포함되어 있으면 해당 역할
-    const nameStr = String(d.name || '');
+    // 역할 판별 - 이름 또는 직급에 '강사/담당자/운영자'가 포함되어 있으면 해당 역할
+    const roleSource = String(d.name || '') + ' ' + String(d.grade || '');
     let role = '교육생';
-    if (nameStr.includes('담당자')) role = '담당자';
-    else if (nameStr.includes('강사')) role = '강사';
-    else if (nameStr.includes('운영자')) role = '운영자';
+    if (roleSource.includes('담당자')) role = '담당자';
+    else if (roleSource.includes('강사')) role = '강사';
+    else if (roleSource.includes('운영자')) role = '운영자';
     document.getElementById('rolePill').textContent = role;
     document.getElementById('fsRolePill').textContent = role;
 
