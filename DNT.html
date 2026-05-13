@@ -128,17 +128,17 @@
   /* 출결 버튼 */
   .btn-checkin {
     display: flex; align-items: center; gap: 6px;
-    background: #00825A; color: white;
+    background: #999999; color: white;
     border: none; border-radius: 22px; padding: 9px 16px;
     font-size: 13px; font-weight: 600;
-    cursor: pointer; box-shadow: 0 2px 10px rgba(0,130,90,0.30);
-    transition: opacity 0.15s, background 0.3s;
-    min-height: 38px; flex: 1;
+    cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    transition: opacity 0.15s, background 0.4s, box-shadow 0.4s;
+    min-height: 38px;
   }
   .btn-checkin:active { opacity: 0.85; }
   .btn-checkin.done {
-    background: #005C3F;
-    box-shadow: 0 2px 10px rgba(0,92,63,0.25);
+    background: #00825A;
+    box-shadow: 0 2px 10px rgba(0,130,90,0.30);
     cursor: default;
   }
   .btn-checkin.loading-state {
@@ -551,7 +551,7 @@
   <!-- 액션 바: 출결 + 크게보기 -->
   <div class="badge-actions" id="badgeActions" style="display:none !important">
     <button class="btn-checkin" id="btnCheckin" onclick="doCheckin(event)">
-      ✅ 출결
+      ✅ 대강당 출결
     </button>
     <button class="btn-expand" onclick="openFullscreen()">
       <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -753,7 +753,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxsfEa5vrmq4Dm95lAk3rdtNcDrVDD0nRC7RWjQsC5Ti2J-AXysN4jglOtxJlb7BGR7/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbzJX3U4X_DM21inRV2zSoM9yM2tTaA2ZmNoqoE7rTh-OvwDVx9bW37R7NhM5MmdhlA/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
 
@@ -785,12 +785,12 @@
         showToast('✅ 출결이 기록되었습니다' + (timeStr ? ` (${timeStr})` : ''), 'success');
       } else {
         btn.classList.remove('loading-state');
-        btn.textContent = '✅ 출결';
+        btn.textContent = '✅ 대강당 출결';
         showToast('❌ ' + (json.message || '출결 기록에 실패했습니다.'), 'error');
       }
     } catch {
       btn.classList.remove('loading-state');
-      btn.textContent = '✅ 출결';
+      btn.textContent = '✅ 대강당 출결';
       showToast('❌ 서버 연결에 실패했습니다.', 'error');
     }
   }
@@ -926,7 +926,7 @@
     // 출결 버튼 초기화 (새 명찰 로드 시 항상 리셋)
     const btnCheckin = document.getElementById('btnCheckin');
     btnCheckin.classList.remove('done', 'loading-state');
-    btnCheckin.textContent = '✅ 출결';
+    btnCheckin.textContent = '✅ 대강당 출결';
 
     isFlipped = false;
     document.getElementById('flipper').classList.remove('flipped');
