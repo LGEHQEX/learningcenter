@@ -14,8 +14,8 @@
     --bg: #f0efed;
     --card-bg: #ffffff;
     --text-primary: #111111;
-    --text-secondary: #555555;     /* 한 단계 진하게 (대비↑) */
-    --text-muted: #888888;          /* 한 단계 진하게 (대비↑) */
+    --text-secondary: #555555;
+    --text-muted: #888888;
     --border: #e8e8e8;
     --input-border: #c8c8c8;
     --shadow: 0 4px 24px rgba(0,0,0,0.10);
@@ -47,7 +47,6 @@
   .lookup-card-inner { padding: 24px 20px; }
   .lookup-card h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
 
-  /* 접힌 상태 */
   .lookup-card.collapsed .lookup-card-inner { display: none; }
   .lookup-card-summary {
     display: none; padding: 14px 16px 14px 20px;
@@ -123,17 +122,29 @@
   .badge-wrap.visible { display: block; animation: fadeUp 0.35s ease; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* ── 액션 버튼 바 ── */
   .badge-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
-  .btn-dining-badge {
+
+  /* 출결 버튼 */
+  .btn-checkin {
     display: flex; align-items: center; gap: 6px;
-    background: var(--lg-red); color: white;
+    background: #00825A; color: white;
     border: none; border-radius: 22px; padding: 9px 16px;
     font-size: 13px; font-weight: 600;
-    cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.18);
-    transition: opacity 0.15s;
-    min-height: 38px;
+    cursor: pointer; box-shadow: 0 2px 10px rgba(0,130,90,0.30);
+    transition: opacity 0.15s, background 0.3s;
+    min-height: 38px; flex: 1;
   }
-  .btn-dining-badge:active { opacity: 0.85; }
+  .btn-checkin:active { opacity: 0.85; }
+  .btn-checkin.done {
+    background: #005C3F;
+    box-shadow: 0 2px 10px rgba(0,92,63,0.25);
+    cursor: default;
+  }
+  .btn-checkin.loading-state {
+    opacity: 0.7; cursor: not-allowed;
+  }
+
   .btn-expand {
     display: flex; align-items: center; gap: 6px;
     background: white; border: 1px solid var(--border);
@@ -146,6 +157,26 @@
   .btn-expand:active { border-color: var(--lg-red); color: var(--lg-red); }
   .btn-expand svg { width: 14px; height: 14px; }
 
+  /* ── 토스트 ── */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #1a1a1a; color: white;
+    padding: 12px 20px; border-radius: 24px;
+    font-size: 14px; font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    z-index: 2000; white-space: nowrap;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    opacity: 0; pointer-events: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  .toast.success { background: #00825A; }
+  .toast.error   { background: #C0392B; }
+
+  /* ── 명찰 플립 ── */
   .flip-container { perspective: 1200px; width: 100%; }
   .flipper {
     position: relative; width: 100%;
@@ -160,7 +191,6 @@
   .badge-front { position: relative; z-index: 2; }
   .badge-back { position: absolute; top: 0; left: 0; transform: rotateY(180deg); width: 100%; }
 
-  /* 앞면 헤더 - 정보 위계 정리 */
   .badge-header {
     background: var(--lg-red); padding: 20px 22px 32px;
     display: flex; align-items: center; gap: 12px;
@@ -185,7 +215,6 @@
     flex-shrink: 0; letter-spacing: 0.3px;
   }
 
-  /* 앞면 본문 - 이름 강조, 정보 가독성 ↑ */
   .badge-body {
     background: white; margin: -14px 14px 0;
     border-radius: 16px 16px 0 0; padding: 30px 22px 22px; position: relative; z-index: 1;
@@ -194,7 +223,6 @@
   .badge-name { font-size: 30px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.8px; }
   .divider { height: 1px; background: var(--border); margin: 18px 0; }
 
-  /* 정보 리스트 - 라벨 폭 ↑, 값 폰트 ↑ */
   .info-list { display: flex; flex-direction: column; gap: 13px; }
   .info-item { display: flex; align-items: center; gap: 12px; }
   .info-label {
@@ -207,7 +235,6 @@
     text-overflow: ellipsis; display: inline-block;
   }
 
-  /* 로그인 정보 박스 (ID/PW가 있을 때만) */
   .login-box {
     margin-top: 16px; padding: 14px 16px;
     background: var(--lg-red-light);
@@ -223,20 +250,6 @@
   .login-box .info-item + .info-item { margin-top: 8px; }
   .login-box .info-label { width: 32px; color: var(--lg-red); font-weight: 600; opacity: 0.75; }
   .login-box .info-value { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 16px; font-weight: 600; }
-
-  /* 사전안내문 버튼 */
-  .btn-preot {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 16px; width: 100%;
-    padding: 14px 16px;
-    background: var(--lg-red-light);
-    border: 1.5px solid var(--lg-red-border);
-    border-radius: 12px;
-    font-size: 14px; font-weight: 600; color: var(--lg-red);
-    text-decoration: none; cursor: pointer;
-    transition: background 0.15s;
-  }
-  .btn-preot:active { background: var(--lg-red); color: white; }
 
   /* ── 앞면 2x2 빠른 버튼 그리드 ── */
   .quick-actions {
@@ -262,7 +275,6 @@
   .quick-btn .qb-icon { font-size: 16px; line-height: 1; flex-shrink: 0; }
   .quick-btn .qb-label { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
 
-  /* 비활성 (URL 없음) */
   .quick-btn.disabled {
     opacity: 0.4;
     background: var(--bg) !important;
@@ -272,28 +284,24 @@
   }
   .quick-btn.disabled .qb-label { color: var(--text-muted) !important; }
 
-  /* 색상 테마 - 식권 (보라) */
   .qb-dining {
     background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%);
     border-color: #C9B8FF;
   }
   .qb-dining .qb-label { color: #4A2FB8; }
 
-  /* 사전안내문 (LG 레드) */
   .qb-preot {
     background: var(--lg-red-light);
     border-color: var(--lg-red-border);
   }
   .qb-preot .qb-label { color: var(--lg-red); }
 
-  /* 러닝센터 안내 (블루) */
   .qb-facility {
     background: #EEF4FF;
     border-color: #B8D4F8;
   }
   .qb-facility .qb-label { color: #0C447C; }
 
-  /* 설문 (앰버) */
   .qb-survey {
     background: #FAF4E1;
     border-color: #E8D38C;
@@ -336,17 +344,13 @@
     min-height: 64px;
   }
   .action-btn:active { background: var(--lg-red-light); border-color: var(--lg-red-border); }
-
-  /* 비활성 상태 명확히 표시 */
   .action-btn.disabled {
-    opacity: 0.45; cursor: not-allowed;
-    background: var(--bg);
+    opacity: 0.45; cursor: not-allowed; background: var(--bg);
   }
   .action-btn.disabled:active { background: var(--bg); border-color: var(--border); }
   .action-btn.disabled .btn-desc::after {
     content: ' (준비 중)'; color: var(--text-muted); font-weight: 500;
   }
-
   .action-btn .btn-icon {
     width: 42px; height: 42px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
@@ -372,7 +376,6 @@
   }
   .flip-hint svg { width: 13px; height: 13px; opacity: 0.7; }
 
-  /* 식권 - 하이라이트 강조 */
   .action-btn.dining {
     width: 100%; text-align: left;
     background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%);
@@ -386,23 +389,18 @@
 
   /* ── 식당이용 가로화면 오버레이 ── */
   .dining-overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 1000;
-    background: white;
+    display: none; position: fixed; inset: 0; z-index: 1000; background: white;
   }
   .dining-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
 
   .dining-landscape {
-    width: 100%; height: 100%;
-    display: flex; flex-direction: column;
+    width: 100%; height: 100%; display: flex; flex-direction: column;
   }
   @media (orientation: portrait) {
     .dining-landscape {
       width: 100vh; height: 100vw;
-      transform: rotate(90deg);
-      transform-origin: center center;
-      position: absolute;
-      top: 50%; left: 50%;
+      transform: rotate(90deg); transform-origin: center center;
+      position: absolute; top: 50%; left: 50%;
       margin-top: -50vw; margin-left: -50vh;
     }
     .dining-close {
@@ -412,7 +410,6 @@
     }
   }
 
-  /* 닫기 버튼 키움 */
   .dining-close {
     position: absolute; top: 20px; right: 20px; z-index: 10;
     width: 48px; height: 48px; background: rgba(0,0,0,0.25);
@@ -422,11 +419,7 @@
   }
   .dining-close:active { background: rgba(0,0,0,0.4); }
 
-  .dining-badge {
-    padding: 16px 24px 12px;
-    display: flex; align-items: center; gap: 10px;
-    flex-shrink: 0;
-  }
+  .dining-badge { padding: 16px 24px 12px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .dining-badge-logo {
     width: 32px; height: 32px; background: white; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -443,48 +436,23 @@
   }
 
   .dining-course { color: white; width: 100%; text-align: center; }
-  .dining-course-name {
-    font-size: clamp(32px, 8vw, 72px);
-    font-weight: 700; line-height: 1.15;
-    letter-spacing: -1px; margin-bottom: 16px;
-    word-break: keep-all;
-  }
-  .dining-divider {
-    width: 56px; height: 3px; background: rgba(255,255,255,0.7);
-    border-radius: 2px; margin: 0 auto 16px;
-  }
-  .dining-schedule {
-    font-size: clamp(28px, 6.5vw, 56px);
-    color: white; font-weight: 700; opacity: 0.95;
-  }
+  .dining-course-name { font-size: clamp(32px, 8vw, 72px); font-weight: 700; line-height: 1.15; letter-spacing: -1px; margin-bottom: 16px; word-break: keep-all; }
+  .dining-divider { width: 56px; height: 3px; background: rgba(255,255,255,0.7); border-radius: 2px; margin: 0 auto 16px; }
+  .dining-schedule { font-size: clamp(28px, 6.5vw, 56px); color: white; font-weight: 700; opacity: 0.95; }
 
   .dining-person {
     display: flex; align-items: center; justify-content: center;
     gap: 12px; flex-wrap: wrap;
-    background: rgba(255,255,255,0.18);
-    border-radius: 16px; padding: 14px 32px;
+    background: rgba(255,255,255,0.18); border-radius: 16px; padding: 14px 32px;
   }
   .dining-person-name { font-size: clamp(16px, 3vw, 26px); font-weight: 700; color: white; }
   .dining-person-sep  { font-size: clamp(13px, 2vw, 20px); color: rgba(255,255,255,0.5); }
   .dining-person-info { font-size: clamp(13px, 2vw, 22px); color: rgba(255,255,255,0.9); }
 
-  .dining-marquee-wrap {
-    width: 100%; overflow: hidden;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    padding: 10px 0; flex-shrink: 0;
-  }
-  .dining-marquee-track {
-    display: flex; white-space: nowrap;
-    animation: marqueeScroll 12s linear infinite;
-  }
-  .dining-marquee-track span {
-    font-size: 13px; color: rgba(255,255,255,0.6);
-    padding-right: 80px; flex-shrink: 0;
-  }
-  @keyframes marqueeScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+  .dining-marquee-wrap { width: 100%; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.2); padding: 10px 0; flex-shrink: 0; }
+  .dining-marquee-track { display: flex; white-space: nowrap; animation: marqueeScroll 12s linear infinite; }
+  .dining-marquee-track span { font-size: 13px; color: rgba(255,255,255,0.6); padding-right: 80px; flex-shrink: 0; }
+  @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
   /* ── 전체화면 ── */
   .fs-overlay {
@@ -495,10 +463,7 @@
   .fs-overlay.open { display: flex; animation: fsFadeIn 0.22s ease; }
   @keyframes fsFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  .fs-topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px; flex-shrink: 0;
-  }
+  .fs-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; flex-shrink: 0; }
   .fs-topbar-left { display: flex; align-items: center; gap: 8px; }
   .fs-topbar-logo {
     width: 28px; height: 28px; background: var(--lg-red); border-radius: 50%;
@@ -512,14 +477,8 @@
     font-size: 16px; color: white; cursor: pointer; border: none;
   }
   .fs-close-btn:active { background: rgba(255,255,255,0.22); }
-  .fs-card {
-    margin: 0 16px 32px; border-radius: 28px; overflow: hidden;
-    background: white; flex-shrink: 0;
-  }
-  .fs-card-header {
-    background: var(--lg-red); padding: 28px 24px 44px;
-    display: flex; align-items: center; gap: 16px;
-  }
+  .fs-card { margin: 0 16px 32px; border-radius: 28px; overflow: hidden; background: white; flex-shrink: 0; }
+  .fs-card-header { background: var(--lg-red); padding: 28px 24px 44px; display: flex; align-items: center; gap: 16px; }
   .fs-card-logo {
     width: 56px; height: 56px; background: white; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -528,21 +487,14 @@
   .fs-card-course { color: white; min-width: 0; }
   .fs-card-course-name { font-size: 24px; font-weight: 700; line-height: 1.3; }
   .fs-card-schedule { font-size: 15px; opacity: 0.85; margin-top: 6px; font-weight: 500; }
-  .fs-card-body {
-    margin: -18px 16px 0; border-radius: 18px 18px 0 0;
-    background: white; padding: 32px 24px 24px; position: relative; z-index: 1;
-  }
+  .fs-card-body { margin: -18px 16px 0; border-radius: 18px 18px 0 0; background: white; padding: 32px 24px 24px; position: relative; z-index: 1; }
   .fs-name-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; padding-top: 8px; }
   .fs-name { font-size: 44px; font-weight: 600; color: #111; letter-spacing: -1.2px; }
   .fs-divider { height: 1px; background: #ebebeb; margin: 22px 0; }
   .fs-info-list { display: flex; flex-direction: column; gap: 16px; }
   .fs-info-item { display: flex; align-items: center; gap: 14px; }
   .fs-info-label { font-size: 16px; color: var(--text-muted); width: 72px; flex-shrink: 0; font-weight: 500; }
-  .fs-info-value {
-    font-size: 24px; font-weight: 500; color: #111;
-    flex: 1; min-width: 0; white-space: nowrap; overflow: hidden;
-    text-overflow: ellipsis; display: inline-block;
-  }
+  .fs-info-value { font-size: 24px; font-weight: 500; color: #111; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
   .fs-card-footer { background: white; margin: 0 16px 16px; padding: 0 24px 28px; border-radius: 0 0 18px 18px; }
   .fs-role-pill {
     display: inline-block; background: var(--lg-red-light); color: var(--lg-red);
@@ -559,7 +511,6 @@
 
 <!-- 조회 카드 -->
 <div class="lookup-card" id="lookupCard">
-  <!-- 접힌 상태 요약 -->
   <div class="lookup-card-summary" onclick="expandLookupCard()">
     <div class="lookup-summary-text">
       <div class="lookup-summary-sano" id="summarySano"></div>
@@ -573,7 +524,6 @@
       다시 조회
     </button>
   </div>
-  <!-- 펼쳐진 상태 -->
   <div class="lookup-card-inner">
     <h2>사번으로 명찰 불러오기</h2>
     <div class="input-row">
@@ -598,9 +548,10 @@
 <!-- 명찰 -->
 <div class="badge-wrap" id="badgeWrap">
 
+  <!-- 액션 바: 출결 + 크게보기 -->
   <div class="badge-actions" id="badgeActions" style="display:none !important">
-    <button class="btn-dining-badge" id="btnDiningBadge" onclick="openDining(event)">
-      🎫 식권
+    <button class="btn-checkin" id="btnCheckin" onclick="doCheckin(event)">
+      ✅ 출결
     </button>
     <button class="btn-expand" onclick="openFullscreen()">
       <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -637,7 +588,6 @@
             <div class="info-item"><span class="info-label">반/팀</span><span class="info-value" id="badgeBanTeam"></span></div>
           </div>
 
-          <!-- 로그인 정보 (있을 때만) -->
           <div class="login-box" id="loginBox" style="display:none">
             <div class="login-box-title">🔐 학습 사이트 로그인 정보</div>
             <div class="info-item" id="badgeIdRow" style="display:none"><span class="info-label">ID</span><span class="info-value" id="badgeId"></span></div>
@@ -799,11 +749,65 @@
   </div>
 </div>
 
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbxsfEa5vrmq4Dm95lAk3rdtNcDrVDD0nRC7RWjQsC5Ti2J-AXysN4jglOtxJlb7BGR7/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
 
+  // ── 출결 ──────────────────────────────────────────────
+  async function doCheckin(e) {
+    e.stopPropagation();
+    const btn = document.getElementById('btnCheckin');
+    if (!currentData) return;
+    if (btn.classList.contains('done') || btn.classList.contains('loading-state')) return;
+
+    btn.classList.add('loading-state');
+    btn.textContent = '⏳ 기록 중...';
+
+    try {
+      const res = await fetch(
+        `${API_URL}?action=checkin` +
+        `&sano=${encodeURIComponent(currentData.sano)}` +
+        `&courseName=${encodeURIComponent(currentData.courseName)}` +
+        `&round=${encodeURIComponent(currentData.round)}`
+      );
+      const json = await res.json();
+
+      if (json.success) {
+        const t = json.timestamp || '';
+        const timeStr = t ? t.slice(11, 16) : '';           // HH:MM
+        btn.classList.remove('loading-state');
+        btn.classList.add('done');
+        btn.textContent = timeStr ? `✅ 출결완료 ${timeStr}` : '✅ 출결완료';
+        showToast('✅ 출결이 기록되었습니다' + (timeStr ? ` (${timeStr})` : ''), 'success');
+      } else {
+        btn.classList.remove('loading-state');
+        btn.textContent = '✅ 출결';
+        showToast('❌ ' + (json.message || '출결 기록에 실패했습니다.'), 'error');
+      }
+    } catch {
+      btn.classList.remove('loading-state');
+      btn.textContent = '✅ 출결';
+      showToast('❌ 서버 연결에 실패했습니다.', 'error');
+    }
+  }
+
+  // ── 토스트 ────────────────────────────────────────────
+  let toastTimer = null;
+  function showToast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast' + (type ? ' ' + type : '');
+    void el.offsetWidth;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── 조회 ──────────────────────────────────────────────
   async function lookupEmployee() {
     const sano = document.getElementById('sanoInput').value.trim();
     if (!sano) { showError('사번을 입력해주세요.'); return; }
@@ -851,7 +855,6 @@
     document.getElementById('badgeDept').textContent = d.dept || '-';
     document.getElementById('badgeBanTeam').textContent = [d.ban, d.team].filter(Boolean).join(' / ') || '-';
 
-    // 장소 = 교육장소 · 강의장 (둘 중 하나라도 있으면 표시)
     const placeRow = document.getElementById('badgePlaceRow');
     const placeText = [d.place, d.room].filter(Boolean).join(' · ');
     if (placeText) {
@@ -861,7 +864,6 @@
       placeRow.style.display = 'none';
     }
 
-    // 로그인 정보 박스 처리
     const showId = !!d.loginId;
     const showPw = !!d.loginPw;
     const showLoginBox = showId || showPw;
@@ -871,7 +873,6 @@
     document.getElementById('badgeId').textContent = d.loginId || '';
     document.getElementById('badgePw').textContent = d.loginPw || '';
 
-    // 역할 판별 - 이름 또는 직급에 '강사/담당자/운영자'가 포함되어 있으면 해당 역할
     const roleSource = String(d.name || '') + ' ' + String(d.grade || '');
     let role = '교육생';
     if (roleSource.includes('담당자')) role = '담당자';
@@ -899,50 +900,39 @@
     document.getElementById('backName').textContent = d.name || '';
     document.getElementById('backDept').textContent = [d.dept, [d.ban, d.team].filter(Boolean).join(' / ')].filter(Boolean).join(' · ');
 
-    // 바로가기 버튼 - 비활성 상태 명확히 (앞면 2x2 + 뒷면 모두)
     const surveyBtn   = document.getElementById('surveyBtn');
     const facilityBtn = document.getElementById('facilityBtn');
     const preOtBtn    = document.getElementById('preOtBtn');
 
-    // 뒷면 버튼 (그대로 유지)
     if (d.surveyUrl) {
-      surveyBtn.href = d.surveyUrl;
-      surveyBtn.classList.remove('disabled');
+      surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled');
     } else {
-      surveyBtn.href = '#';
-      surveyBtn.classList.add('disabled');
+      surveyBtn.href = '#'; surveyBtn.classList.add('disabled');
     }
-
     if (d.facilityUrl) {
-      facilityBtn.href = d.facilityUrl;
-      facilityBtn.classList.remove('disabled');
+      facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled');
     } else {
-      facilityBtn.href = '#';
-      facilityBtn.classList.add('disabled');
+      facilityBtn.href = '#'; facilityBtn.classList.add('disabled');
     }
-
     if (preOtBtn) {
-      if (d.preOtUrl) {
-        preOtBtn.href = d.preOtUrl;
-        preOtBtn.style.display = 'flex';
-      } else {
-        preOtBtn.style.display = 'none';
-      }
+      if (d.preOtUrl) { preOtBtn.href = d.preOtUrl; preOtBtn.style.display = 'flex'; }
+      else { preOtBtn.style.display = 'none'; }
     }
 
-    // 앞면 2x2 빠른 버튼 - URL 없으면 비활성 표시
     setQuickBtn('qbPreot',    d.preOtUrl);
     setQuickBtn('qbFacility', d.facilityUrl);
     setQuickBtn('qbSurvey',   d.surveyUrl);
+
+    // 출결 버튼 초기화 (새 명찰 로드 시 항상 리셋)
+    const btnCheckin = document.getElementById('btnCheckin');
+    btnCheckin.classList.remove('done', 'loading-state');
+    btnCheckin.textContent = '✅ 출결';
 
     isFlipped = false;
     document.getElementById('flipper').classList.remove('flipped');
     document.getElementById('flipHintText').textContent = '카드를 탭하면 뒷면을 볼 수 있어요';
 
-    // 교육구분별 색상 테마
     applyTheme(d.category || '');
-    const theme = THEMES[d.category] || THEMES['본사'];
-    document.getElementById('btnDiningBadge').style.background = theme.main;
 
     const wrap = document.getElementById('badgeWrap');
     wrap.classList.remove('visible');
@@ -989,31 +979,20 @@
   function handleBtnClick(e, type) {
     e.stopPropagation();
     const btn = document.getElementById(type === 'survey' ? 'surveyBtn' : 'facilityBtn');
-    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) {
-      e.preventDefault();
-    }
+    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) e.preventDefault();
   }
 
-  // 앞면 2x2 빠른 버튼 - URL 설정 + 활성/비활성
   function setQuickBtn(id, url) {
     const btn = document.getElementById(id);
     if (!btn) return;
-    if (url) {
-      btn.href = url;
-      btn.classList.remove('disabled');
-    } else {
-      btn.href = '#';
-      btn.classList.add('disabled');
-    }
+    if (url) { btn.href = url; btn.classList.remove('disabled'); }
+    else { btn.href = '#'; btn.classList.add('disabled'); }
   }
 
-  // 앞면 빠른 버튼 클릭 - 카드 뒤집힘 방지 + disabled 체크
   function handleQuickClick(e, type) {
     e.stopPropagation();
     const btn = e.currentTarget;
-    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) {
-      e.preventDefault();
-    }
+    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) e.preventDefault();
   }
 
   async function openDining(e) {
@@ -1027,57 +1006,36 @@
     document.getElementById('diningGrade').textContent      = d.grade || '';
     document.getElementById('diningDept').textContent       = d.dept || '';
 
-    // 장소 = 교육장소 · 강의장
     const diningPlaceSep = document.getElementById('diningPlaceSep');
     const diningPlace    = document.getElementById('diningPlace');
     const diningPlaceText = [d.place, d.room].filter(Boolean).join(' · ');
     if (diningPlaceText) {
-      diningPlace.textContent = diningPlaceText;
-      diningPlace.style.display = 'inline';
-      diningPlaceSep.style.display = 'inline';
+      diningPlace.textContent = diningPlaceText; diningPlace.style.display = 'inline'; diningPlaceSep.style.display = 'inline';
     } else {
-      diningPlace.style.display = 'none';
-      diningPlaceSep.style.display = 'none';
+      diningPlace.style.display = 'none'; diningPlaceSep.style.display = 'none';
     }
 
     const theme = THEMES[d.category] || THEMES['본사'];
-    const landscape = document.getElementById('diningLandscape');
-    const logo      = document.getElementById('diningBadgeLogo');
-    landscape.style.background  = theme.main;
-    logo.style.color             = theme.main;
+    document.getElementById('diningLandscape').style.background = theme.main;
+    document.getElementById('diningBadgeLogo').style.color = theme.main;
 
     document.getElementById('diningOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
-
     autoFitDiningText();
     setTimeout(autoFitDiningText, 100);
     setTimeout(autoFitDiningText, 350);
-
-    try {
-      if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
-    } catch {}
+    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch {}
   }
 
   function autoFitDiningText() {
     const nameEl = document.getElementById('diningCourseName');
-    const container = nameEl.parentElement;
-    const maxW = container.clientWidth;
+    const maxW = nameEl.parentElement.clientWidth;
     if (!maxW) return;
-
-    nameEl.style.fontSize = '72px';
-    let size = 72;
-    while (nameEl.scrollWidth > maxW && size > 24) {
-      size -= 1;
-      nameEl.style.fontSize = size + 'px';
-    }
-
+    nameEl.style.fontSize = '72px'; let size = 72;
+    while (nameEl.scrollWidth > maxW && size > 24) { size -= 1; nameEl.style.fontSize = size + 'px'; }
     const scheduleEl = document.getElementById('diningSchedule');
-    scheduleEl.style.fontSize = '72px';
-    let schedSize = 72;
-    while (scheduleEl.scrollWidth > maxW && schedSize > 20) {
-      schedSize -= 1;
-      scheduleEl.style.fontSize = schedSize + 'px';
-    }
+    scheduleEl.style.fontSize = '72px'; let schedSize = 72;
+    while (scheduleEl.scrollWidth > maxW && schedSize > 20) { schedSize -= 1; scheduleEl.style.fontSize = schedSize + 'px'; }
     scheduleEl.style.fontSize = Math.min(schedSize, size * 0.8) + 'px';
   }
 
@@ -1095,12 +1053,9 @@
     document.getElementById('fsGrade').textContent      = document.getElementById('badgeGrade').textContent;
     document.getElementById('fsDept').textContent       = document.getElementById('badgeDept').textContent;
     document.getElementById('fsBanTeam').textContent    = document.getElementById('badgeBanTeam').textContent;
-
-    // 교육장소
     const showPlace = document.getElementById('badgePlaceRow').style.display !== 'none';
     document.getElementById('fsPlaceRow').style.display = showPlace ? 'flex' : 'none';
     document.getElementById('fsPlace').textContent = document.getElementById('badgePlace').textContent;
-
     const showId = document.getElementById('badgeIdRow').style.display !== 'none';
     const showPw = document.getElementById('badgePwRow').style.display !== 'none';
     document.getElementById('fsIdRow').style.display = showId ? 'flex' : 'none';
@@ -1125,22 +1080,18 @@
     if (!isNaN(d.getTime())) return `${d.getMonth()+1}/${d.getDate()}`;
     return str;
   }
-
   function formatDateRange(startDate, endDate) {
-    const s = formatDate(startDate);
-    const e = formatDate(endDate);
+    const s = formatDate(startDate), e = formatDate(endDate);
     if (!s && !e) return '';
     if (!e || s === e) return s;
     return `${s} ~ ${e}`;
   }
-
   function formatRound(val) {
     if (!val || String(val).trim() === '') return '';
     const str = String(val).trim();
     return str.includes('차') ? str : str + '차';
   }
 
-  // 폰트 자동 축소 - 하한선 ↑ (가독성 보호)
   function autoScaleInfoValues() {
     document.querySelectorAll('.info-value').forEach(el => {
       el.style.fontSize = '17px'; let size = 17;
@@ -1159,10 +1110,7 @@
     document.getElementById('summaryName').textContent = name || '';
     document.getElementById('lookupCard').classList.add('collapsed');
   }
-
-  function expandLookupCard() {
-    document.getElementById('lookupCard').classList.remove('collapsed');
-  }
+  function expandLookupCard() { document.getElementById('lookupCard').classList.remove('collapsed'); }
 
   function hideBadge() {
     document.getElementById('badgeWrap').classList.remove('visible');
@@ -1188,8 +1136,7 @@
     const wrap = document.getElementById('recentWrap');
     const container = document.getElementById('recentList');
     if (!list.length) { wrap.classList.remove('visible'); return; }
-    wrap.classList.add('visible');
-    container.innerHTML = '';
+    wrap.classList.add('visible'); container.innerHTML = '';
     list.forEach(sano => {
       const chip = document.createElement('div');
       chip.className = 'recent-chip';
