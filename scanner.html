@@ -9,12 +9,13 @@
   :root {
     --lg-red: #A50034;
     --green: #00825A;
-    --bg: #0d0d0d;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: #2e2e2e;
-    --text: #f0f0f0;
-    --text2: #999;
+    --amber: #D97706;
+    --bg: #111111;
+    --surface: #1c1c1e;
+    --surface2: #2c2c2e;
+    --border: #38383a;
+    --text: #f5f5f5;
+    --text2: #aeaeb2;
   }
   html, body {
     height: 100%; overflow: hidden;
@@ -24,194 +25,218 @@
   }
   body { display: flex; flex-direction: column; }
 
-  /* ── 상단 헤더 ── */
+  /* ── 헤더 ── */
   .header {
-    flex-shrink: 0; display: flex; align-items: center;
-    justify-content: space-between; padding: 14px 20px;
-    background: var(--surface); border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
   }
-  .header-left { display: flex; align-items: center; gap: 10px; }
+  .header-left { display: flex; align-items: center; gap: 14px; }
   .lg-mark {
-    width: 32px; height: 32px; background: var(--lg-red); border-radius: 50%;
+    width: 44px; height: 44px; background: var(--lg-red); border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: white; letter-spacing: -0.5px; flex-shrink: 0;
+    font-size: 15px; font-weight: 700; color: white; flex-shrink: 0;
   }
-  .header-title { font-size: 15px; font-weight: 600; }
-  .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .header-title { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  .header-sub   { font-size: 14px; color: var(--text2); margin-top: 2px; }
+
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .cam-status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 600; color: var(--text2);
+  }
   .status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #555; flex-shrink: 0;
+    width: 12px; height: 12px; border-radius: 50%; background: #555;
     transition: background 0.3s;
   }
-  .status-dot.active { background: #00d068; box-shadow: 0 0 8px rgba(0,208,104,0.6); }
+  .status-dot.active {
+    background: #34d87a;
+    box-shadow: 0 0 0 3px rgba(52,216,122,0.2);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(52,216,122,0.2); }
+    50%       { box-shadow: 0 0 0 6px rgba(52,216,122,0.08); }
+  }
 
-  /* ── 메인 레이아웃 ── */
-  .main { flex: 1; display: flex; overflow: hidden; }
+  /* ── 메인 ── */
+  .main { flex: 1; display: flex; overflow: hidden; min-height: 0; }
 
-  /* ── 뷰파인더 영역 ── */
+  /* ── 카메라 영역 ── */
   .scanner-area {
-    flex: 1; position: relative; overflow: hidden;
-    background: #000;
+    flex: 1; position: relative; overflow: hidden; background: #000;
+    min-width: 0;
   }
-  #video {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
+  #video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* 스캔 가이드 오버레이 */
+  /* 스캔 가이드 */
   .scan-overlay {
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    pointer-events: none;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0; pointer-events: none;
   }
-  .scan-frame-wrap { position: relative; }
+  /* 반투명 마스크 */
+  .scan-mask-top, .scan-mask-bottom, .scan-mask-left, .scan-mask-right {
+    position: absolute; background: rgba(0,0,0,0.45);
+  }
+  .scan-frame-wrap { position: relative; z-index: 2; }
   .scan-frame {
-    width: 220px; height: 220px;
-    position: relative;
+    width: 300px; height: 300px; position: relative;
   }
-  /* 네 모서리 */
   .scan-frame::before, .scan-frame::after,
   .scan-frame-inner::before, .scan-frame-inner::after {
     content: ''; position: absolute;
-    width: 32px; height: 32px; border-color: white; border-style: solid;
+    width: 44px; height: 44px;
+    border-color: white; border-style: solid;
   }
-  .scan-frame::before  { top:0; left:0; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-  .scan-frame::after   { top:0; right:0; border-width:3px 3px 0 0; border-radius:0 4px 0 0; }
-  .scan-frame-inner::before  { bottom:0; left:0; border-width:0 0 3px 3px; border-radius:0 0 0 4px; }
-  .scan-frame-inner::after   { bottom:0; right:0; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
-  /* 스캔 라인 */
+  .scan-frame::before       { top:0; left:0;  border-width:4px 0 0 4px; border-radius:6px 0 0 0; }
+  .scan-frame::after        { top:0; right:0; border-width:4px 4px 0 0; border-radius:0 6px 0 0; }
+  .scan-frame-inner::before { bottom:0; left:0;  border-width:0 0 4px 4px; border-radius:0 0 0 6px; }
+  .scan-frame-inner::after  { bottom:0; right:0; border-width:0 4px 4px 0; border-radius:0 0 6px 0; }
   .scan-line {
-    position: absolute; left: 4px; right: 4px; height: 2px;
+    position: absolute; left: 6px; right: 6px; height: 3px;
     background: linear-gradient(90deg, transparent, var(--lg-red), transparent);
-    animation: scanAnim 2s ease-in-out infinite;
-    top: 4px;
+    animation: scanAnim 2.2s ease-in-out infinite; top: 6px;
   }
   @keyframes scanAnim {
-    0%   { top: 8px; opacity: 1; }
-    48%  { top: calc(100% - 8px); opacity: 1; }
-    50%  { opacity: 0; }
-    52%  { top: 8px; opacity: 0; }
-    54%  { opacity: 1; }
-    100% { top: 8px; opacity: 1; }
+    0%  { top: 8px; opacity: 1; }
+    47% { top: calc(100% - 8px); opacity: 1; }
+    50% { opacity: 0; top: 8px; }
+    53% { opacity: 1; }
+    100%{ top: 8px; opacity: 1; }
   }
-  .scan-hint {
-    position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
-    white-space: nowrap; font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 500;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  .scan-label {
+    position: absolute; bottom: -48px; left: 50%; transform: translateX(-50%);
+    white-space: nowrap;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+    color: rgba(255,255,255,0.9);
+    font-size: 17px; font-weight: 600;
+    padding: 10px 22px; border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.15);
   }
 
-  /* 플래시 효과 */
+  /* 플래시 */
   .flash-overlay {
     position: absolute; inset: 0; background: white;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.05s;
+    opacity: 0; pointer-events: none; transition: opacity 0.05s;
   }
-  .flash-overlay.flash { opacity: 0.6; }
+  .flash-overlay.flash { opacity: 0.65; }
+
+  /* 카메라 권한 안내 */
+  .cam-prompt {
+    position: absolute; inset: 0; background: #0d0d0d;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 20px; padding: 48px;
+  }
+  .cam-prompt.hidden { display: none; }
+  .cam-prompt-icon  { font-size: 64px; }
+  .cam-prompt-title { font-size: 26px; font-weight: 700; text-align: center; }
+  .cam-prompt-sub   {
+    font-size: 18px; color: var(--text2);
+    text-align: center; line-height: 1.8; max-width: 400px;
+  }
+  .cam-btn {
+    margin-top: 12px; padding: 20px 52px;
+    background: var(--lg-red); color: white; border: none;
+    border-radius: 18px; font-size: 20px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.15s;
+    box-shadow: 0 4px 20px rgba(165,0,52,0.4);
+  }
+  .cam-btn:active { opacity: 0.8; }
 
   /* ── 우측 패널 ── */
   .side-panel {
-    width: 320px; flex-shrink: 0;
+    width: 380px; flex-shrink: 0;
     display: flex; flex-direction: column;
     background: var(--surface); border-left: 1px solid var(--border);
     overflow: hidden;
   }
 
-  /* 최근 스캔 결과 */
-  .panel-header {
-    padding: 16px 18px 12px;
+  /* 패널 상단 통계 */
+  .panel-stats {
+    flex-shrink: 0; padding: 20px 24px 16px;
     border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
   }
-  .panel-title { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 0.3px; }
-  .count-badge {
+  .stats-label { font-size: 13px; font-weight: 600; color: var(--text2); letter-spacing: 0.5px; margin-bottom: 10px; }
+  .stats-row   { display: flex; gap: 10px; }
+  .stat-card {
+    flex: 1; padding: 14px 16px; border-radius: 14px;
+    display: flex; flex-direction: column; gap: 4px;
     background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 3px 10px;
-    font-size: 12px; font-weight: 600; color: var(--text2);
   }
-  .count-badge span { color: var(--green); font-size: 14px; }
+  .stat-num   { font-size: 32px; font-weight: 700; line-height: 1; }
+  .stat-desc  { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .stat-card.ok   .stat-num { color: #34d87a; }
+  .stat-card.dup  .stat-num { color: #FBBF24; }
+  .stat-card.err2 .stat-num { color: #F87171; }
 
+  /* 목록 */
   .result-list {
-    flex: 1; overflow-y: auto; padding: 10px 0;
+    flex: 1; overflow-y: auto; padding: 8px 0;
   }
-  .result-list::-webkit-scrollbar { width: 4px; }
+  .result-list::-webkit-scrollbar { width: 5px; }
   .result-list::-webkit-scrollbar-track { background: transparent; }
-  .result-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .result-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
   .result-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 18px;
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px;
     border-bottom: 1px solid var(--border);
-    animation: slideIn 0.25s ease;
+    animation: slideIn 0.22s ease;
   }
   @keyframes slideIn {
-    from { opacity: 0; transform: translateX(12px); }
+    from { opacity: 0; transform: translateX(10px); }
     to   { opacity: 1; transform: translateX(0); }
   }
-  .result-item.success .result-icon { background: rgba(0,130,90,0.15); color: var(--green); }
-  .result-item.duplicate .result-icon { background: rgba(255,160,0,0.12); color: #FFA000; }
-  .result-item.error .result-icon { background: rgba(192,57,43,0.12); color: #C0392B; }
+  .result-item.success  .ri-icon { background: rgba(52,216,122,0.12); color: #34d87a; }
+  .result-item.duplicate .ri-icon { background: rgba(251,191,36,0.12); color: #FBBF24; }
+  .result-item.error    .ri-icon { background: rgba(248,113,113,0.12); color: #F87171; }
 
-  .result-icon {
-    width: 36px; height: 36px; border-radius: 10px;
+  .ri-icon {
+    width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 17px; flex-shrink: 0;
+    font-size: 22px;
   }
-  .result-info { flex: 1; min-width: 0; }
-  .result-sano { font-size: 14px; font-weight: 600; }
-  .result-name { font-size: 12px; color: var(--text2); margin-top: 2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .result-time { font-size: 11px; color: var(--text2); flex-shrink: 0; }
+  .ri-info { flex: 1; min-width: 0; }
+  .ri-name {
+    font-size: 18px; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ri-sub {
+    font-size: 14px; color: var(--text2); margin-top: 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ri-time { font-size: 16px; font-weight: 600; color: var(--text2); flex-shrink: 0; }
 
   .result-empty {
-    padding: 40px 18px; text-align: center;
-    font-size: 13px; color: var(--text2); line-height: 1.8;
+    padding: 60px 24px; text-align: center;
+    font-size: 16px; color: var(--text2); line-height: 2;
   }
+  .result-empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
 
-  /* ── 하단 피드백 바 ── */
+  /* ── 하단 피드백 바 (크게!) ── */
   .feedback-bar {
-    flex-shrink: 0; height: 72px;
+    flex-shrink: 0; min-height: 100px;
     display: flex; align-items: center; justify-content: center;
-    background: var(--surface2); border-top: 1px solid var(--border);
-    font-size: 16px; font-weight: 600;
-    transition: background 0.3s, color 0.3s;
-    gap: 10px; padding: 0 20px;
-    text-align: center;
+    gap: 14px; padding: 0 24px;
+    border-top: 1px solid var(--border);
+    transition: background 0.25s, color 0.25s;
   }
-  .feedback-bar.idle    { color: var(--text2); }
-  .feedback-bar.success { background: rgba(0,130,90,0.18); color: #00d068; }
-  .feedback-bar.dup     { background: rgba(255,160,0,0.12); color: #FFA000; }
-  .feedback-bar.err     { background: rgba(192,57,43,0.15); color: #E74C3C; }
-  .feedback-bar .fb-icon { font-size: 22px; }
-
-  /* ── 카메라 권한 안내 ── */
-  .cam-prompt {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 16px; padding: 32px; background: #111;
-  }
-  .cam-prompt.hidden { display: none; }
-  .cam-prompt-icon { font-size: 48px; }
-  .cam-prompt-title { font-size: 18px; font-weight: 600; text-align: center; }
-  .cam-prompt-sub { font-size: 14px; color: var(--text2); text-align: center; line-height: 1.7; }
-  .cam-btn {
-    margin-top: 8px; padding: 14px 32px;
-    background: var(--lg-red); color: white;
-    border: none; border-radius: 14px; font-size: 16px; font-weight: 600;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  .cam-btn:active { opacity: 0.8; }
-
-  /* ── 모바일 세로 레이아웃 ── */
-  @media (max-width: 600px) {
-    .main { flex-direction: column; }
-    .side-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 240px; }
-    .scanner-area { flex: none; height: 52vw; min-height: 240px; }
-    .scan-frame { width: 160px; height: 160px; }
-  }
+  .feedback-bar.idle    { background: var(--surface2); color: var(--text2); }
+  .feedback-bar.success { background: rgba(52,216,122,0.12); color: #34d87a; }
+  .feedback-bar.dup     { background: rgba(251,191,36,0.10); color: #FBBF24; }
+  .feedback-bar.err     { background: rgba(248,113,113,0.12); color: #F87171; }
+  .fb-icon   { font-size: 36px; flex-shrink: 0; }
+  .fb-text   { font-size: 22px; font-weight: 700; line-height: 1.4; }
+  .fb-sub    { font-size: 15px; font-weight: 500; margin-top: 3px; opacity: 0.75; }
 </style>
 </head>
 <body>
 
+<!-- 헤더 -->
 <div class="header">
   <div class="header-left">
     <div class="lg-mark">LG</div>
@@ -220,11 +245,17 @@
       <div class="header-sub">LG Electronics 러닝센터</div>
     </div>
   </div>
-  <div class="status-dot" id="statusDot"></div>
+  <div class="header-right">
+    <div class="cam-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">카메라 준비 중</span>
+    </div>
+  </div>
 </div>
 
 <div class="main">
-  <!-- 뷰파인더 -->
+
+  <!-- 카메라 뷰파인더 -->
   <div class="scanner-area">
     <video id="video" playsinline autoplay muted></video>
 
@@ -234,7 +265,7 @@
           <div class="scan-frame-inner"></div>
           <div class="scan-line"></div>
         </div>
-        <div class="scan-hint">QR코드를 가이드 안에 맞춰주세요</div>
+        <div class="scan-label">QR코드를 네모 안에 맞춰 주세요</div>
       </div>
     </div>
 
@@ -242,163 +273,183 @@
 
     <div class="cam-prompt" id="camPrompt">
       <div class="cam-prompt-icon">📷</div>
-      <div class="cam-prompt-title">카메라 접근 권한이 필요합니다</div>
-      <div class="cam-prompt-sub">QR코드 스캔을 위해 카메라를 사용합니다.<br>브라우저 주소창의 잠금 아이콘을 눌러<br>카메라 권한을 허용해주세요.</div>
-      <button class="cam-btn" onclick="startCamera()">카메라 시작</button>
+      <div class="cam-prompt-title">카메라 권한이 필요합니다</div>
+      <div class="cam-prompt-sub">
+        QR코드 스캔을 위해 카메라를 사용합니다.<br>
+        아래 버튼을 눌러 카메라를 시작해 주세요.
+      </div>
+      <button class="cam-btn" onclick="startCamera()">카메라 시작하기</button>
     </div>
   </div>
 
   <!-- 우측 패널 -->
   <div class="side-panel">
-    <div class="panel-header">
-      <span class="panel-title">금일 출결 현황</span>
-      <div class="count-badge"><span id="countNum">0</span>명 완료</div>
+
+    <!-- 통계 -->
+    <div class="panel-stats">
+      <div class="stats-label">금일 출결 현황</div>
+      <div class="stats-row">
+        <div class="stat-card ok">
+          <div class="stat-num" id="cntOk">0</div>
+          <div class="stat-desc">✅ 출결 완료</div>
+        </div>
+        <div class="stat-card dup">
+          <div class="stat-num" id="cntDup">0</div>
+          <div class="stat-desc">⚠️ 중복 스캔</div>
+        </div>
+        <div class="stat-card err2">
+          <div class="stat-num" id="cntErr">0</div>
+          <div class="stat-desc">❌ 오류</div>
+        </div>
+      </div>
     </div>
+
+    <!-- 목록 -->
     <div class="result-list" id="resultList">
-      <div class="result-empty" id="resultEmpty">스캔된 출결이 없습니다<br>QR코드를 카메라에 비춰주세요</div>
+      <div class="result-empty" id="resultEmpty">
+        <div class="result-empty-icon">📋</div>
+        스캔된 출결이 없습니다<br>QR코드를 카메라에 비춰 주세요
+      </div>
     </div>
+
+    <!-- 피드백 바 -->
     <div class="feedback-bar idle" id="feedbackBar">
-      <span class="fb-icon">📷</span>
-      <span id="feedbackText">스캔 대기 중</span>
+      <div class="fb-icon" id="fbIcon">📷</div>
+      <div>
+        <div class="fb-text" id="fbText">스캔 대기 중</div>
+        <div class="fb-sub"  id="fbSub">QR코드를 카메라에 가까이 대주세요</div>
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- jsQR 라이브러리 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"></script>
-
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
 
   let videoEl, canvasEl, ctx;
   let scanning = false, lastScanned = null, lastScannedTime = 0;
-  let scanCount = 0;
-  const COOLDOWN_MS = 3000; // 같은 QR 재스캔 방지 시간
+  let cntOk = 0, cntDup = 0, cntErr = 0;
+  const COOLDOWN_MS = 3000;
 
-  // ── AudioContext로 비프음 생성 ──────────────────────────
+  // ── 소리 ─────────────────────────────────────────────
   let audioCtx = null;
   function getAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     return audioCtx;
   }
-
-  function beep(freq = 880, duration = 0.12, type = 'sine', gain = 0.4) {
+  function beep(freq, dur, type, gain) {
     try {
       const ac = getAudio();
       const osc = ac.createOscillator();
-      const gainNode = ac.createGain();
-      osc.connect(gainNode);
-      gainNode.connect(ac.destination);
-      osc.type = type;
-      osc.frequency.value = freq;
-      gainNode.gain.setValueAtTime(gain, ac.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + duration);
-      osc.start(ac.currentTime);
-      osc.stop(ac.currentTime + duration);
+      const g   = ac.createGain();
+      osc.connect(g); g.connect(ac.destination);
+      osc.type = type; osc.frequency.value = freq;
+      g.gain.setValueAtTime(gain, ac.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + dur);
+      osc.start(ac.currentTime); osc.stop(ac.currentTime + dur);
     } catch(e) {}
   }
+  function beepSuccess()   { beep(880,0.09,'sine',0.4); setTimeout(()=>beep(1320,0.14,'sine',0.3),90); }
+  function beepDuplicate() { beep(440,0.18,'triangle',0.3); }
+  function beepError()     { beep(200,0.28,'sawtooth',0.3); }
 
-  function beepSuccess() {
-    beep(880, 0.09, 'sine', 0.35);
-    setTimeout(() => beep(1320, 0.13, 'sine', 0.25), 90);
-  }
-  function beepDuplicate() {
-    beep(440, 0.15, 'triangle', 0.3);
-  }
-  function beepError() {
-    beep(220, 0.25, 'sawtooth', 0.3);
-  }
-
-  // ── 카메라 시작 ────────────────────────────────────────
+  // ── 카메라 ───────────────────────────────────────────
   async function startCamera() {
     document.getElementById('camPrompt').classList.add('hidden');
     try {
-      const constraints = {
-        video: {
-          facingMode: { ideal: 'environment' },
-          width: { ideal: 1280 }, height: { ideal: 720 }
-        }
-      };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+      });
       videoEl = document.getElementById('video');
       videoEl.srcObject = stream;
       await videoEl.play();
-
       canvasEl = document.createElement('canvas');
       ctx = canvasEl.getContext('2d', { willReadFrequently: true });
-
       document.getElementById('statusDot').classList.add('active');
+      document.getElementById('statusText').textContent = '카메라 작동 중';
       scanning = true;
       requestAnimationFrame(scanFrame);
-    } catch (err) {
+    } catch(err) {
       document.getElementById('camPrompt').classList.remove('hidden');
-      setFeedback('err', '❌', '카메라를 시작할 수 없습니다. 권한을 확인해주세요.');
+      setFeedback('err', '❌', '카메라를 시작할 수 없습니다', '권한을 확인해 주세요');
     }
   }
 
-  // ── 프레임 스캔 루프 ───────────────────────────────────
+  // ── 스캔 루프 ─────────────────────────────────────────
   function scanFrame() {
     if (!scanning) return;
-    if (videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
+    if (videoEl && videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
       canvasEl.width  = videoEl.videoWidth;
       canvasEl.height = videoEl.videoHeight;
       ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
-      const imageData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height, {
-        inversionAttempts: 'dontInvert'
-      });
+      const imgData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+      const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: 'dontInvert' });
       if (code && code.data) {
         const now = Date.now();
-        const sano = code.data.trim();
-        if (sano && (sano !== lastScanned || now - lastScannedTime > COOLDOWN_MS)) {
-          lastScanned = sano;
+        const raw = code.data.trim();
+        if (raw && (raw !== lastScanned || now - lastScannedTime > COOLDOWN_MS)) {
+          lastScanned = raw;
           lastScannedTime = now;
-          handleScan(sano);
+          handleScan(raw);
         }
       }
     }
     requestAnimationFrame(scanFrame);
   }
 
-  // ── 스캔 처리 ──────────────────────────────────────────
-  async function handleScan(sano) {
+  // ── 스캔 처리 ─────────────────────────────────────────
+  async function handleScan(qrData) {
+    const parts      = qrData.split('|');
+    const sano       = parts[0] || '';
+    const courseName = parts[1] || '';
+    const round      = parts[2] || '';
+
     flashScreen();
-    setFeedback('idle', '⏳', `${sano} 처리 중...`);
+    setFeedback('idle', '⏳', `${sano} 처리 중...`, '잠시만 기다려 주세요');
 
     try {
-      const res = await fetch(
+      const res  = await fetch(
         `${API_URL}?action=checkin` +
-        `&sano=${encodeURIComponent(sano)}`
+        `&sano=${encodeURIComponent(sano)}` +
+        `&courseName=${encodeURIComponent(courseName)}` +
+        `&round=${encodeURIComponent(round)}`
       );
       const json = await res.json();
 
       if (json.success) {
-        const timeStr = json.timestamp ? String(json.timestamp).slice(11,16) : '';
-        const name    = json.name  || '';
-        const dept    = json.dept  || '';
+        const t    = json.timestamp ? String(json.timestamp).slice(11,16) : '';
+        const name = json.name || '';
+        const dept = json.dept || '';
         beepSuccess();
-        setFeedback('success', '✅', `${name || sano} 출결 완료${timeStr ? ' · ' + timeStr : ''}`);
-        addResultItem('success', '✅', sano, name, dept, timeStr);
-        scanCount++;
-        document.getElementById('countNum').textContent = scanCount;
+        cntOk++;
+        document.getElementById('cntOk').textContent = cntOk;
+        setFeedback('success', '✅', `${name || sano}  출결 완료`, t ? `기록 시각  ${t}` : '');
+        addItem('success', '✅', name || sano, dept || sano, t);
       } else if (json.alreadyCheckedIn) {
-        const timeStr = json.timestamp ? String(json.timestamp).slice(11,16) : '';
-        const name    = json.name || '';
+        const t    = json.timestamp ? String(json.timestamp).slice(11,16) : '';
+        const name = json.name || '';
         beepDuplicate();
-        setFeedback('dup', '⚠️', `${name || sano} 이미 출결됨${timeStr ? ' (' + timeStr + ')' : ''}`);
-        addResultItem('duplicate', '⚠️', sano, name, '', timeStr);
+        cntDup++;
+        document.getElementById('cntDup').textContent = cntDup;
+        setFeedback('dup', '⚠️', `${name || sano}  이미 출결됨`, t ? `최초 출결  ${t}` : '중복 스캔');
+        addItem('duplicate', '⚠️', name || sano, '이미 출결된 참가자', t);
       } else {
         beepError();
-        setFeedback('err', '❌', json.message || '출결 기록 실패');
-        addResultItem('error', '❌', sano, json.message || '오류', '', '');
+        cntErr++;
+        document.getElementById('cntErr').textContent = cntErr;
+        setFeedback('err', '❌', json.message || '출결 기록 실패', sano);
+        addItem('error', '❌', sano, json.message || '오류', '');
       }
     } catch(e) {
       beepError();
-      setFeedback('err', '❌', '서버 연결 오류');
+      cntErr++;
+      document.getElementById('cntErr').textContent = cntErr;
+      setFeedback('err', '❌', '서버 연결 오류', '네트워크를 확인해 주세요');
     }
 
-    // 3초 후 대기 상태로
-    setTimeout(() => setFeedback('idle', '📷', '스캔 대기 중'), 3000);
+    setTimeout(() => setFeedback('idle', '📷', '스캔 대기 중', 'QR코드를 카메라에 가까이 대주세요'), 3500);
   }
 
   // ── UI 헬퍼 ───────────────────────────────────────────
@@ -408,50 +459,44 @@
     setTimeout(() => el.classList.remove('flash'), 80);
   }
 
-  function setFeedback(type, icon, text) {
+  function setFeedback(type, icon, text, sub) {
     const bar = document.getElementById('feedbackBar');
     bar.className = 'feedback-bar ' + (type === 'idle' ? 'idle' : type === 'success' ? 'success' : type === 'dup' ? 'dup' : 'err');
-    bar.querySelector('.fb-icon').textContent = icon;
-    document.getElementById('feedbackText').textContent = text;
+    document.getElementById('fbIcon').textContent = icon;
+    document.getElementById('fbText').textContent = text;
+    document.getElementById('fbSub').textContent  = sub || '';
   }
 
-  function addResultItem(type, icon, sano, name, dept, time) {
+  function addItem(type, icon, name, sub, time) {
     const empty = document.getElementById('resultEmpty');
     if (empty) empty.remove();
-
     const list = document.getElementById('resultList');
-    const item = document.createElement('div');
-    item.className = `result-item ${type}`;
-    const now = new Date();
-    const timeDisplay = time || `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-    const subLine = [name, dept].filter(Boolean).join(' · ') || (type === 'duplicate' ? '중복 스캔' : type === 'error' ? '오류' : '');
-    item.innerHTML = `
-      <div class="result-icon">${icon}</div>
-      <div class="result-info">
-        <div class="result-sano">${escHtml(sano)}</div>
-        <div class="result-name">${escHtml(subLine)}</div>
+    const now  = new Date();
+    const t    = time || `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    const el   = document.createElement('div');
+    el.className = `result-item ${type}`;
+    el.innerHTML = `
+      <div class="ri-icon">${esc(icon)}</div>
+      <div class="ri-info">
+        <div class="ri-name">${esc(name)}</div>
+        <div class="ri-sub">${esc(sub)}</div>
       </div>
-      <div class="result-time">${escHtml(timeDisplay)}</div>
+      <div class="ri-time">${esc(t)}</div>
     `;
-    list.insertBefore(item, list.firstChild);
+    list.insertBefore(el, list.firstChild);
   }
 
-  function escHtml(str) {
-    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ── 초기화 ─────────────────────────────────────────────
-  // 페이지 로드 시 자동 시작 시도
+  // ── 초기화 ────────────────────────────────────────────
   window.addEventListener('load', () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      startCamera();
-    }
-    // AudioContext resume (모바일 정책)
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) startCamera();
     document.addEventListener('click', () => {
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     }, { once: true });
   });
 </script>
-
 </body>
 </html>
