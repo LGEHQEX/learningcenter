@@ -695,7 +695,7 @@
     <div class="qr-modal-title">대강당 출결 QR</div>
     <div class="qr-modal-sub" id="qrModalSub">스캐너에 QR코드를 제시해주세요</div>
     <div class="qr-canvas-wrap">
-      <canvas id="qrCanvas" width="200" height="200"></canvas>
+      <div id="qrDiv"></div>
     </div>
     <div class="qr-sano-chip" id="qrSanoChip"></div>
     <div class="qr-instruction">
@@ -791,7 +791,6 @@
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
-  let qrInstance = null;
 
   // ── QR 출결 팝업 열기 ──────────────────────────────────
   function openCheckinQR(e) {
@@ -805,35 +804,15 @@
     document.getElementById('qrDoneNotice').classList.remove('visible');
     document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
 
-    // QR 생성
-    const canvas = document.getElementById('qrCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // qrcodejs 는 div 대상이라 임시 div 활용
-    const tmp = document.createElement('div');
-    if (qrInstance) { try { qrInstance.clear(); } catch(e){} }
-    qrInstance = new QRCode(tmp, {
+    // QR 생성 - qrcodejs div 직접 렌더링
+    const qrDiv = document.getElementById('qrDiv');
+    qrDiv.innerHTML = '';
+    new QRCode(qrDiv, {
       text: sano,
       width: 200, height: 200,
       colorDark: '#111111', colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
     });
-    // img가 생성되면 canvas에 그리기
-    const img = tmp.querySelector('img') || tmp.querySelector('canvas');
-    const draw = (src) => {
-      const image = new Image();
-      image.onload = () => ctx.drawImage(image, 0, 0, 200, 200);
-      image.src = src;
-    };
-    if (img) {
-      if (img.tagName === 'IMG') {
-        if (img.complete) draw(img.src);
-        else img.onload = () => draw(img.src);
-      } else {
-        draw(img.toDataURL());
-      }
-    }
 
     document.getElementById('qrOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
