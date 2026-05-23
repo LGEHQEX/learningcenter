@@ -10493,6 +10493,8 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
     const sano       = parts[0] || '';
     const courseName = parts[1] || '';
     const round      = parts[2] || '';
+    // 디버그: QR 내용 피드백에 표시
+    setFeedback('idle', '🔍', 'QR 감지: ' + sano, courseName || '과정없음');
     flashScreen();
     await doCheckin(sano, courseName, round);
   }
