@@ -564,7 +564,7 @@
 <!-- 명찰 -->
 <div class="badge-wrap" id="badgeWrap">
 
-  <div class="badge-actions" id="badgeActions" style="display:none !important">
+  <div class="badge-actions" id="badgeActions" style="display:none">
     <button class="btn-checkin" id="btnCheckin" onclick="openCheckinQR(event)">
       📲 대강당 출결
     </button>
@@ -695,7 +695,7 @@
     <div class="qr-modal-title">대강당 출결 QR</div>
     <div class="qr-modal-sub" id="qrModalSub">스캐너에 QR코드를 제시해주세요</div>
     <div class="qr-canvas-wrap">
-      <div id="qrDiv"></div>
+      <img id="qrImg" width="200" height="200" style="display:block;border-radius:8px;" alt="QR코드">
     </div>
     <div class="qr-sano-chip" id="qrSanoChip"></div>
     <div class="qr-instruction">
@@ -784,9 +784,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- QR 생성 라이브러리 (qrcodejs) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
   let employeeData = [], currentData = null, isFlipped = false;
@@ -809,15 +806,9 @@
     document.getElementById('qrDoneNotice').classList.remove('visible');
     document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
 
-    // QR 생성 - qrcodejs div 직접 렌더링
-    const qrDiv = document.getElementById('qrDiv');
-    qrDiv.innerHTML = '';
-    new QRCode(qrDiv, {
-      text: qrText,
-      width: 200, height: 200,
-      colorDark: '#111111', colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
+    // QR 생성 - Google Charts API (외부 라이브러리 불필요)
+    const qrImg = document.getElementById('qrImg');
+    qrImg.src = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' + encodeURIComponent(qrText) + '&choe=UTF-8&chld=M|1';
 
     document.getElementById('qrOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -994,7 +985,7 @@
     wrap.classList.remove('visible');
     void wrap.offsetWidth;
     wrap.classList.add('visible');
-    document.getElementById('badgeActions').setAttribute('style', 'display:flex');
+    document.getElementById('badgeActions').style.display = 'flex';
 
     const sano = document.getElementById('sanoInput').value.trim();
     collapseLookupCard(sano, d.name);
@@ -1169,7 +1160,7 @@
 
   function hideBadge() {
     document.getElementById('badgeWrap').classList.remove('visible');
-    document.getElementById('badgeActions').setAttribute('style', 'display:none !important');
+    document.getElementById('badgeActions').style.display = 'none';
     expandLookupCard();
   }
   function showLoading(v) { document.getElementById('loading').classList.toggle('visible', v); }
