@@ -799,7 +799,12 @@
     const btn = document.getElementById('btnCheckin');
     if (btn.classList.contains('done')) return;
 
-    const sano = currentData.sano;
+    const sano       = currentData.sano;
+    const courseName = currentData.courseName || '';
+    const round      = currentData.round      || '';
+    // QR 데이터: "사번|과정명|차수" 포맷
+    const qrText = [sano, courseName, round].join('|');
+
     document.getElementById('qrSanoChip').textContent = sano;
     document.getElementById('qrDoneNotice').classList.remove('visible');
     document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
@@ -808,7 +813,7 @@
     const qrDiv = document.getElementById('qrDiv');
     qrDiv.innerHTML = '';
     new QRCode(qrDiv, {
-      text: sano,
+      text: qrText,
       width: 200, height: 200,
       colorDark: '#111111', colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.M
@@ -817,7 +822,6 @@
     document.getElementById('qrOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    // 스캔 완료 polling: 스캐너가 출결 기록 후 checkin 상태 변경을 감지
     startCheckinPoll(sano);
   }
 
