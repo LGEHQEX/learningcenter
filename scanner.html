@@ -263,6 +263,11 @@
       </div>
     </div>
     <div class="flash-overlay" id="flashOverlay"></div>
+    <div id="dbgInfo" style="position:absolute;bottom:8px;left:8px;right:8px;
+      background:rgba(0,0,0,0.65);color:#fff;font-size:13px;padding:6px 10px;
+      border-radius:8px;font-family:monospace;z-index:10;pointer-events:none;">
+      📐 초기화 중...
+    </div>
     <div class="cam-prompt" id="camPrompt">
       <div class="cam-prompt-icon">📷</div>
       <div class="cam-prompt-title">카메라 권한이 필요합니다</div>
@@ -316,6 +321,7 @@
   let videoEl, canvasEl, ctx;
   let scanning = false, lastScanned = null, lastScannedTime = 0;
   let cntOk = 0;
+  let dbgFrames = 0;
   const COOLDOWN_MS = 3000;
   const MAX_SCAN_DIM = 640;
 
@@ -373,6 +379,12 @@
       ctx.drawImage(videoEl, 0, 0, sw, sh);
       const imgData = ctx.getImageData(0, 0, sw, sh);
       const code = jsQR(imgData.data, imgData.width, imgData.height, { inversionAttempts: 'attemptBoth' });
+      // 디버그: 프레임 카운터
+      dbgFrames++;
+      if (dbgFrames % 30 === 0) {
+        document.getElementById('dbgInfo').textContent =
+          `📐 ${sw}×${sh}  |  ${code ? '🟢 QR감지: ' + code.data.slice(0,20) : '🔴 미감지'}`;
+      }
       if (code && code.data) {
         const now = Date.now();
         const raw = code.data.trim();
