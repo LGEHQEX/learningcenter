@@ -695,7 +695,7 @@
     <div class="qr-modal-title">대강당 출결 QR</div>
     <div class="qr-modal-sub" id="qrModalSub">스캐너에 QR코드를 제시해주세요</div>
     <div class="qr-canvas-wrap">
-      <img id="qrImg" width="200" height="200" style="display:block;border-radius:8px;" alt="QR코드">
+      <canvas id="qrCanvas" width="200" height="200" style="display:block;border-radius:8px;"></canvas>
     </div>
     <div class="qr-sano-chip" id="qrSanoChip"></div>
     <div class="qr-instruction">
@@ -784,6 +784,9 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- QR 생성 라이브러리 (qrcode-generator, 순수 JS) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
   let employeeData = [], currentData = null, isFlipped = false;
@@ -806,9 +809,25 @@
     document.getElementById('qrDoneNotice').classList.remove('visible');
     document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
 
-    // QR 생성 - Google Charts API (외부 라이브러리 불필요)
-    const qrImg = document.getElementById('qrImg');
-    qrImg.src = 'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=' + encodeURIComponent(qrText) + '&choe=UTF-8&chld=M|1';
+    // QR 생성 - qrcode-generator (canvas 직접 렌더링, 외부 서버 불필요)
+    const canvas = document.getElementById('qrCanvas');
+    const qr = qrcode(0, 'M');
+    qr.addData(qrText);
+    qr.make();
+    const size = 200;
+    const modules = qr.getModuleCount();
+    const cell = size / modules;
+    const ctx2d = canvas.getContext('2d');
+    ctx2d.fillStyle = '#ffffff';
+    ctx2d.fillRect(0, 0, size, size);
+    ctx2d.fillStyle = '#111111';
+    for (let r = 0; r < modules; r++) {
+      for (let c = 0; c < modules; c++) {
+        if (qr.isDark(r, c)) {
+          ctx2d.fillRect(Math.floor(c * cell), Math.floor(r * cell), Math.ceil(cell), Math.ceil(cell));
+        }
+      }
+    }
 
     document.getElementById('qrOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
