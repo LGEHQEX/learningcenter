@@ -314,7 +314,7 @@
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js"></script>
+<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
 
@@ -364,14 +364,15 @@
       requestAnimationFrame(scanFrame);
     } catch(err) {
       document.getElementById('camPrompt').classList.remove('hidden');
-      setFeedback('err', '❌', '카메라를 시작할 수 없습니다', '권한을 확인해 주세요');
+      document.getElementById('dbgInfo').textContent = '❌ 카메라 오류: ' + err.message;
+      setFeedback('err', '❌', '카메라를 시작할 수 없습니다', err.message || '권한을 확인해 주세요');
     }
   }
 
   // ── 스캔 루프 ─────────────────────────────────────────
   function scanFrame() {
     if (!scanning) return;
-    if (videoEl && videoEl.readyState === videoEl.HAVE_ENOUGH_DATA) {
+    if (videoEl && videoEl.readyState >= 2 && videoEl.videoWidth > 0) {
       const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
       const scale = Math.min(1, MAX_SCAN_DIM / Math.max(vw, vh));
       const sw = Math.floor(vw * scale), sh = Math.floor(vh * scale);
@@ -496,6 +497,12 @@
 
   // ── 초기화 ────────────────────────────────────────────
   window.addEventListener('load', () => {
+    if (typeof jsQR === 'undefined') {
+      document.getElementById('dbgInfo').textContent = '❌ jsQR 라이브러리 로드 실패';
+      setFeedback('err', '❌', 'jsQR 로드 실패', '네트워크 연결을 확인해주세요');
+      return;
+    }
+    document.getElementById('dbgInfo').textContent = '✅ jsQR 로드됨 - 카메라 시작 중...';
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) startCamera();
     document.addEventListener('click', () => {
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
