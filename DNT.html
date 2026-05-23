@@ -29,7 +29,6 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  /* ── 상단 바 ── */
   .top-bar { width: 100%; max-width: 420px; display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
   .top-bar .lg-mark {
     width: 36px; height: 36px; background: var(--lg-red); border-radius: 50%;
@@ -38,7 +37,6 @@
   }
   .top-bar .site-title { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
 
-  /* ── 조회 카드 ── */
   .lookup-card {
     width: 100%; max-width: 420px; background: var(--card-bg);
     border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 18px;
@@ -98,7 +96,6 @@
   .loading { display: none; text-align: center; padding: 12px 0; font-size: 13px; color: var(--text-secondary); }
   .loading.visible { display: block; }
 
-  /* ── 최근 사번 ── */
   .recent-wrap { display: none; margin-top: 14px; }
   .recent-wrap.visible { display: block; }
   .recent-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
@@ -117,15 +114,12 @@
   }
   .recent-chip .chip-del:active { background: rgba(0,0,0,0.06); }
 
-  /* ── 명찰 플립 ── */
   .badge-wrap { width: 100%; max-width: 420px; display: none; }
   .badge-wrap.visible { display: block; animation: fadeUp 0.35s ease; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ── 액션 버튼 바 ── */
   .badge-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
 
-  /* 출결 버튼 */
   .btn-checkin {
     display: flex; align-items: center; gap: 6px;
     background: #999999; color: white;
@@ -136,13 +130,14 @@
     min-height: 38px;
   }
   .btn-checkin:active { opacity: 0.85; }
+  .btn-checkin.armed {
+    background: var(--lg-red);
+    box-shadow: 0 2px 10px rgba(165,0,52,0.35);
+  }
   .btn-checkin.done {
     background: #00825A;
     box-shadow: 0 2px 10px rgba(0,130,90,0.30);
     cursor: default;
-  }
-  .btn-checkin.loading-state {
-    opacity: 0.7; cursor: not-allowed;
   }
 
   .btn-expand {
@@ -157,6 +152,61 @@
   .btn-expand:active { border-color: var(--lg-red); color: var(--lg-red); }
   .btn-expand svg { width: 14px; height: 14px; }
 
+  /* ── QR 팝업 오버레이 ── */
+  .qr-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1100;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .qr-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
+  .qr-modal {
+    background: white; border-radius: 24px;
+    padding: 28px 24px 24px; width: 100%; max-width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    position: relative;
+  }
+  .qr-modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-secondary);
+  }
+  .qr-modal-close:active { background: var(--border); }
+  .qr-modal-title {
+    font-size: 17px; font-weight: 700; color: var(--text-primary);
+    text-align: center; line-height: 1.4;
+  }
+  .qr-modal-sub {
+    font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: -8px;
+  }
+  .qr-canvas-wrap {
+    background: white; padding: 12px; border-radius: 16px;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  #qrCanvas { display: block; }
+  .qr-sano-chip {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 8px 18px;
+    font-size: 15px; font-weight: 600; color: var(--text-primary);
+    letter-spacing: 1px;
+  }
+  .qr-instruction {
+    font-size: 12px; color: var(--text-muted); text-align: center;
+    line-height: 1.6;
+  }
+  .qr-done-notice {
+    display: none;
+    background: #E6F5EF; border: 1px solid #A0D9C3; border-radius: 12px;
+    padding: 12px 16px; width: 100%;
+    font-size: 13px; font-weight: 600; color: #00825A;
+    text-align: center;
+  }
+  .qr-done-notice.visible { display: block; }
+
   /* ── 토스트 ── */
   .toast {
     position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
@@ -169,10 +219,7 @@
     opacity: 0; pointer-events: none;
     display: flex; align-items: center; gap: 8px;
   }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   .toast.success { background: #00825A; }
   .toast.error   { background: #C0392B; }
 
@@ -251,64 +298,35 @@
   .login-box .info-label { width: 32px; color: var(--lg-red); font-weight: 600; opacity: 0.75; }
   .login-box .info-value { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 16px; font-weight: 600; }
 
-  /* ── 앞면 2x2 빠른 버튼 그리드 ── */
   .quick-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 18px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px;
   }
   .quick-btn {
     display: flex; flex-direction: row; align-items: center; justify-content: center;
-    gap: 6px;
-    padding: 11px 8px;
-    border-radius: 12px;
-    text-decoration: none;
-    cursor: pointer;
-    border: 1.5px solid;
-    background: white;
+    gap: 6px; padding: 11px 8px; border-radius: 12px; text-decoration: none;
+    cursor: pointer; border: 1.5px solid; background: white;
     transition: transform 0.1s, box-shadow 0.15s;
-    min-height: 44px;
-    -webkit-tap-highlight-color: transparent;
+    min-height: 44px; -webkit-tap-highlight-color: transparent;
   }
   .quick-btn:active { transform: scale(0.97); }
   .quick-btn .qb-icon { font-size: 16px; line-height: 1; flex-shrink: 0; }
   .quick-btn .qb-label { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
 
   .quick-btn.disabled {
-    opacity: 0.4;
-    background: var(--bg) !important;
-    border-color: var(--border) !important;
-    cursor: not-allowed;
-    pointer-events: none;
+    opacity: 0.4; background: var(--bg) !important;
+    border-color: var(--border) !important; cursor: not-allowed; pointer-events: none;
   }
   .quick-btn.disabled .qb-label { color: var(--text-muted) !important; }
 
-  .qb-dining {
-    background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%);
-    border-color: #C9B8FF;
-  }
+  .qb-dining { background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%); border-color: #C9B8FF; }
   .qb-dining .qb-label { color: #4A2FB8; }
-
-  .qb-preot {
-    background: var(--lg-red-light);
-    border-color: var(--lg-red-border);
-  }
+  .qb-preot { background: var(--lg-red-light); border-color: var(--lg-red-border); }
   .qb-preot .qb-label { color: var(--lg-red); }
-
-  .qb-facility {
-    background: #EEF4FF;
-    border-color: #B8D4F8;
-  }
+  .qb-facility { background: #EEF4FF; border-color: #B8D4F8; }
   .qb-facility .qb-label { color: #0C447C; }
-
-  .qb-survey {
-    background: #FAF4E1;
-    border-color: #E8D38C;
-  }
+  .qb-survey { background: #FAF4E1; border-color: #E8D38C; }
   .qb-survey .qb-label { color: #633806; }
 
-  /* 뒷면 */
   .back-header {
     background: #1a1a1a; padding: 20px 22px 32px; display: flex; align-items: center; gap: 12px;
   }
@@ -348,9 +366,7 @@
     opacity: 0.45; cursor: not-allowed; background: var(--bg);
   }
   .action-btn.disabled:active { background: var(--bg); border-color: var(--border); }
-  .action-btn.disabled .btn-desc::after {
-    content: ' (준비 중)'; color: var(--text-muted); font-weight: 500;
-  }
+  .action-btn.disabled .btn-desc::after { content: ' (준비 중)'; color: var(--text-muted); font-weight: 500; }
   .action-btn .btn-icon {
     width: 42px; height: 42px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
@@ -387,7 +403,7 @@
   .action-btn.dining .btn-icon { background: white; box-shadow: 0 1px 4px rgba(91,63,212,0.15); }
   .action-btn.dining .btn-arrow { color: #6B4FD4; }
 
-  /* ── 식당이용 가로화면 오버레이 ── */
+  /* ── 식당이용 ── */
   .dining-overlay {
     display: none; position: fixed; inset: 0; z-index: 1000; background: white;
   }
@@ -548,10 +564,9 @@
 <!-- 명찰 -->
 <div class="badge-wrap" id="badgeWrap">
 
-  <!-- 액션 바: 출결 + 크게보기 -->
   <div class="badge-actions" id="badgeActions" style="display:none !important">
-    <button class="btn-checkin" id="btnCheckin" onclick="doCheckin(event)">
-      ✅ 대강당 출결
+    <button class="btn-checkin" id="btnCheckin" onclick="openCheckinQR(event)">
+      📲 대강당 출결
     </button>
     <button class="btn-expand" onclick="openFullscreen()">
       <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -594,7 +609,6 @@
             <div class="info-item" id="badgePwRow" style="display:none"><span class="info-label">PW</span><span class="info-value" id="badgePw"></span></div>
           </div>
 
-          <!-- 2x2 빠른 버튼 그리드 -->
           <div class="quick-actions">
             <a class="quick-btn qb-preot" id="qbPreot" href="#" target="_blank" onclick="handleQuickClick(event,'preot')">
               <div class="qb-icon">📋</div>
@@ -674,7 +688,26 @@
   </div>
 </div>
 
-<!-- 식당이용 가로화면 -->
+<!-- ── QR 출결 팝업 ── -->
+<div class="qr-overlay" id="qrOverlay">
+  <div class="qr-modal">
+    <button class="qr-modal-close" onclick="closeCheckinQR()">✕</button>
+    <div class="qr-modal-title">대강당 출결 QR</div>
+    <div class="qr-modal-sub" id="qrModalSub">스캐너에 QR코드를 제시해주세요</div>
+    <div class="qr-canvas-wrap">
+      <canvas id="qrCanvas" width="200" height="200"></canvas>
+    </div>
+    <div class="qr-sano-chip" id="qrSanoChip"></div>
+    <div class="qr-instruction">
+      대강당 입장 시 담당자 태블릿 스캐너에<br>이 화면을 가까이 대주세요
+    </div>
+    <div class="qr-done-notice" id="qrDoneNotice">
+      ✅ 출결이 완료되었습니다
+    </div>
+  </div>
+</div>
+
+<!-- 식당이용 -->
 <div class="dining-overlay" id="diningOverlay">
   <button class="dining-close" onclick="closeDining()">✕</button>
   <div class="dining-landscape" id="diningLandscape">
@@ -749,50 +782,108 @@
   </div>
 </div>
 
-<!-- 토스트 -->
 <div class="toast" id="toast"></div>
+
+<!-- QR 생성 라이브러리 (qrcodejs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
+  let qrInstance = null;
 
-  // ── 출결 ──────────────────────────────────────────────
-  async function doCheckin(e) {
+  // ── QR 출결 팝업 열기 ──────────────────────────────────
+  function openCheckinQR(e) {
     e.stopPropagation();
-    const btn = document.getElementById('btnCheckin');
     if (!currentData) return;
-    if (btn.classList.contains('done') || btn.classList.contains('loading-state')) return;
+    const btn = document.getElementById('btnCheckin');
+    if (btn.classList.contains('done')) return;
 
-    btn.classList.add('loading-state');
-    btn.textContent = '⏳ 기록 중...';
+    const sano = currentData.sano;
+    document.getElementById('qrSanoChip').textContent = sano;
+    document.getElementById('qrDoneNotice').classList.remove('visible');
+    document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
 
-    try {
-      const res = await fetch(
-        `${API_URL}?action=checkin` +
-        `&sano=${encodeURIComponent(currentData.sano)}` +
-        `&courseName=${encodeURIComponent(currentData.courseName)}` +
-        `&round=${encodeURIComponent(currentData.round)}`
-      );
-      const json = await res.json();
+    // QR 생성
+    const canvas = document.getElementById('qrCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (json.success) {
-        const t = json.timestamp || '';
-        const timeStr = t ? t.slice(11, 16) : '';           // HH:MM
-        btn.classList.remove('loading-state');
-        btn.classList.add('done');
-        btn.textContent = timeStr ? `✅ 출결완료 ${timeStr}` : '✅ 출결완료';
-        showToast('✅ 출결이 기록되었습니다' + (timeStr ? ` (${timeStr})` : ''), 'success');
+    // qrcodejs 는 div 대상이라 임시 div 활용
+    const tmp = document.createElement('div');
+    if (qrInstance) { try { qrInstance.clear(); } catch(e){} }
+    qrInstance = new QRCode(tmp, {
+      text: sano,
+      width: 200, height: 200,
+      colorDark: '#111111', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    // img가 생성되면 canvas에 그리기
+    const img = tmp.querySelector('img') || tmp.querySelector('canvas');
+    const draw = (src) => {
+      const image = new Image();
+      image.onload = () => ctx.drawImage(image, 0, 0, 200, 200);
+      image.src = src;
+    };
+    if (img) {
+      if (img.tagName === 'IMG') {
+        if (img.complete) draw(img.src);
+        else img.onload = () => draw(img.src);
       } else {
-        btn.classList.remove('loading-state');
-        btn.textContent = '✅ 대강당 출결';
-        showToast('❌ ' + (json.message || '출결 기록에 실패했습니다.'), 'error');
+        draw(img.toDataURL());
       }
-    } catch {
-      btn.classList.remove('loading-state');
-      btn.textContent = '✅ 대강당 출결';
-      showToast('❌ 서버 연결에 실패했습니다.', 'error');
     }
+
+    document.getElementById('qrOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // 스캔 완료 polling: 스캐너가 출결 기록 후 checkin 상태 변경을 감지
+    startCheckinPoll(sano);
+  }
+
+  function closeCheckinQR() {
+    document.getElementById('qrOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    stopCheckinPoll();
+  }
+
+  // ── 출결 완료 polling ──────────────────────────────────
+  let pollTimer = null;
+  function startCheckinPoll(sano) {
+    stopCheckinPoll();
+    pollTimer = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `${API_URL}?action=checkinStatus` +
+          `&sano=${encodeURIComponent(sano)}` +
+          `&courseName=${encodeURIComponent(currentData.courseName)}` +
+          `&round=${encodeURIComponent(currentData.round)}`
+        );
+        const json = await res.json();
+        if (json.success && json.checkedIn) {
+          stopCheckinPoll();
+          const timeStr = json.timestamp ? String(json.timestamp).slice(11,16) : '';
+          onCheckinConfirmed(timeStr);
+        }
+      } catch {}
+    }, 2000);
+  }
+
+  function stopCheckinPoll() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function onCheckinConfirmed(timeStr) {
+    // 팝업 안에 완료 표시
+    document.getElementById('qrDoneNotice').classList.add('visible');
+    document.getElementById('qrModalSub').textContent = timeStr ? `출결 완료 · ${timeStr}` : '출결 완료';
+    // 버튼도 완료 상태로
+    const btn = document.getElementById('btnCheckin');
+    btn.classList.add('done');
+    btn.textContent = timeStr ? `✅ 출결완료 ${timeStr}` : '✅ 출결완료';
+    // 2초 후 팝업 닫기
+    setTimeout(closeCheckinQR, 2000);
   }
 
   // ── 토스트 ────────────────────────────────────────────
@@ -864,8 +955,7 @@
       placeRow.style.display = 'none';
     }
 
-    const showId = !!d.loginId;
-    const showPw = !!d.loginPw;
+    const showId = !!d.loginId, showPw = !!d.loginPw;
     const showLoginBox = showId || showPw;
     document.getElementById('loginBox').style.display = showLoginBox ? 'block' : 'none';
     document.getElementById('badgeIdRow').style.display = showId ? 'flex' : 'none';
@@ -881,20 +971,15 @@
     document.getElementById('rolePill').textContent = role;
     document.getElementById('fsRolePill').textContent = role;
 
-    const pill   = document.getElementById('rolePill');
+    const pill = document.getElementById('rolePill');
     const fsPill = document.getElementById('fsRolePill');
-    const isOps  = ['담당자', '강사', '운영자'].includes(role);
+    const isOps = ['담당자', '강사', '운영자'].includes(role);
     if (isOps) {
-      pill.style.background  = 'rgba(255,255,255,0.95)';
-      pill.style.color       = 'var(--lg-red)';
-      pill.style.borderColor = 'rgba(255,255,255,0.95)';
+      pill.style.cssText = 'background:rgba(255,255,255,0.95);color:var(--lg-red);border-color:rgba(255,255,255,0.95)';
     } else {
-      pill.style.background  = 'rgba(255,255,255,0.25)';
-      pill.style.color       = 'white';
-      pill.style.borderColor = 'rgba(255,255,255,0.45)';
+      pill.style.cssText = 'background:rgba(255,255,255,0.25);color:white;border-color:rgba(255,255,255,0.45)';
     }
-    fsPill.style.background = 'var(--lg-red-light)';
-    fsPill.style.color      = 'var(--lg-red)';
+    fsPill.style.cssText = 'background:var(--lg-red-light);color:var(--lg-red)';
 
     document.getElementById('backAvatar').textContent = d.name ? d.name[0] : '?';
     document.getElementById('backName').textContent = d.name || '';
@@ -902,31 +987,19 @@
 
     const surveyBtn   = document.getElementById('surveyBtn');
     const facilityBtn = document.getElementById('facilityBtn');
-    const preOtBtn    = document.getElementById('preOtBtn');
-
-    if (d.surveyUrl) {
-      surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled');
-    } else {
-      surveyBtn.href = '#'; surveyBtn.classList.add('disabled');
-    }
-    if (d.facilityUrl) {
-      facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled');
-    } else {
-      facilityBtn.href = '#'; facilityBtn.classList.add('disabled');
-    }
-    if (preOtBtn) {
-      if (d.preOtUrl) { preOtBtn.href = d.preOtUrl; preOtBtn.style.display = 'flex'; }
-      else { preOtBtn.style.display = 'none'; }
-    }
+    if (d.surveyUrl) { surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled'); }
+    else { surveyBtn.href = '#'; surveyBtn.classList.add('disabled'); }
+    if (d.facilityUrl) { facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled'); }
+    else { facilityBtn.href = '#'; facilityBtn.classList.add('disabled'); }
 
     setQuickBtn('qbPreot',    d.preOtUrl);
     setQuickBtn('qbFacility', d.facilityUrl);
     setQuickBtn('qbSurvey',   d.surveyUrl);
 
-    // 출결 버튼 초기화 (새 명찰 로드 시 항상 리셋)
+    // 출결 버튼 초기화
     const btnCheckin = document.getElementById('btnCheckin');
-    btnCheckin.classList.remove('done', 'loading-state');
-    btnCheckin.textContent = '✅ 대강당 출결';
+    btnCheckin.classList.remove('done', 'armed');
+    btnCheckin.textContent = '📲 대강당 출결';
 
     isFlipped = false;
     document.getElementById('flipper').classList.remove('flipped');
@@ -955,13 +1028,12 @@
     '임대사':  { main: '#00825A', light: '#E6F5EF', border: '#A0D9C3' },
     '세일즈':  { main: '#6B21A8', light: '#F5F0FF', border: '#D9CEFF' },
   };
-
   function applyTheme(category) {
     const theme = THEMES[category] || THEMES['본사'];
-    const root = document.documentElement;
-    root.style.setProperty('--lg-red',        theme.main);
-    root.style.setProperty('--lg-red-light',  theme.light);
-    root.style.setProperty('--lg-red-border', theme.border);
+    const r = document.documentElement;
+    r.style.setProperty('--lg-red',        theme.main);
+    r.style.setProperty('--lg-red-light',  theme.light);
+    r.style.setProperty('--lg-red-border', theme.border);
   }
 
   function flipCard() {
