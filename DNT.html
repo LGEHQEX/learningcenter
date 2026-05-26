@@ -152,60 +152,6 @@
   .btn-expand:active { border-color: var(--lg-red); color: var(--lg-red); }
   .btn-expand svg { width: 14px; height: 14px; }
 
-  /* ── QR 팝업 오버레이 ── */
-  .qr-overlay {
-    display: none; position: fixed; inset: 0; z-index: 1100;
-    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
-    align-items: center; justify-content: center;
-    padding: 24px;
-  }
-  .qr-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
-  .qr-modal {
-    background: white; border-radius: 24px;
-    padding: 28px 24px 24px; width: 100%; max-width: 340px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    display: flex; flex-direction: column; align-items: center; gap: 16px;
-    position: relative;
-  }
-  .qr-modal-close {
-    position: absolute; top: 16px; right: 16px;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--bg); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--text-secondary);
-  }
-  .qr-modal-close:active { background: var(--border); }
-  .qr-modal-title {
-    font-size: 17px; font-weight: 700; color: var(--text-primary);
-    text-align: center; line-height: 1.4;
-  }
-  .qr-modal-sub {
-    font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: -8px;
-  }
-  .qr-canvas-wrap {
-    background: white; padding: 12px; border-radius: 16px;
-    border: 2px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-  }
-  #qrCanvas { display: block; }
-  .qr-sano-chip {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 20px; padding: 8px 18px;
-    font-size: 15px; font-weight: 600; color: var(--text-primary);
-    letter-spacing: 1px;
-  }
-  .qr-instruction {
-    font-size: 12px; color: var(--text-muted); text-align: center;
-    line-height: 1.6;
-  }
-  .qr-done-notice {
-    display: none;
-    background: #E6F5EF; border: 1px solid #A0D9C3; border-radius: 12px;
-    padding: 12px 16px; width: 100%;
-    font-size: 13px; font-weight: 600; color: #00825A;
-    text-align: center;
-  }
-  .qr-done-notice.visible { display: block; }
 
   /* ── 토스트 ── */
   .toast {
@@ -516,6 +462,75 @@
     display: inline-block; background: var(--lg-red-light); color: var(--lg-red);
     font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 20px; border: 1px solid var(--lg-red-border);
   }
+  /* ── 패스코드 팝업 ── */
+  .pc-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1100;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .pc-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
+  .pc-modal {
+    background: white; border-radius: 28px;
+    padding: 32px 28px 28px; width: 100%; max-width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    position: relative;
+  }
+  .pc-modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-secondary);
+  }
+  .pc-modal-close:active { background: var(--border); }
+  .pc-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+  .pc-sub   { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; text-align: center; line-height: 1.6; }
+
+  /* 도트 표시 */
+  .pc-dots { display: flex; gap: 14px; margin-bottom: 28px; }
+  .pc-dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--input-border);
+    background: white; transition: all 0.15s;
+  }
+  .pc-dot.filled { background: var(--lg-red); border-color: var(--lg-red); }
+  .pc-dot.error  { background: #C0392B; border-color: #C0392B; animation: shake 0.3s ease; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-6px); }
+    75%      { transform: translateX(6px); }
+  }
+
+  /* 숫자 키패드 */
+  .pc-keypad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; width: 100%;
+  }
+  .pc-key {
+    height: 64px; border-radius: 16px;
+    border: 1.5px solid var(--border); background: var(--bg);
+    font-size: 24px; font-weight: 600; color: var(--text-primary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pc-key:active { background: var(--border); transform: scale(0.95); }
+  .pc-key.del { font-size: 18px; color: var(--text-secondary); }
+  .pc-key.empty { border: none; background: transparent; cursor: default; }
+
+  .pc-error-msg {
+    font-size: 13px; color: #C0392B; font-weight: 600;
+    margin-top: 14px; min-height: 18px; text-align: center;
+  }
+  .pc-done {
+    display: none; flex-direction: column; align-items: center; gap: 8px;
+    padding: 8px 0;
+  }
+  .pc-done.visible { display: flex; }
+  .pc-done-icon { font-size: 48px; }
+  .pc-done-text { font-size: 17px; font-weight: 700; color: var(--green, #00825A); }
+  .pc-done-sub  { font-size: 13px; color: var(--text-secondary); }
 </style>
 </head>
 <body>
@@ -565,7 +580,7 @@
 <div class="badge-wrap" id="badgeWrap">
 
   <div class="badge-actions" id="badgeActions" style="display:none">
-    <button class="btn-checkin" id="btnCheckin" onclick="openCheckinQR(event)">
+    <button class="btn-checkin" id="btnCheckin" onclick="openPasscode(event)">
       📲 대강당 출결
     </button>
     <button class="btn-expand" onclick="openFullscreen()">
@@ -688,21 +703,37 @@
   </div>
 </div>
 
-<!-- ── QR 출결 팝업 ── -->
-<div class="qr-overlay" id="qrOverlay">
-  <div class="qr-modal">
-    <button class="qr-modal-close" onclick="closeCheckinQR()">✕</button>
-    <div class="qr-modal-title">대강당 출결 QR</div>
-    <div class="qr-modal-sub" id="qrModalSub">스캐너에 QR코드를 제시해주세요</div>
-    <div class="qr-canvas-wrap">
-      <canvas id="qrCanvas" width="200" height="200" style="display:block;border-radius:8px;"></canvas>
+<!-- ── 패스코드 출결 팝업 ── -->
+<div class="pc-overlay" id="pcOverlay">
+  <div class="pc-modal">
+    <button class="pc-modal-close" onclick="closePasscode()">✕</button>
+    <div class="pc-title">대강당 출결</div>
+    <div class="pc-sub" id="pcSub">담당자에게 안내받은<br>4자리 패스코드를 입력해주세요</div>
+    <div class="pc-dots">
+      <div class="pc-dot" id="dot0"></div>
+      <div class="pc-dot" id="dot1"></div>
+      <div class="pc-dot" id="dot2"></div>
+      <div class="pc-dot" id="dot3"></div>
     </div>
-    <div class="qr-sano-chip" id="qrSanoChip"></div>
-    <div class="qr-instruction">
-      대강당 입장 시 담당자 태블릿 스캐너에<br>이 화면을 가까이 대주세요
+    <div class="pc-keypad">
+      <button class="pc-key" onclick="pcInput('1')">1</button>
+      <button class="pc-key" onclick="pcInput('2')">2</button>
+      <button class="pc-key" onclick="pcInput('3')">3</button>
+      <button class="pc-key" onclick="pcInput('4')">4</button>
+      <button class="pc-key" onclick="pcInput('5')">5</button>
+      <button class="pc-key" onclick="pcInput('6')">6</button>
+      <button class="pc-key" onclick="pcInput('7')">7</button>
+      <button class="pc-key" onclick="pcInput('8')">8</button>
+      <button class="pc-key" onclick="pcInput('9')">9</button>
+      <button class="pc-key empty"></button>
+      <button class="pc-key" onclick="pcInput('0')">0</button>
+      <button class="pc-key del" onclick="pcDelete()">⌫</button>
     </div>
-    <div class="qr-done-notice" id="qrDoneNotice">
-      ✅ 출결이 완료되었습니다
+    <div class="pc-error-msg" id="pcErrorMsg"></div>
+    <div class="pc-done" id="pcDone">
+      <div class="pc-done-icon">✅</div>
+      <div class="pc-done-text">출결이 완료되었습니다</div>
+      <div class="pc-done-sub" id="pcDoneTime"></div>
     </div>
   </div>
 </div>
@@ -784,102 +815,109 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- QR 생성 라이브러리 (qrcode-generator, 순수 JS) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
   let employeeData = [], currentData = null, isFlipped = false;
   let wakeLock = null;
 
-  // ── QR 출결 팝업 열기 ──────────────────────────────────
-  function openCheckinQR(e) {
+  // ── 패스코드 출결 ──────────────────────────────────────
+  let pcBuffer = '';
+  let pcCorrect = '';   // 과정별 패스코드 (lookup 때 수신)
+
+  function openPasscode(e) {
     e.stopPropagation();
-    if (!currentData) return;
     const btn = document.getElementById('btnCheckin');
-    if (btn.classList.contains('done')) return;
-
-    const sano       = currentData.sano;
-    const courseName = currentData.courseName || '';
-    const round      = currentData.round      || '';
-    // QR 데이터: "사번|과정명|차수" 포맷
-    const qrText = [sano, courseName, round].join('|');
-
-    document.getElementById('qrSanoChip').textContent = sano;
-    document.getElementById('qrDoneNotice').classList.remove('visible');
-    document.getElementById('qrModalSub').textContent = '스캐너에 QR코드를 제시해주세요';
-
-    // QR 생성 - qrcode-generator (canvas 직접 렌더링, 외부 서버 불필요)
-    const canvas = document.getElementById('qrCanvas');
-    const qr = qrcode(0, 'M');
-    qr.addData(qrText);
-    qr.make();
-    const size = 200;
-    const modules = qr.getModuleCount();
-    const cell = size / modules;
-    const ctx2d = canvas.getContext('2d');
-    ctx2d.fillStyle = '#ffffff';
-    ctx2d.fillRect(0, 0, size, size);
-    ctx2d.fillStyle = '#111111';
-    for (let r = 0; r < modules; r++) {
-      for (let c = 0; c < modules; c++) {
-        if (qr.isDark(r, c)) {
-          ctx2d.fillRect(Math.floor(c * cell), Math.floor(r * cell), Math.ceil(cell), Math.ceil(cell));
-        }
-      }
-    }
-
-    document.getElementById('qrOverlay').classList.add('open');
+    if (!currentData || btn.classList.contains('done')) return;
+    pcCorrect = currentData.passcode || '';
+    pcBuffer = '';
+    updateDots();
+    document.getElementById('pcErrorMsg').textContent = '';
+    document.getElementById('pcDone').classList.remove('visible');
+    document.getElementById('pcSub').style.display = '';
+    document.getElementById('pcOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
-
-    startCheckinPoll(sano);
   }
 
-  function closeCheckinQR() {
-    document.getElementById('qrOverlay').classList.remove('open');
+  function closePasscode() {
+    document.getElementById('pcOverlay').classList.remove('open');
     document.body.style.overflow = '';
-    stopCheckinPoll();
   }
 
-  // ── 출결 완료 polling ──────────────────────────────────
-  let pollTimer = null;
-  function startCheckinPoll(sano) {
-    stopCheckinPoll();
-    pollTimer = setInterval(async () => {
-      try {
-        const res = await fetch(
-          `${API_URL}?action=checkinStatus` +
-          `&sano=${encodeURIComponent(sano)}` +
-          `&courseName=${encodeURIComponent(currentData.courseName)}` +
-          `&round=${encodeURIComponent(currentData.round)}`
-        );
-        const json = await res.json();
-        if (json.success && json.checkedIn) {
-          stopCheckinPoll();
-          const timeStr = json.timestamp ? String(json.timestamp).slice(11,16) : '';
-          onCheckinConfirmed(timeStr);
-        }
-      } catch {}
-    }, 2000);
+  function pcInput(digit) {
+    if (pcBuffer.length >= 4) return;
+    pcBuffer += digit;
+    updateDots();
+    if (pcBuffer.length === 4) {
+      setTimeout(checkPasscode, 120);
+    }
   }
 
-  function stopCheckinPoll() {
-    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  function pcDelete() {
+    pcBuffer = pcBuffer.slice(0, -1);
+    updateDots();
+    document.getElementById('pcErrorMsg').textContent = '';
   }
 
-  function onCheckinConfirmed(timeStr) {
-    // 팝업 안에 완료 표시
-    document.getElementById('qrDoneNotice').classList.add('visible');
-    document.getElementById('qrModalSub').textContent = timeStr ? `출결 완료 · ${timeStr}` : '출결 완료';
-    // 버튼도 완료 상태로
-    const btn = document.getElementById('btnCheckin');
-    btn.classList.add('done');
-    btn.textContent = timeStr ? `✅ 출결완료 ${timeStr}` : '✅ 출결완료';
-    // 2초 후 팝업 닫기
-    setTimeout(closeCheckinQR, 2000);
+  function updateDots() {
+    for (let i = 0; i < 4; i++) {
+      const dot = document.getElementById('dot' + i);
+      dot.classList.toggle('filled', i < pcBuffer.length);
+      dot.classList.remove('error');
+    }
   }
 
-  // ── 토스트 ────────────────────────────────────────────
+  async function checkPasscode() {
+    if (pcBuffer !== String(pcCorrect).trim()) {
+      // 틀림
+      for (let i = 0; i < 4; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.classList.remove('filled');
+        dot.classList.add('error');
+      }
+      document.getElementById('pcErrorMsg').textContent = '패스코드가 틀렸습니다. 다시 입력해주세요.';
+      setTimeout(() => { pcBuffer = ''; updateDots(); }, 600);
+      return;
+    }
+    // 맞음 → API 호출
+    document.getElementById('pcErrorMsg').textContent = '';
+    try {
+      const res = await fetch(
+        `${API_URL}?action=checkin` +
+        `&sano=${encodeURIComponent(currentData.sano)}` +
+        `&courseName=${encodeURIComponent(currentData.courseName || '')}` +
+        `&round=${encodeURIComponent(currentData.round || '')}`
+      );
+      const json = await res.json();
+      if (json.success) {
+        const t = json.timestamp ? String(json.timestamp).slice(11,16) : '';
+        document.getElementById('pcDoneTime').textContent = t ? `기록 시각  ${t}` : '';
+        document.getElementById('pcDone').classList.add('visible');
+        document.getElementById('pcSub').style.display = 'none';
+        // 도트 숨기기
+        document.querySelectorAll('.pc-dot').forEach(d => d.style.display = 'none');
+        document.querySelector('.pc-keypad').style.display = 'none';
+        // 버튼 완료 상태
+        const btn = document.getElementById('btnCheckin');
+        btn.classList.add('done');
+        btn.textContent = t ? `✅ 출결완료 ${t}` : '✅ 출결완료';
+        setTimeout(closePasscode, 2200);
+      } else if (json.alreadyCheckedIn) {
+        const t = json.timestamp ? String(json.timestamp).slice(11,16) : '';
+        document.getElementById('pcErrorMsg').textContent =
+          `이미 출결 처리되었습니다${t ? ' (' + t + ')' : ''}.`;
+        pcBuffer = ''; updateDots();
+      } else {
+        document.getElementById('pcErrorMsg').textContent = json.message || '출결 기록에 실패했습니다.';
+        pcBuffer = ''; updateDots();
+      }
+    } catch {
+      document.getElementById('pcErrorMsg').textContent = '서버 연결에 실패했습니다.';
+      pcBuffer = ''; updateDots();
+    }
+  }
+
+  // ── 토스트
+ ────────────────────────────────────────────
   let toastTimer = null;
   function showToast(msg, type = '') {
     const el = document.getElementById('toast');
