@@ -272,6 +272,11 @@
   .qb-facility .qb-label { color: #0C447C; }
   .qb-survey { background: #FAF4E1; border-color: #E8D38C; }
   .qb-survey .qb-label { color: #633806; }
+  .qb-it {
+    background: linear-gradient(135deg, #EEF4FF 0%, #E0ECFF 100%);
+    border-color: #B8D4F8;
+  }
+  .qb-it .qb-label { color: #0C447C; }
 
   .back-header {
     background: #1a1a1a; padding: 20px 22px 32px; display: flex; align-items: center; gap: 12px;
@@ -640,6 +645,10 @@
             <a class="quick-btn qb-facility" id="qbFacility" href="#" target="_blank" onclick="handleQuickClick(event,'facility')">
               <div class="qb-icon">🏢</div>
               <div class="qb-label">러닝센터 안내</div>
+            </a>
+            <a class="quick-btn qb-it disabled" id="qbIt" href="https://teams.microsoft.com/l/message/19:-tM-2nDBZO7c8RhcI8Z9tIeyL1N-gRIqvnPrcOVo3E01@thread.tacv2/1779858516759?tenantId=5069cde4-642a-45c0-8094-d0c2dec10be3&groupId=995fedeb-78a2-4c22-9cf2-289b281f3945&parentMessageId=1779858516759&teamName=2026%20%ED%94%BC%ED%94%8C%EB%A6%AC%EB%8D%94%EC%8B%AD%20%EA%B3%BC%EC%A0%95&channelName=General&createdTime=1779858516759" target="_blank" onclick="handleQuickClick(event,'it')" style="display:none">
+              <div class="qb-icon">💻</div>
+              <div class="qb-label">IT 문의</div>
             </a>
           </div>
         </div>
@@ -1025,6 +1034,16 @@
     setQuickBtn('qbPreot',    d.preOtUrl);
     setQuickBtn('qbFacility', d.facilityUrl);
     setQuickBtn('qbSurvey',   d.surveyUrl);
+    // IT 문의 버튼: 로그인 정보(loginId/loginPw)가 있을 때만 표시
+    const itBtn = document.getElementById('qbIt');
+    if (itBtn) {
+      if (showLoginBox) {
+        itBtn.style.display = 'flex';
+        itBtn.classList.remove('disabled');
+      } else {
+        itBtn.style.display = 'none';
+      }
+    }
 
     // 출결 버튼 초기화
     const btnCheckin = document.getElementById('btnCheckin');
