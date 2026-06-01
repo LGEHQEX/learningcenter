@@ -131,13 +131,24 @@
   }
   .btn-checkin:active { opacity: 0.85; }
   .btn-checkin.armed {
-    background: var(--lg-red);
-    box-shadow: 0 2px 10px rgba(165,0,52,0.35);
+    background: #00825A;
+    box-shadow: 0 2px 10px rgba(0,130,90,0.4);
+    animation: checkinPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes checkinPulse {
+    0%, 100% { box-shadow: 0 2px 10px rgba(0,130,90,0.4); }
+    50%       { box-shadow: 0 2px 22px rgba(0,130,90,0.75), 0 0 0 6px rgba(0,130,90,0.12); }
   }
   .btn-checkin.done {
     background: #00825A;
     box-shadow: 0 2px 10px rgba(0,130,90,0.30);
     cursor: default;
+  }
+  .btn-checkin.inactive {
+    background: #cccccc;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   .btn-expand {
@@ -836,7 +847,7 @@
   function openPasscode(e) {
     e.stopPropagation();
     const btn = document.getElementById('btnCheckin');
-    if (!currentData || btn.classList.contains('done')) return;
+    if (!currentData || btn.classList.contains('done') || btn.classList.contains('inactive')) return;
     pcCorrect = currentData.passcode || '';
     pcBuffer = '';
     updateDots();
@@ -907,7 +918,7 @@
         document.querySelector('.pc-keypad').style.display = 'none';
         // 버튼 완료 상태
         const btn = document.getElementById('btnCheckin');
-        btn.classList.add('done');
+        btn.classList.remove('armed'); btn.classList.add('done');
         btn.textContent = t ? `✅ 출결완료 ${t}` : '✅ 출결완료';
         setTimeout(closePasscode, 2200);
       } else if (json.alreadyCheckedIn) {
@@ -1045,10 +1056,17 @@
       }
     }
 
-    // 출결 버튼 초기화
+    // 출결 버튼 초기화: 패스코드 있을 때만 활성화
     const btnCheckin = document.getElementById('btnCheckin');
-    btnCheckin.classList.remove('done', 'armed');
-    btnCheckin.textContent = '📲 대강당 출결';
+    btnCheckin.classList.remove('done', 'armed', 'inactive');
+    if (d.passcode && String(d.passcode).trim() !== '') {
+      btnCheckin.style.display = 'flex';
+      btnCheckin.classList.add('armed');
+      btnCheckin.textContent = '🔐 대강당 출결';
+      btnCheckin.onclick = openPasscode;
+    } else {
+      btnCheckin.style.display = 'none';
+    }
 
     isFlipped = false;
     document.getElementById('flipper').classList.remove('flipped');
