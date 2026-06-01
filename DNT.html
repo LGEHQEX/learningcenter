@@ -2,1368 +2,837 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>LG Electronics 러닝센터 모바일 명찰</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모바일 명찰 시스템 — 사용 안내</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --lg-red: #A50034;
-    --lg-red-light: #FFF0F3;
-    --lg-red-border: #F5C0CC;
-    --bg: #f0efed;
-    --card-bg: #ffffff;
-    --text-primary: #111111;
-    --text-secondary: #555555;
-    --text-muted: #888888;
-    --border: #e8e8e8;
-    --input-border: #c8c8c8;
-    --shadow: 0 4px 24px rgba(0,0,0,0.10);
-    --shadow-soft: 0 2px 12px rgba(0,0,0,0.06);
-  }
-  body {
-    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-    background: var(--bg); min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center;
-    padding: 20px 16px 48px;
-    -webkit-text-size-adjust: 100%;
-  }
+:root {
+  --red: #A50034; --red-d: #7a0026;
+  --blue: #1a5dbf; --green: #1a7a4a;
+  --purple: #6b3fa0; --orange: #c75000;
+  --g50: #f9f9f9; --g100: #f0f0f0; --g200: #e2e2e2;
+  --g400: #999; --g500: #777; --g700: #444; --g900: #111;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #f2f2f2; color: var(--g900); }
 
-  .top-bar { width: 100%; max-width: 420px; display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-  .top-bar .lg-mark {
-    width: 36px; height: 36px; background: var(--lg-red); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; color: white; letter-spacing: -0.5px;
-  }
-  .top-bar .site-title { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+/* ── HERO ── */
+.hero {
+  background: var(--red); color: white;
+  padding: 52px 24px 44px; position: relative; overflow: hidden;
+}
+.hero::before { content:''; position:absolute; right:-60px; top:-60px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.05); }
+.hero::after  { content:''; position:absolute; right:40px; bottom:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.04); }
+.hero-badge { display:inline-block; font-size:11px; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; opacity:.7; border:1px solid rgba(255,255,255,.3); padding:4px 10px; border-radius:20px; margin-bottom:14px; }
+.hero h1 { font-size:31px; font-weight:900; line-height:1.25; margin-bottom:8px; }
+.hero-desc { font-size:14px; opacity:.8; line-height:1.7; margin-bottom:24px; }
+.hero-url-box { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:10px; padding:12px 14px; }
+.hero-url-box .url-label { font-size:11px; opacity:.6; white-space:nowrap; }
+.hero-url-box a { font-family:'DM Mono',monospace; font-size:12px; color:white; text-decoration:none; word-break:break-all; flex:1; }
+.hero-url-box a:hover { text-decoration:underline; }
 
-  .lookup-card {
-    width: 100%; max-width: 420px; background: var(--card-bg);
-    border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 18px;
-    overflow: hidden; transition: all 0.3s ease;
-  }
-  .lookup-card-inner { padding: 24px 20px; }
-  .lookup-card h2 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
-
-  .lookup-card.collapsed .lookup-card-inner { display: none; }
-  .lookup-card-summary {
-    display: none; padding: 14px 16px 14px 20px;
-    align-items: center; justify-content: space-between;
-    cursor: pointer; gap: 12px;
-  }
-  .lookup-card.collapsed .lookup-card-summary { display: flex; }
-  .lookup-summary-text { min-width: 0; flex: 1; }
-  .lookup-summary-sano { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-  .lookup-summary-name { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
-  .lookup-expand-btn {
-    font-size: 13px; font-weight: 600; color: white;
-    background: var(--lg-red); border: none;
-    padding: 9px 16px; border-radius: 22px; cursor: pointer;
-    flex-shrink: 0; min-height: 38px;
-    display: flex; align-items: center; gap: 5px;
-    box-shadow: 0 2px 8px rgba(165,0,52,0.25);
-    transition: opacity 0.15s;
-  }
-  .lookup-expand-btn:active { opacity: 0.85; }
-  .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
-  .input-row input {
-    flex: 1; height: 48px; border: 1.5px solid var(--input-border); border-radius: 12px;
-    padding: 0 14px; font-size: 16px; color: var(--text-primary);
-    outline: none; transition: border-color 0.15s; -webkit-appearance: none;
-  }
-  .input-row input:focus { border-color: var(--lg-red); }
-  .input-row input::placeholder { color: var(--text-muted); }
-  .btn-search {
-    height: 48px; padding: 0 20px; background: var(--lg-red); color: white;
-    border: none; border-radius: 12px; font-size: 15px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
-  }
-  .btn-search:active { opacity: 0.8; }
-  .course-wrap { display: none; }
-  .course-wrap.visible { display: block; margin-top: 4px; }
-  .course-wrap label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
-  .course-wrap select {
-    width: 100%; height: 48px; border: 1.5px solid var(--input-border); border-radius: 12px;
-    padding: 0 14px; font-size: 15px; color: var(--text-primary); background: white;
-    outline: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 14px center;
-    cursor: pointer; transition: border-color 0.15s;
-  }
-  .course-wrap select:focus { border-color: var(--lg-red); }
-  .error-msg { display: none; font-size: 13px; color: var(--lg-red); margin-top: 8px; font-weight: 500; }
-  .error-msg.visible { display: block; }
-  .loading { display: none; text-align: center; padding: 12px 0; font-size: 13px; color: var(--text-secondary); }
-  .loading.visible { display: block; }
-
-  .recent-wrap { display: none; margin-top: 14px; }
-  .recent-wrap.visible { display: block; }
-  .recent-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
-  .recent-list { display: flex; flex-wrap: wrap; gap: 6px; }
-  .recent-chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 20px; padding: 6px 10px 6px 14px;
-    font-size: 13px; color: var(--text-primary); cursor: pointer;
-    min-height: 32px;
-  }
-  .recent-chip:active { border-color: var(--lg-red); color: var(--lg-red); }
-  .recent-chip .chip-del {
-    font-size: 11px; color: var(--text-muted); line-height: 1; padding: 4px 6px;
-    border-radius: 50%;
-  }
-  .recent-chip .chip-del:active { background: rgba(0,0,0,0.06); }
-
-  .badge-wrap { width: 100%; max-width: 420px; display: none; }
-  .badge-wrap.visible { display: block; animation: fadeUp 0.35s ease; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-  .badge-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
-
-  .btn-checkin {
-    display: flex; align-items: center; gap: 6px;
-    background: #999999; color: white;
-    border: none; border-radius: 22px; padding: 9px 16px;
-    font-size: 13px; font-weight: 600;
-    cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-    transition: opacity 0.15s, background 0.4s, box-shadow 0.4s;
-    min-height: 38px;
-  }
-  .btn-checkin:active { opacity: 0.85; }
-  .btn-checkin.armed {
-    background: #666666;
-    border: 2px solid rgba(0,130,90,0.6);
-    box-shadow: 0 2px 10px rgba(0,130,90,0.25);
-    animation: checkinPulse 2s ease-in-out infinite;
-  }
-  @keyframes checkinPulse {
-    0%, 100% { box-shadow: 0 2px 10px rgba(0,130,90,0.25); border-color: rgba(0,130,90,0.5); }
-    50%       { box-shadow: 0 2px 20px rgba(0,130,90,0.55), 0 0 0 5px rgba(0,130,90,0.10); border-color: rgba(0,130,90,0.85); }
-  }
-  .btn-checkin.done {
-    background: #00825A;
-    box-shadow: 0 2px 10px rgba(0,130,90,0.30);
-    cursor: default;
-  }
-  .btn-checkin.inactive {
-    background: #cccccc;
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  .btn-expand {
-    display: flex; align-items: center; gap: 6px;
-    background: white; border: 1px solid var(--border);
-    border-radius: 22px; padding: 9px 14px;
-    font-size: 13px; color: var(--text-secondary); font-weight: 500;
-    cursor: pointer; transition: border-color 0.15s;
-    box-shadow: var(--shadow-soft);
-    min-height: 38px;
-  }
-  .btn-expand:active { border-color: var(--lg-red); color: var(--lg-red); }
-  .btn-expand svg { width: 14px; height: 14px; }
+/* ── TAB GROUP NAV ── */
+.tab-group-nav {
+  display: flex; background: white;
+  border-bottom: 2px solid var(--g200);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow-x: auto; scrollbar-width: none;
+}
+.tab-group-nav::-webkit-scrollbar { display: none; }
+.tg-btn {
+  flex: 1; border: none; background: none; cursor: pointer;
+  padding: 13px 8px 11px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--g400);
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap; line-height: 1;
+}
+.tg-btn.active { color: var(--red); border-bottom-color: var(--red); }
+.tg-btn:hover { color: var(--g700); }
 
 
-  /* ── 토스트 ── */
-  .toast {
-    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: #1a1a1a; color: white;
-    padding: 12px 20px; border-radius: 24px;
-    font-size: 14px; font-weight: 500;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-    z-index: 2000; white-space: nowrap;
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
-    opacity: 0; pointer-events: none;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-  .toast.success { background: #00825A; }
-  .toast.error   { background: #C0392B; }
 
-  /* ── 명찰 플립 ── */
-  .flip-container { perspective: 1200px; width: 100%; }
-  .flipper {
-    position: relative; width: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1);
-  }
-  .flipper.flipped { transform: rotateY(180deg); }
-  .badge-face {
-    width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: var(--card-bg);
-  }
-  .badge-front { position: relative; z-index: 2; }
-  .badge-back { position: absolute; top: 0; left: 0; transform: rotateY(180deg); width: 100%; }
+/* ── TAB PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-  .badge-header {
-    background: var(--lg-red); padding: 20px 22px 32px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .badge-header .lg-logo {
-    width: 44px; height: 44px; background: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; color: var(--lg-red); letter-spacing: -0.5px; flex-shrink: 0;
-  }
-  .badge-header .event-info { color: white; min-width: 0; flex: 1; }
-  .badge-header .event-name {
-    font-size: 22px; font-weight: 700; line-height: 1.3;
-    overflow: hidden; text-overflow: ellipsis;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  }
-  .event-schedule-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-  .badge-header .event-schedule { font-size: 14px; opacity: 0.9; font-weight: 500; }
-  .role-pill {
-    display: inline-block; background: rgba(255,255,255,0.25); color: white;
-    font-size: 11px; font-weight: 700; padding: 4px 11px;
-    border-radius: 20px; border: 1px solid rgba(255,255,255,0.45);
-    flex-shrink: 0; letter-spacing: 0.3px;
-  }
+/* ── SHARED SECTION ── */
+.wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px; }
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--red); display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--g200); }
 
-  .badge-body {
-    background: white; margin: -14px 14px 0;
-    border-radius: 16px 16px 0 0; padding: 30px 22px 22px; position: relative; z-index: 1;
-  }
-  .name-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 18px; padding-top: 4px; }
-  .badge-name { font-size: 30px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.8px; }
-  .divider { height: 1px; background: var(--border); margin: 18px 0; }
+/* ── CARDS ── */
+.white-card { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,.06); overflow: hidden; }
+.arch-card { background:white; border-radius:14px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,.05); display:flex; gap:14px; align-items:flex-start; }
+.arch-icon-box { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:21px; flex-shrink:0; }
+.arch-title { font-size:13px; font-weight:700; margin-bottom:4px; }
+.arch-chip { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.08em; padding:2px 7px; border-radius:4px; color:white; margin-bottom:6px; }
+.arch-desc { font-size:13px; color:var(--g500); line-height:1.7; }
+.arch-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
+.arch-tag { font-size:11px; padding:3px 8px; border-radius:5px; background:var(--g100); color:var(--g700); font-weight:600; }
 
-  .info-list { display: flex; flex-direction: column; gap: 13px; }
-  .info-item { display: flex; align-items: center; gap: 12px; }
-  .info-label {
-    font-size: 13px; color: var(--text-muted); width: 64px;
-    flex-shrink: 0; font-weight: 500;
-  }
-  .info-value {
-    font-size: 17px; font-weight: 500; color: var(--text-primary);
-    flex: 1; min-width: 0; white-space: nowrap; overflow: hidden;
-    text-overflow: ellipsis; display: inline-block;
-  }
+/* ── TEST INFO ── */
+.info-row { display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid var(--g100); }
+.info-row:last-child { border-bottom:none; }
+.info-lbl { font-size:12px; font-weight:600; color:var(--g400); min-width:90px; }
+.info-val { font-family:'DM Mono',monospace; font-size:14px; font-weight:500; background:var(--g50); padding:6px 12px; border-radius:7px; flex:1; cursor:pointer; user-select:all; transition:background .15s; }
+.info-val:hover { background:var(--g100); }
 
-  .login-box {
-    margin-top: 16px; padding: 14px 16px;
-    background: var(--lg-red-light);
-    border: 1px solid var(--lg-red-border);
-    border-radius: 12px;
-  }
-  .login-box-title {
-    font-size: 11px; font-weight: 700; color: var(--lg-red);
-    letter-spacing: 0.5px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .login-box .info-item { gap: 10px; }
-  .login-box .info-item + .info-item { margin-top: 8px; }
-  .login-box .info-label { width: 32px; color: var(--lg-red); font-weight: 600; opacity: 0.75; }
-  .login-box .info-value { font-family: 'SF Mono', 'Menlo', 'Monaco', monospace; font-size: 16px; font-weight: 600; }
+/* ── STEP FLOW ── */
+.step-card { background:white; border-radius:16px; padding:22px 20px; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.step-join { width:2px; height:14px; background:var(--g200); margin:0 0 0 15px; }
+.step-head { display:flex; align-items:flex-start; gap:14px; margin-bottom:12px; }
+.step-num { width:32px; height:32px; border-radius:50%; background:var(--red); color:white; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-num.b { background:var(--blue); }
+.step-num.g { background:var(--green); }
+.step-htxt { font-size:14px; font-weight:700; margin-top:5px; }
+.step-desc { font-size:14px; color:var(--g500); line-height:1.75; margin-bottom:18px; }
+.step-tip { background:#fff8e1; border-left:3px solid #f4b400; border-radius:0 8px 8px 0; padding:10px 12px; font-size:13px; color:#5a4000; line-height:1.6; margin-bottom:16px; }
 
-  .quick-actions {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px;
-  }
-  .quick-btn {
-    display: flex; flex-direction: row; align-items: center; justify-content: center;
-    gap: 6px; padding: 11px 8px; border-radius: 12px; text-decoration: none;
-    cursor: pointer; border: 1.5px solid; background: white;
-    transition: transform 0.1s, box-shadow 0.15s;
-    min-height: 44px; -webkit-tap-highlight-color: transparent;
-  }
-  .quick-btn:active { transform: scale(0.97); }
-  .quick-btn .qb-icon { font-size: 16px; line-height: 1; flex-shrink: 0; }
-  .quick-btn .qb-label { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
+/* ── PHONE MOCK ── */
+.phone { background:#1a1a1a; border-radius:20px; padding:6px; box-shadow:0 10px 40px rgba(0,0,0,.22); max-width:230px; margin:0 auto; }
+.screen { background:white; border-radius:15px; overflow:hidden; }
+.bm-red    { background:#A50034; }
+.bm-blue   { background:#1a5dbf; }
+.bm-green  { background:#1a7a4a; }
+.bm-purple { background:#6b3fa0; }
+.bm-header { padding:14px; color:white; }
+.bm-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.bm-logo { width:26px; height:26px; background:white; border-radius:4px; font-size:9px; font-weight:900; color:var(--red); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.bm-pgm { font-size:12px; font-weight:700; }
+.bm-sub { font-size:10px; opacity:.8; }
+.bm-chip { margin-left:auto; font-size:10px; padding:2px 7px; background:rgba(255,255,255,.22); border-radius:4px; }
+.bm-role { font-size:14px; font-weight:900; margin-bottom:6px; }
+.bm-info { font-size:11px; line-height:2; opacity:.9; }
+.bm-info span { opacity:.6; margin-right:6px; }
+.bm-btns { display:grid; grid-template-columns:1fr 1fr; gap:5px; padding:8px; background:white; }
+.bm-btn { background:#f4f4f4; border-radius:8px; padding:8px 2px; font-size:10px; font-weight:700; color:#333; display:flex; align-items:center; justify-content:center; gap:4px; }
+.bm-attend { margin:0 8px 8px; background:#f0f0f0; border-radius:8px; padding:9px; font-size:11px; font-weight:700; color:var(--red); text-align:center; cursor:pointer; }
 
-  .quick-btn.disabled {
-    opacity: 0.4; background: var(--bg) !important;
-    border-color: var(--border) !important; cursor: not-allowed; pointer-events: none;
-  }
-  .quick-btn.disabled .qb-label { color: var(--text-muted) !important; }
+/* ── PASSCODE MOCK ── */
+.pc-wrap { padding:16px 12px; }
+.pc-title { font-size:13px; font-weight:700; text-align:center; margin-bottom:3px; }
+.pc-sub { font-size:11px; color:#888; text-align:center; margin-bottom:12px; }
+.pc-dots { display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
+.pc-dot { width:10px; height:10px; border-radius:50%; background:var(--g200); transition:background .15s; }
+.pc-dot.filled { background:var(--g900); }
+.pc-display { font-family:'DM Mono',monospace; font-size:27px; font-weight:500; text-align:center; letter-spacing:.25em; border-bottom:2px solid var(--g200); padding-bottom:8px; margin-bottom:12px; min-height:42px; }
+.keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+.key { background:var(--g100); border:none; border-radius:8px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:'DM Mono',monospace; color:var(--g900); transition:background .1s, transform .08s; }
+.key:active { background:var(--g200); transform:scale(.94); }
+.key.z { grid-column:2; }
+.key.del { font-size:14px; color:var(--g400); }
+.kp-submit { margin-top:8px; width:100%; background:var(--red); color:white; border:none; border-radius:8px; padding:11px; font-size:13px; font-weight:700; font-family:'Noto Sans KR',sans-serif; cursor:pointer; }
 
-  .qb-dining { background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%); border-color: #C9B8FF; }
-  .qb-dining .qb-label { color: #4A2FB8; }
-  .qb-preot { background: var(--lg-red-light); border-color: var(--lg-red-border); }
-  .qb-preot .qb-label { color: var(--lg-red); }
-  .qb-facility { background: #EEF4FF; border-color: #B8D4F8; }
-  .qb-facility .qb-label { color: #0C447C; }
-  .qb-survey { background: #FAF4E1; border-color: #E8D38C; }
-  .qb-survey .qb-label { color: #633806; }
-  .qb-it {
-    background: linear-gradient(135deg, #EEF4FF 0%, #E0ECFF 100%);
-    border-color: #B8D4F8;
-  }
-  .qb-it .qb-label { color: #0C447C; }
+/* ── SUCCESS MOCK ── */
+.suc-wrap { padding:28px 16px; text-align:center; }
+.suc-icon { width:56px; height:56px; background:#e8f5ee; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:27px; margin:0 auto 12px; animation:pop .4s ease; }
+@keyframes pop { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+.suc-title { font-size:14px; font-weight:700; color:var(--green); margin-bottom:4px; }
+.suc-time { font-family:'DM Mono',monospace; font-size:12px; color:var(--g400); margin-bottom:14px; }
+.suc-badge { display:inline-flex; align-items:center; gap:6px; background:var(--green); color:white; border-radius:20px; padding:5px 14px; font-size:12px; font-weight:700; }
+.suc-wait { padding:36px 16px; text-align:center; color:#bbb; font-size:12px; }
 
-  .back-header {
-    background: #1a1a1a; padding: 20px 22px 32px; display: flex; align-items: center; gap: 12px;
-  }
-  .back-header .lg-logo-dark {
-    width: 44px; height: 44px; background: var(--lg-red); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700; color: white; letter-spacing: -0.5px; flex-shrink: 0;
-  }
-  .back-header .back-title { color: white; font-size: 18px; font-weight: 600; }
-  .back-header .back-sub { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 3px; }
-  .back-body {
-    background: white; margin: -14px 14px 0;
-    border-radius: 16px 16px 0 0; padding: 28px 22px 8px; position: relative; z-index: 1;
-  }
-  .back-name-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-  .back-avatar {
-    width: 48px; height: 48px; border-radius: 50%;
-    background: var(--lg-red-light); border: 2px solid var(--lg-red);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: 600; color: var(--lg-red); flex-shrink: 0;
-  }
-  .back-name { font-size: 20px; font-weight: 600; color: var(--text-primary); }
-  .back-dept { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
-  .back-divider { height: 1px; background: var(--border); margin-bottom: 20px; }
-  .btn-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 4px; }
+/* ── BUTTON FEATURE ACCORDION ── */
+.btn-feat { background:white; border-radius:14px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+.btn-feat-header { display:flex; align-items:center; gap:12px; padding:16px 18px; cursor:pointer; user-select:none; }
+.btn-feat-num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:white; flex-shrink:0; }
+.btn-feat-title { font-size:13px; font-weight:700; }
+.btn-feat-arrow { margin-left:auto; font-size:13px; color:var(--g400); transition:transform .2s; }
+.btn-feat.open .btn-feat-arrow { transform:rotate(180deg); }
+.btn-feat-body { padding:0 18px 16px 58px; display:none; font-size:14px; color:var(--g500); line-height:1.8; }
+.btn-feat.open .btn-feat-body { display:block; }
+.feat-chip { display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px; margin-bottom:8px; color:white; }
 
-  .action-btn {
-    display: flex; align-items: center; gap: 14px;
-    width: 100%; padding: 16px 18px;
-    border: 1.5px solid var(--border); border-radius: 14px;
-    background: white; cursor: pointer; text-decoration: none;
-    transition: border-color 0.15s, background 0.15s;
-    min-height: 64px;
-  }
-  .action-btn:active { background: var(--lg-red-light); border-color: var(--lg-red-border); }
-  .action-btn.disabled {
-    opacity: 0.45; cursor: not-allowed; background: var(--bg);
-  }
-  .action-btn.disabled:active { background: var(--bg); border-color: var(--border); }
-  .action-btn.disabled .btn-desc::after { content: ' (준비 중)'; color: var(--text-muted); font-weight: 500; }
-  .action-btn .btn-icon {
-    width: 42px; height: 42px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
-  }
-  .action-btn.survey .btn-icon { background: #FFF0F3; }
-  .action-btn.facility .btn-icon { background: #EEF4FF; }
-  .action-btn .btn-text { text-align: left; min-width: 0; flex: 1; }
-  .action-btn .btn-label { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-  .action-btn .btn-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
-  .action-btn .btn-arrow { margin-left: auto; font-size: 18px; color: var(--text-muted); flex-shrink: 0; }
+/* ── COLOR THEMES ── */
+.theme-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.theme-card { border-radius:14px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.08); }
+.theme-header { padding:14px; color:white; }
+.theme-logo-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.theme-logo { width:22px; height:22px; background:rgba(255,255,255,.9); border-radius:3px; font-size:7px; font-weight:900; display:flex; align-items:center; justify-content:center; }
+.theme-pgm { font-size:10px; font-weight:700; }
+.theme-name { font-size:13px; font-weight:900; margin-bottom:2px; }
+.theme-dept { font-size:10px; opacity:.8; }
+.theme-footer { background:white; padding:8px 10px; display:flex; gap:4px; }
+.theme-mini-btn { flex:1; background:#f4f4f4; border-radius:5px; font-size:9px; font-weight:600; padding:5px 2px; text-align:center; color:#333; }
 
-  .back-footer { background: white; margin: 0 14px 14px; padding: 12px 22px 22px; border-radius: 0 0 16px 16px; }
-  .flip-back-btn {
-    width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px;
-    background: white; font-size: 14px; color: var(--text-secondary); cursor: pointer;
-    font-weight: 500; min-height: 48px;
-  }
-  .flip-back-btn:active { background: var(--bg); }
+/* ── BEFORE/AFTER ── */
+.ba-table { background:white; border-radius:14px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.ba-head { display:grid; grid-template-columns:1fr 1fr; }
+.ba-head-cell { padding:12px 16px; font-size:13px; font-weight:700; text-align:center; color:white; }
+.ba-head-before { background:#c0392b; }
+.ba-head-after  { background:var(--green); }
+.ba-row { display:grid; grid-template-columns:1fr auto 1fr; border-top:1px solid var(--g100); }
+.ba-cell { padding:12px 14px; font-size:13px; line-height:1.5; }
+.ba-cell.before { color:#c0392b; }
+.ba-cell.after  { color:var(--green); }
+.ba-arrow { padding:12px 4px; display:flex; align-items:center; color:var(--g400); font-size:13px; }
 
-  .flip-hint {
-    text-align: center; font-size: 12px; color: var(--text-secondary);
-    margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;
-  }
-  .flip-hint svg { width: 13px; height: 13px; opacity: 0.7; }
+/* ── KPI ── */
+.kpi-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:14px; }
+.kpi-card { background:white; border-radius:12px; padding:14px 8px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.kpi-val { font-size:21px; font-weight:900; }
+.kpi-lbl { font-size:11px; color:var(--g500); margin-top:4px; line-height:1.4; }
 
-  .action-btn.dining {
-    width: 100%; text-align: left;
-    background: linear-gradient(135deg, #F5F0FF 0%, #ECE3FF 100%);
-    border: 1.5px solid #C9B8FF;
-    box-shadow: 0 2px 10px rgba(91,63,212,0.08);
-  }
-  .action-btn.dining .btn-label { color: #4A2FB8; }
-  .action-btn.dining .btn-desc { color: #7C6BB0; }
-  .action-btn.dining .btn-icon { background: white; box-shadow: 0 1px 4px rgba(91,63,212,0.15); }
-  .action-btn.dining .btn-arrow { color: #6B4FD4; }
+/* ── CTA ── */
+.cta-card { background:var(--red); color:white; border-radius:18px; padding:28px 22px; text-align:center; }
+.cta-card h3 { font-size:21px; font-weight:900; margin-bottom:6px; }
+.cta-card p { font-size:14px; opacity:.8; margin-bottom:22px; }
+.cta-info { background:rgba(255,255,255,.12); border-radius:10px; padding:14px 16px; margin-bottom:16px; text-align:left; display:flex; flex-direction:column; gap:8px; }
+.cta-row { display:flex; gap:8px; font-size:14px; }
+.cta-row .l { opacity:.65; min-width:70px; font-size:12px; }
+.cta-row .v { font-family:'DM Mono',monospace; font-weight:500; }
+.cta-copy { cursor:pointer; background:rgba(255,255,255,.15); padding:4px 10px; border-radius:6px; transition:background .15s; user-select:all; }
+.cta-copy:hover { background:rgba(255,255,255,.28); }
+.cta-btn { display:block; background:white; color:var(--red); border-radius:11px; padding:15px; font-size:13px; font-weight:700; text-decoration:none; font-family:'Noto Sans KR',sans-serif; transition:transform .15s, box-shadow .15s; }
+.cta-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.2); }
 
-  /* ── 식당이용 ── */
-  .dining-overlay {
-    display: none; position: fixed; inset: 0; z-index: 1000; background: white;
-  }
-  .dining-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
+/* ── FOOTER ── */
+.footer { text-align:center; padding:20px 20px 40px; font-size:12px; color:var(--g400); line-height:1.8; }
+.footer strong { color:var(--g700); }
 
-  .dining-landscape {
-    width: 100%; height: 100%; display: flex; flex-direction: column;
-  }
-  @media (orientation: portrait) {
-    .dining-landscape {
-      width: 100vh; height: 100vw;
-      transform: rotate(90deg); transform-origin: center center;
-      position: absolute; top: 50%; left: 50%;
-      margin-top: -50vw; margin-left: -50vh;
-    }
-    .dining-close {
-      transform: rotate(-90deg);
-      top: auto !important; right: auto !important;
-      bottom: 20px !important; left: 20px !important;
-    }
-  }
-
-  .dining-close {
-    position: absolute; top: 20px; right: 20px; z-index: 10;
-    width: 48px; height: 48px; background: rgba(0,0,0,0.25);
-    border-radius: 50%; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: white; font-weight: 600;
-  }
-  .dining-close:active { background: rgba(0,0,0,0.4); }
-
-  .dining-badge { padding: 16px 24px 12px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-  .dining-badge-logo {
-    width: 32px; height: 32px; background: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; flex-shrink: 0;
-  }
-  .dining-badge-text { color: white; }
-  .dining-badge-title { font-size: 13px; font-weight: 600; }
-  .dining-badge-sub   { font-size: 11px; opacity: 0.8; margin-top: 1px; }
-
-  .dining-inner {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 0 48px 20px; gap: 18px;
-  }
-
-  .dining-course { color: white; width: 100%; text-align: center; }
-  .dining-course-name { font-size: clamp(32px, 8vw, 72px); font-weight: 700; line-height: 1.15; letter-spacing: -1px; margin-bottom: 16px; word-break: keep-all; }
-  .dining-divider { width: 56px; height: 3px; background: rgba(255,255,255,0.7); border-radius: 2px; margin: 0 auto 16px; }
-  .dining-schedule { font-size: clamp(28px, 6.5vw, 56px); color: white; font-weight: 700; opacity: 0.95; }
-
-  .dining-person {
-    display: flex; align-items: center; justify-content: center;
-    gap: 12px; flex-wrap: wrap;
-    background: rgba(255,255,255,0.18); border-radius: 16px; padding: 14px 32px;
-  }
-  .dining-person-name { font-size: clamp(16px, 3vw, 26px); font-weight: 700; color: white; }
-  .dining-person-sep  { font-size: clamp(13px, 2vw, 20px); color: rgba(255,255,255,0.5); }
-  .dining-person-info { font-size: clamp(13px, 2vw, 22px); color: rgba(255,255,255,0.9); }
-
-  .dining-marquee-wrap { width: 100%; overflow: hidden; border-top: 1px solid rgba(255,255,255,0.2); padding: 10px 0; flex-shrink: 0; }
-  .dining-marquee-track { display: flex; white-space: nowrap; animation: marqueeScroll 12s linear infinite; }
-  .dining-marquee-track span { font-size: 13px; color: rgba(255,255,255,0.6); padding-right: 80px; flex-shrink: 0; }
-  @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-  /* ── 전체화면 ── */
-  .fs-overlay {
-    display: none; position: fixed; inset: 0; z-index: 999;
-    background: #111; flex-direction: column; align-items: stretch; justify-content: flex-start;
-    overflow-y: auto;
-  }
-  .fs-overlay.open { display: flex; animation: fsFadeIn 0.22s ease; }
-  @keyframes fsFadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  .fs-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; flex-shrink: 0; }
-  .fs-topbar-left { display: flex; align-items: center; gap: 8px; }
-  .fs-topbar-logo {
-    width: 28px; height: 28px; background: var(--lg-red); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700; color: white; letter-spacing: -0.5px;
-  }
-  .fs-topbar-title { font-size: 13px; color: rgba(255,255,255,0.6); }
-  .fs-close-btn {
-    width: 40px; height: 40px; background: rgba(255,255,255,0.12); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; color: white; cursor: pointer; border: none;
-  }
-  .fs-close-btn:active { background: rgba(255,255,255,0.22); }
-  .fs-card { margin: 0 16px 32px; border-radius: 28px; overflow: hidden; background: white; flex-shrink: 0; }
-  .fs-card-header { background: var(--lg-red); padding: 28px 24px 44px; display: flex; align-items: center; gap: 16px; }
-  .fs-card-logo {
-    width: 56px; height: 56px; background: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 19px; font-weight: 700; color: var(--lg-red); flex-shrink: 0;
-  }
-  .fs-card-course { color: white; min-width: 0; }
-  .fs-card-course-name { font-size: 24px; font-weight: 700; line-height: 1.3; }
-  .fs-card-schedule { font-size: 15px; opacity: 0.85; margin-top: 6px; font-weight: 500; }
-  .fs-card-body { margin: -18px 16px 0; border-radius: 18px 18px 0 0; background: white; padding: 32px 24px 24px; position: relative; z-index: 1; }
-  .fs-name-row { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; padding-top: 8px; }
-  .fs-name { font-size: 44px; font-weight: 600; color: #111; letter-spacing: -1.2px; }
-  .fs-divider { height: 1px; background: #ebebeb; margin: 22px 0; }
-  .fs-info-list { display: flex; flex-direction: column; gap: 16px; }
-  .fs-info-item { display: flex; align-items: center; gap: 14px; }
-  .fs-info-label { font-size: 16px; color: var(--text-muted); width: 72px; flex-shrink: 0; font-weight: 500; }
-  .fs-info-value { font-size: 24px; font-weight: 500; color: #111; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
-  .fs-card-footer { background: white; margin: 0 16px 16px; padding: 0 24px 28px; border-radius: 0 0 18px 18px; }
-  .fs-role-pill {
-    display: inline-block; background: var(--lg-red-light); color: var(--lg-red);
-    font-size: 16px; font-weight: 600; padding: 8px 20px; border-radius: 20px; border: 1px solid var(--lg-red-border);
-  }
-  /* ── 패스코드 팝업 ── */
-  .pc-overlay {
-    display: none; position: fixed; inset: 0; z-index: 1100;
-    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
-    align-items: center; justify-content: center; padding: 24px;
-  }
-  .pc-overlay.open { display: flex; animation: fsFadeIn 0.2s ease; }
-  .pc-modal {
-    background: white; border-radius: 28px;
-    padding: 32px 28px 28px; width: 100%; max-width: 340px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    display: flex; flex-direction: column; align-items: center; gap: 0;
-    position: relative;
-  }
-  .pc-modal-close {
-    position: absolute; top: 16px; right: 16px;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--bg); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: var(--text-secondary);
-  }
-  .pc-modal-close:active { background: var(--border); }
-  .pc-title { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
-  .pc-sub   { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; text-align: center; line-height: 1.6; }
-
-  /* 도트 표시 */
-  .pc-dots { display: flex; gap: 14px; margin-bottom: 28px; }
-  .pc-dot {
-    width: 18px; height: 18px; border-radius: 50%;
-    border: 2px solid var(--input-border);
-    background: white; transition: all 0.15s;
-  }
-  .pc-dot.filled { background: var(--lg-red); border-color: var(--lg-red); }
-  .pc-dot.error  { background: #C0392B; border-color: #C0392B; animation: shake 0.3s ease; }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25%      { transform: translateX(-6px); }
-    75%      { transform: translateX(6px); }
-  }
-
-  /* 숫자 키패드 */
-  .pc-keypad {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 10px; width: 100%;
-  }
-  .pc-key {
-    height: 64px; border-radius: 16px;
-    border: 1.5px solid var(--border); background: var(--bg);
-    font-size: 24px; font-weight: 600; color: var(--text-primary);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.1s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .pc-key:active { background: var(--border); transform: scale(0.95); }
-  .pc-key.del { font-size: 18px; color: var(--text-secondary); }
-  .pc-key.empty { border: none; background: transparent; cursor: default; }
-
-  .pc-error-msg {
-    font-size: 13px; color: #C0392B; font-weight: 600;
-    margin-top: 14px; min-height: 18px; text-align: center;
-  }
-  .pc-done {
-    display: none; flex-direction: column; align-items: center; gap: 8px;
-    padding: 8px 0;
-  }
-  .pc-done.visible { display: flex; }
-  .pc-done-icon { font-size: 48px; }
-  .pc-done-text { font-size: 17px; font-weight: 700; color: var(--green, #00825A); }
-  .pc-done-sub  { font-size: 13px; color: var(--text-secondary); }
-  /* ── 출결 안내 팝업 ── */
-  .notice-overlay {
-    display: none; position: fixed; inset: 0; z-index: 1200;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-    align-items: flex-end; justify-content: center;
-    padding: 0 0 32px;
-  }
-  .notice-overlay.open { display: flex; animation: fsFadeIn 0.22s ease; }
-  .notice-sheet {
-    background: white; border-radius: 28px 28px 20px 20px;
-    width: 100%; max-width: 420px;
-    padding: 28px 24px 24px;
-    box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
-    display: flex; flex-direction: column; align-items: center; gap: 0;
-    animation: slideUp 0.3s cubic-bezier(0.34,1.1,0.64,1);
-  }
-  @keyframes slideUp {
-    from { transform: translateY(60px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-  .notice-icon  { font-size: 44px; margin-bottom: 10px; }
-  .notice-title { font-size: 19px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; text-align: center; }
-  .notice-body  {
-    font-size: 14px; color: var(--text-secondary); text-align: center;
-    line-height: 1.75; margin-bottom: 22px;
-  }
-  .notice-body strong { color: var(--text-primary); font-weight: 700; }
-  .notice-btn {
-    width: 100%; padding: 16px;
-    background: #00825A; color: white; border: none;
-    border-radius: 14px; font-size: 16px; font-weight: 700;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  .notice-btn:active { opacity: 0.85; }
-  .notice-skip {
-    margin-top: 12px; font-size: 13px; color: var(--text-muted);
-    background: none; border: none; cursor: pointer; padding: 4px 8px;
-  }
+/* ── ANIM ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation:fadeUp .35s ease both; }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div class="lg-mark">LG</div>
-  <span class="site-title">LG Electronics 러닝센터 모바일 명찰</span>
-</div>
-
-<!-- 조회 카드 -->
-<div class="lookup-card" id="lookupCard">
-  <div class="lookup-card-summary" onclick="expandLookupCard()">
-    <div class="lookup-summary-text">
-      <div class="lookup-summary-sano" id="summarySano"></div>
-      <div class="lookup-summary-name" id="summaryName"></div>
-    </div>
-    <button class="lookup-expand-btn">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-        <path d="M11.5 6.5C11.5 4.01 9.49 2 7 2C4.51 2 2.5 4.01 2.5 6.5C2.5 8.99 4.51 11 7 11M11.5 6.5L9.5 4.5M11.5 6.5L13.5 4.5"
-              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      다시 조회
-    </button>
-  </div>
-  <div class="lookup-card-inner">
-    <h2>사번으로 명찰 불러오기</h2>
-    <div class="input-row">
-      <input type="text" id="sanoInput" placeholder="사번 입력" maxlength="20" autocapitalize="off" autocomplete="off">
-      <button class="btn-search" onclick="lookupEmployee()">조회</button>
-    </div>
-    <div class="loading" id="loading">조회 중...</div>
-    <div class="error-msg" id="errorMsg"></div>
-    <div class="recent-wrap" id="recentWrap">
-      <div class="recent-label">최근 조회</div>
-      <div class="recent-list" id="recentList"></div>
-    </div>
-    <div class="course-wrap" id="courseWrap">
-      <label>참가 과정 선택</label>
-      <select id="courseSelect" onchange="renderBadge()">
-        <option value="">-- 과정을 선택하세요 --</option>
-      </select>
-    </div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">LG Electronics · 교육서비스센터</div>
+  <h1>모바일 명찰 시스템 안내</h1>
+  <p class="hero-desc">모바일 명찰 시스템 사용 가이드입니다.</p>
+  <div class="hero-url-box">
+    <span class="url-label">접속 URL</span>
+    <a href="https://lgehqex.github.io/learningcenter/DNT" target="_blank">
+      https://lgehqex.github.io/learningcenter/DNT
+    </a>
   </div>
 </div>
 
-<!-- 명찰 -->
-<div class="badge-wrap" id="badgeWrap">
+<!-- 버튼 기능 팝업 모달 — 패널 밖 전역 -->
+<div id="btnPopupOverlay" onclick="closeBtnPopup()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; backdrop-filter:blur(3px);"></div>
+<div id="btnPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0.9); width:calc(100% - 48px); max-width:400px; background:white; border-radius:20px; z-index:201; padding:0 0 8px; box-shadow:0 24px 60px rgba(0,0,0,0.25); opacity:0; transition:transform 0.22s cubic-bezier(0.34,1.56,0.64,1), opacity 0.18s ease;">
+  <div id="btnPopupContent" style="padding:24px 24px 16px;"></div>
+</div>
 
-  <div class="badge-actions" id="badgeActions" style="display:none">
-    <button class="btn-checkin" id="btnCheckin" onclick="openPasscode(event)">
-      📲 대강당 출결
-    </button>
-    <button class="btn-expand" onclick="openFullscreen()">
-      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      크게 보기
-    </button>
+<!-- ══ 탭 그룹 네비 ══ -->
+<div class="tab-group-nav">
+  <button class="tg-btn active" onclick="switchGroup(0, this)">📋 도입 배경 및 효과</button>
+  <button class="tg-btn"        onclick="switchGroup(1, this)">🔘 기능 안내 및 색상 테마</button>
+  <button class="tg-btn"        onclick="switchGroup(2, this)">🚀 사용 방법 및 TEST</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     PANEL 0 : 도입 배경 · 도입 효과 · 시스템 구성
+════════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-0">
+
+  <!-- 서브 탭 -->
+
+  <!-- 도입 배경 -->
+  <div class="wrap fade-up" id="s-bg">
+    <div class="section-label">도입 배경</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#fdecea;">🖨️</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--red);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+            <div class="arch-title">사전 인쇄의 한계</div>
+          </div>
+          <div class="arch-desc">당일 불참·변경 시 이미 인쇄된 명찰을 수정할 수 없어, 변경마다 재인쇄를 반복해야 했습니다.</div>
+        </div>
+      </div>
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#fff8e1;">💸</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--red);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+            <div class="arch-title">소모품 비용 지속 발생</div>
+          </div>
+          <div class="arch-desc">명찰 외피(홀더)가 반복 사용으로 파손되어 매 기수마다 재구매가 필요했습니다.</div>
+        </div>
+      </div>
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#e8f5e9;">⏱️</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--red);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+            <div class="arch-title">운영 자원 낭비</div>
+          </div>
+          <div class="arch-desc">출력·정렬·배부·수거까지 전 과정이 수작업으로 진행되어, 매 기수마다 운영 지원 인력이 반복적으로 투입됐습니다.</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="flip-container">
-    <div class="flipper" id="flipper">
+  <!-- 도입 효과 -->
+  <div class="wrap" id="s-ba" style="padding-top:0;">
+    <div class="section-label">도입 효과 — Before / After</div>
 
-      <!-- 앞면 -->
-      <div class="badge-face badge-front" onclick="flipCard()">
-        <div class="badge-header">
-          <div class="lg-logo">LG</div>
-          <div class="event-info">
-            <div class="event-name" id="badgeCourseName"></div>
-            <div class="event-schedule-row">
-              <div class="event-schedule" id="badgeSchedule"></div>
-              <div class="role-pill" id="rolePill">교육생</div>
+    <div class="ba-table">
+      <div class="ba-head">
+        <div class="ba-head-cell ba-head-before">❌ 도입 전</div>
+        <div class="ba-head-cell ba-head-after">✅ 도입 후</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">사전 인쇄 → 불참 시 수정 불가</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">사번 조회 즉시 최신 정보 반영</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">변경마다 재인쇄 반복</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">Sheet 수정만으로 즉시 완료</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">명찰 외피 파손 → 매 기수 재구매</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">소모품 구매 불필요 (비용 Zero)</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">안내문·설문 별도 링크 배포</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">명찰 한 페이지에서 원스톱 접근</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">수기 출결 → 오기·누락 위험</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">PASSCODE 입력 → Sheet 자동 기록</div>
+      </div>
+      <div class="ba-row">
+        <div class="ba-cell before">교육 당일부터 정보 확인 가능</div>
+        <div class="ba-arrow">→</div>
+        <div class="ba-cell after">교육 전 사전 정보 확인 가능</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-val" style="color:var(--red);">Free</div>
+        <div class="kpi-lbl">명찰 인쇄비<br>외피 소모품비</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" style="color:var(--blue);">Live</div>
+        <div class="kpi-lbl">불참·변경<br>실시간 반영</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val" style="color:var(--green); font-size:14px;">All-in-One</div>
+        <div class="kpi-lbl">페이지 하나로<br>출결+안내+설문</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 시스템 구성 -->
+  <div class="wrap" id="s-arch" style="padding-top:0;">
+    <div class="section-label">시스템 구성</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#e8f5e9;">📊</div>
+        <div>
+          <div class="arch-chip" style="background:var(--green);">DATA SOURCE</div>
+          <div class="arch-title">Google Sheets</div>
+          <div class="arch-desc">교육 참가자 DB (사번·성명·직급·소속·반/팀·장소)와 출결 시간 컬럼을 관리합니다.</div>
+          <div class="arch-tags">
+            <span class="arch-tag">사번·성명·직급</span><span class="arch-tag">반/팀 배정</span>
+            <span class="arch-tag">출결 시간 기록</span><span class="arch-tag">PASSCODE 관리</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#e3f2fd;">⚙️</div>
+        <div>
+          <div class="arch-chip" style="background:var(--blue);">BACKEND</div>
+          <div class="arch-title">Google Apps Script</div>
+          <div class="arch-desc">Web App API로 배포되어 사번 조회 요청을 처리하고, 출결 시간을 Sheet에 자동 기록합니다.</div>
+          <div class="arch-tags">
+            <span class="arch-tag">JSON API 배포</span><span class="arch-tag">사번 조회</span>
+            <span class="arch-tag">출결 자동 기록</span><span class="arch-tag">서버 비용 Zero</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-card">
+        <div class="arch-icon-box" style="background:#fce4ec;">🌐</div>
+        <div>
+          <div class="arch-chip" style="background:var(--red);">FRONTEND</div>
+          <div class="arch-title">GitHub Pages</div>
+          <div class="arch-desc">단일 HTML 파일로 배포. 앱 설치 없이 URL 접속만으로 사용 가능하며 유지비가 없습니다.</div>
+          <div class="arch-tags">
+            <span class="arch-tag">앱 설치 불필요</span><span class="arch-tag">모바일 최적화</span>
+            <span class="arch-tag">유지비 Zero</span><span class="arch-tag">단일 HTML 파일</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="margin-top:12px; background:white; border-radius:12px; padding:14px 16px; font-size:13px; color:var(--g500); line-height:1.8; box-shadow:0 1px 6px rgba(0,0,0,.05);">
+      💡 <strong style="color:var(--g700);">운영 흐름</strong><br>
+      참가자 사번 입력 → Apps Script API 호출 → Google Sheet 조회 → 명찰 정보 표시<br>
+      대강당 PASSCODE 입력 → Apps Script → Sheet T열에 출결 시간 자동 기록
+    </div>
+  </div>
+
+</div><!-- /panel-0 -->
+
+
+<!-- ════════════════════════════════════════
+     PANEL 1 : 버튼별 기능 안내 · 소속별 색상 테마
+════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-1">
+
+  <!-- 버튼 기능 -->
+  <div class="wrap fade-up" id="s-btns">
+    <div class="section-label">버튼별 기능 안내</div>
+
+    <!-- 명찰 미리보기 — 버튼 클릭 가능 -->
+    <div style="margin-bottom:8px;">
+      <p style="font-size:13px; color:var(--g500); margin-bottom:12px; line-height:1.6;">사번을 입력하면 아래와 같은 명찰 화면이 표시됩니다. <strong style="color:var(--red);">각 버튼을 탭해</strong> 기능을 확인하세요.</p>
+      <div style="background:#1a1a1a; border-radius:32px; padding:10px; box-shadow:0 10px 40px rgba(0,0,0,0.22); max-width:460px; margin:0 auto;">
+        <div style="background:white; border-radius:22px; overflow:hidden;">
+
+          <!-- ⑤ 대강당 출결 — 상단 독립 플로팅 -->
+          <div style="padding:12px 16px 6px; background:white; display:flex; align-items:center; justify-content:space-between;">
+            <div onclick="openBtnPopup(6)" style="display:inline-flex;align-items:center;gap:8px;background:#f0f0f0;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:700;color:#333;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#ffe5ea'" onmouseout="this.style.background='#f0f0f0'">
+              <span style="width:22px;height:22px;border-radius:50%;background:#555;color:white;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">6</span>
+              🏛️ 대강당 출결
             </div>
           </div>
-        </div>
-        <div class="badge-body">
-          <div class="name-section">
-            <div class="badge-name" id="badgeName"></div>
-          </div>
-          <div class="divider"></div>
-          <div class="info-list">
-            <div class="info-item"><span class="info-label">직급</span><span class="info-value" id="badgeGrade"></span></div>
-            <div class="info-item"><span class="info-label">소속부서</span><span class="info-value" id="badgeDept"></span></div>
-            <div class="info-item" id="badgePlaceRow" style="display:none"><span class="info-label">장소</span><span class="info-value" id="badgePlace"></span></div>
-            <div class="info-item"><span class="info-label">반/팀</span><span class="info-value" id="badgeBanTeam"></span></div>
-          </div>
 
-          <div class="login-box" id="loginBox" style="display:none">
-            <div class="login-box-title">🔐 학습 사이트 로그인 정보</div>
-            <div class="info-item" id="badgeIdRow" style="display:none"><span class="info-label">ID</span><span class="info-value" id="badgeId"></span></div>
-            <div class="info-item" id="badgePwRow" style="display:none"><span class="info-label">PW</span><span class="info-value" id="badgePw"></span></div>
-          </div>
-
-          <div class="quick-actions">
-            <a class="quick-btn qb-preot" id="qbPreot" href="#" target="_blank" onclick="handleQuickClick(event,'preot')">
-              <div class="qb-icon">📋</div>
-              <div class="qb-label">사전안내문</div>
-            </a>
-            <a class="quick-btn qb-survey" id="qbSurvey" href="#" target="_blank" onclick="handleQuickClick(event,'survey')">
-              <div class="qb-icon">📝</div>
-              <div class="qb-label">설문</div>
-            </a>
-            <button type="button" class="quick-btn qb-dining" id="qbDining" onclick="openDining(event)">
-              <div class="qb-icon">🎫</div>
-              <div class="qb-label">식권</div>
-            </button>
-            <a class="quick-btn qb-facility" id="qbFacility" href="#" target="_blank" onclick="handleQuickClick(event,'facility')">
-              <div class="qb-icon">🏢</div>
-              <div class="qb-label">러닝센터 안내</div>
-            </a>
-            <a class="quick-btn qb-it disabled" id="qbIt" href="https://teams.microsoft.com/l/message/19:-tM-2nDBZO7c8RhcI8Z9tIeyL1N-gRIqvnPrcOVo3E01@thread.tacv2/1779858516759?tenantId=5069cde4-642a-45c0-8094-d0c2dec10be3&groupId=995fedeb-78a2-4c22-9cf2-289b281f3945&parentMessageId=1779858516759&teamName=2026%20%ED%94%BC%ED%94%8C%EB%A6%AC%EB%8D%94%EC%8B%AD%20%EA%B3%BC%EC%A0%95&channelName=General&createdTime=1779858516759" target="_blank" onclick="handleQuickClick(event,'it')" style="display:none; grid-column: span 2;">
-              <div class="qb-icon">💻</div>
-              <div class="qb-label">실습관련 IT 문의</div>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 뒷면 -->
-      <div class="badge-face badge-back">
-        <div class="back-header">
-          <div class="lg-logo-dark">LG</div>
-          <div>
-            <div class="back-title">바로가기</div>
-            <div class="back-sub">앞면으로 돌아가려면 아래 버튼을 누르세요</div>
-          </div>
-        </div>
-        <div class="back-body">
-          <div class="back-name-row">
-            <div class="back-avatar" id="backAvatar"></div>
-            <div>
-              <div class="back-name" id="backName"></div>
-              <div class="back-dept" id="backDept"></div>
+          <!-- 명찰 헤더 -->
+          <div style="background:#A50034; padding:28px; color:white;">
+            <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+              <div style="width:48px;height:48px;background:white;border-radius:8px;font-size:13px;font-weight:900;color:#A50034;display:flex;align-items:center;justify-content:center;flex-shrink:0;">LG</div>
+              <div>
+                <div style="font-size:19px;font-weight:700;">모바일 명찰 TEST</div>
+                <div style="font-size:13px;opacity:.8;">1차</div>
+              </div>
+              <div style="margin-left:auto;font-size:13px;padding:4px 12px;background:rgba(255,255,255,.22);border-radius:6px;">교육생</div>
+            </div>
+            <div style="font-size:31px;font-weight:900;margin-bottom:10px;">교육생</div>
+            <div style="font-size:13px;line-height:2.2;opacity:.9;">
+              <span style="opacity:.6;margin-right:10px;">직급</span>책임<br>
+              <span style="opacity:.6;margin-right:10px;">소속</span>EXG팀<br>
+              <span style="opacity:.6;margin-right:10px;">반/팀</span>O반 O팀
             </div>
           </div>
-          <div class="back-divider"></div>
-          <div class="btn-list">
-            <button class="action-btn dining" onclick="openDining(event)">
-              <div class="btn-icon">🎫</div>
-              <div class="btn-text">
-                <div class="btn-label">식권</div>
-                <div class="btn-desc">식당 이용 시 직원에게 제시</div>
-              </div>
-              <span class="btn-arrow">›</span>
-            </button>
-            <a class="action-btn survey" id="surveyBtn" href="#" target="_blank" onclick="handleBtnClick(event,'survey')">
-              <div class="btn-icon">📋</div>
-              <div class="btn-text">
-                <div class="btn-label">설문 바로가기</div>
-                <div class="btn-desc">교육 만족도 설문에 참여해주세요</div>
-              </div>
-              <span class="btn-arrow">›</span>
-            </a>
-            <a class="action-btn facility" id="facilityBtn" href="#" target="_blank" onclick="handleBtnClick(event,'facility')">
-              <div class="btn-icon">🏢</div>
-              <div class="btn-text">
-                <div class="btn-label">러닝센터 안내</div>
-                <div class="btn-desc">시설 이용 안내를 확인하세요</div>
-              </div>
-              <span class="btn-arrow">›</span>
-            </a>
+
+          <!-- ①~④ 버튼 4개 -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 16px 10px;background:white;">
+            <div onclick="openBtnPopup(1)" style="background:#f4f4f4;border-radius:8px;padding:16px 8px;font-size:14px;font-weight:700;color:#333;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#ffe5ea'" onmouseout="this.style.background='#f4f4f4'">
+              <span style="width:24px;height:24px;border-radius:50%;background:#A50034;color:white;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>사전안내문
+            </div>
+            <div onclick="openBtnPopup(2)" style="background:#f4f4f4;border-radius:8px;padding:16px 8px;font-size:14px;font-weight:700;color:#333;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#e8f0ff'" onmouseout="this.style.background='#f4f4f4'">
+              <span style="width:24px;height:24px;border-radius:50%;background:#1a5dbf;color:white;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>설문
+            </div>
+            <div onclick="openBtnPopup(3)" style="background:#f4f4f4;border-radius:8px;padding:16px 8px;font-size:14px;font-weight:700;color:#333;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#fff0e8'" onmouseout="this.style.background='#f4f4f4'">
+              <span style="width:24px;height:24px;border-radius:50%;background:#c75000;color:white;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>식권
+            </div>
+            <div onclick="openBtnPopup(4)" style="background:#f4f4f4;border-radius:8px;padding:16px 8px;font-size:14px;font-weight:700;color:#333;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .15s;" onmouseover="this.style.background='#e8f5ee'" onmouseout="this.style.background='#f4f4f4'">
+              <span style="width:24px;height:24px;border-radius:50%;background:#1a7a4a;color:white;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>러닝센터 시설안내
+            </div>
+          </div>
+
+          <!-- 실습 로그인 정보 박스 -->
+          <div style="margin:0 16px 10px;background:#fff5f7;border:1px solid #f8d0da;border-radius:10px;padding:12px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#A50034;margin-bottom:8px;">🔐 학습 사이트 로그인 정보</div>
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:4px;">
+              <span style="font-size:13px;font-weight:700;color:#A50034;min-width:24px;">ID</span>
+              <span style="font-family:'DM Mono',monospace;font-size:14px;color:#333;">user00@lgelc.com</span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <span style="font-size:13px;font-weight:700;color:#A50034;min-width:24px;">PW</span>
+              <span style="font-family:'DM Mono',monospace;font-size:14px;color:#333;">lgelc12345!</span>
+            </div>
+          </div>
+
+          <!-- 실습관련 IT 문의 버튼 -->
+          <div onclick="openBtnPopup(5)" style="margin:0 16px 16px;background:#f0f4ff;border-radius:10px;padding:14px;font-size:13px;font-weight:700;color:#1a5dbf;text-align:center;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px;" onmouseover="this.style.background='#dce8ff'" onmouseout="this.style.background='#f0f4ff'">
+            <span style="width:24px;height:24px;border-radius:50%;background:#1a5dbf;color:white;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">5</span>
+            💻 실습관련 IT 문의
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 색상 테마 -->
+  <div class="wrap" id="s-theme" style="padding-top:0;">
+    <div class="section-label">소속별 색상 테마</div>
+    <p style="font-size:14px; color:var(--g500); margin-bottom:16px; line-height:1.7;">교육 주관 구분에 따라 명찰 배경 색상이 자동으로 달라집니다.</p>
+    <div class="theme-grid">
+
+      <div class="theme-card">
+        <div class="theme-header bm-red">
+          <div class="theme-logo-row"><div class="theme-logo" style="color:var(--red);">LG</div><div class="theme-pgm">모바일 명찰 TEST</div></div>
+          <div class="theme-name">홍길동</div>
+          <div class="theme-dept">본사 · HR전략팀</div>
+        </div>
+        <div class="theme-footer">
+          <div class="theme-mini-btn">📄</div><div class="theme-mini-btn">📝</div>
+          <div class="theme-mini-btn">🍱</div><div class="theme-mini-btn">🏢</div>
+        </div>
+        <div style="padding:6px 10px 8px; font-size:11px; font-weight:700; color:var(--red); text-align:center;">🔴 본사</div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header bm-blue">
+          <div class="theme-logo-row"><div class="theme-logo" style="color:var(--blue);">LG</div><div class="theme-pgm">모바일 명찰 TEST</div></div>
+          <div class="theme-name">김철수</div>
+          <div class="theme-dept">아카데미 · 교육운영팀</div>
+        </div>
+        <div class="theme-footer">
+          <div class="theme-mini-btn">📄</div><div class="theme-mini-btn">📝</div>
+          <div class="theme-mini-btn">🍱</div><div class="theme-mini-btn">🏢</div>
+        </div>
+        <div style="padding:6px 10px 8px; font-size:11px; font-weight:700; color:var(--blue); text-align:center;">🔵 아카데미</div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header bm-green">
+          <div class="theme-logo-row"><div class="theme-logo" style="color:var(--green);">LG</div><div class="theme-pgm">모바일 명찰 TEST</div></div>
+          <div class="theme-name">이영희</div>
+          <div class="theme-dept">임대사 · 운영팀</div>
+        </div>
+        <div class="theme-footer">
+          <div class="theme-mini-btn">📄</div><div class="theme-mini-btn">📝</div>
+          <div class="theme-mini-btn">🍱</div><div class="theme-mini-btn">🏢</div>
+        </div>
+        <div style="padding:6px 10px 8px; font-size:11px; font-weight:700; color:var(--green); text-align:center;">🟢 임대사</div>
+      </div>
+
+      <div class="theme-card">
+        <div class="theme-header bm-purple">
+          <div class="theme-logo-row"><div class="theme-logo" style="color:var(--purple);">LG</div><div class="theme-pgm">모바일 명찰 TEST</div></div>
+          <div class="theme-name">박민준</div>
+          <div class="theme-dept">세일즈 · 영업기획팀</div>
+        </div>
+        <div class="theme-footer">
+          <div class="theme-mini-btn">📄</div><div class="theme-mini-btn">📝</div>
+          <div class="theme-mini-btn">🍱</div><div class="theme-mini-btn">🏢</div>
+        </div>
+        <div style="padding:6px 10px 8px; font-size:11px; font-weight:700; color:var(--purple); text-align:center;">🟣 세일즈</div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /panel-1 -->
+
+
+<!-- ════════════════════════════════════════
+     PANEL 2 : 사용 방법 · TEST
+════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-2">
+
+  <!-- CTA -->
+  <div class="wrap fade-up" id="s-test">
+    <div class="cta-card" style="background:#1a1a1a;">
+      <h3>직접 사용해 보기</h3>
+      <p>아래 TEST 정보로 실제 시스템을 체험해 보세요</p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+        <div class="cta-info" style="margin-bottom:0;">
+          <div style="font-size:11px; font-weight:700; opacity:0.5; letter-spacing:0.1em; margin-bottom:6px;">ACCOUNT 1</div>
+          <div class="cta-row">
+            <span class="l">사번</span>
+            <span class="v cta-copy" onclick="copyCtaText(this)">987654</span>
+          </div>
+          <div class="cta-row">
+            <span class="l">PASSCODE</span>
+            <span class="v cta-copy" onclick="copyCtaText(this)">2580</span>
           </div>
         </div>
-        <div class="back-footer">
-          <button class="flip-back-btn" onclick="flipCard()">← 앞면으로 돌아가기</button>
+        <div class="cta-info" style="margin-bottom:0;">
+          <div style="font-size:11px; font-weight:700; opacity:0.5; letter-spacing:0.1em; margin-bottom:6px;">ACCOUNT 2</div>
+          <div class="cta-row">
+            <span class="l">사번</span>
+            <span class="v cta-copy" onclick="copyCtaText(this)">123456</span>
+          </div>
+          <div class="cta-row">
+            <span class="l">PASSCODE</span>
+            <span class="v cta-copy" onclick="copyCtaText(this)">1379</span>
+          </div>
         </div>
       </div>
-
+      <p style="font-size:12px; opacity:0.6; margin-bottom:16px;">💡 값을 탭하면 클립보드에 복사됩니다.</p>
+      <a class="cta-btn" style="color:#1a1a1a;" href="https://lgehqex.github.io/learningcenter/DNT" target="_blank">
+        🚀 모바일 명찰 접속하기
+      </a>
     </div>
   </div>
-  <div class="flip-hint" id="flipHint">
-    <svg viewBox="0 0 14 14" fill="none"><path d="M2 7C2 4.24 4.24 2 7 2C8.5 2 9.85 2.66 10.77 3.7M12 7C12 9.76 9.76 12 7 12C5.5 12 4.15 11.34 3.23 10.3M10.5 1.5V4H8M3.5 12.5V10H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span id="flipHintText">카드를 탭하면 뒷면을 볼 수 있어요</span>
+
+  <!-- 사용 방법 -->
+  <div class="wrap" id="s-how" style="padding-top:0;">
+    <div class="section-label">사용 방법 — 3단계</div>
+
+    <!-- STEP 1 -->
+    <div class="step-card fade-up">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-htxt">사번 입력 → 명찰 확인</div>
+      </div>
+      <p class="step-desc">접속 URL에서 본인의 <strong>사번을 입력</strong>하면 이름·소속·반/팀이 자동으로 불러와집니다. 사전안내문·설문·식권·러닝센터 안내 버튼도 한 화면에서 확인할 수 있습니다.</p>
+      <div class="step-tip">📌 사전에 접속해 정보를 미리 확인해 두면 교육 당일이 더 편리합니다.</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="bm-header bm-red">
+            <div class="bm-top">
+              <div class="bm-logo">LG</div>
+              <div><div class="bm-pgm">모바일 명찰 TEST</div><div class="bm-sub">1차</div></div>
+              <div class="bm-chip">교육생</div>
+            </div>
+            <div class="bm-role">교육생</div>
+            <div class="bm-info">
+              <span>직급</span>책임<br>
+              <span>소속</span>EXG팀<br>
+              <span>반/팀</span>O반 O팀
+            </div>
+          </div>
+          <div class="bm-btns">
+            <div class="bm-btn">📄 사전안내문</div>
+            <div class="bm-btn">📝 설문</div>
+            <div class="bm-btn">🍱 식권</div>
+            <div class="bm-btn">🏢 러닝센터</div>
+          </div>
+          <div class="bm-attend">🏛️ 대강당 출결</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-join"></div>
+
+    <!-- STEP 2 -->
+    <div class="step-card fade-up">
+      <div class="step-head">
+        <div class="step-num b">2</div>
+        <div class="step-htxt">[대강당 출결] → PASSCODE 입력</div>
+      </div>
+      <p class="step-desc">대강당 입실 시 담당자가 현장에서 <strong>4자리 PASSCODE</strong>를 안내합니다. 명찰 하단 [대강당 출결] 버튼을 누르고 코드를 입력하면 출결이 완료됩니다.</p>
+      <div class="step-tip">🔢 TEST용 PASSCODE는 <strong>2580</strong>입니다. 아래에서 직접 입력해 보세요.</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="pc-wrap">
+            <div class="pc-title">대강당 출결</div>
+            <div class="pc-sub">담당자에게 안내받은 4자리 패스코드를 입력해주세요</div>
+            <div class="pc-dots">
+              <div class="pc-dot" id="d0"></div><div class="pc-dot" id="d1"></div>
+              <div class="pc-dot" id="d2"></div><div class="pc-dot" id="d3"></div>
+            </div>
+            <div class="pc-display" id="pcDisplay">　　　　</div>
+            <div class="keypad">
+              <button class="key" onclick="ki('1')">1</button>
+              <button class="key" onclick="ki('2')">2</button>
+              <button class="key" onclick="ki('3')">3</button>
+              <button class="key" onclick="ki('4')">4</button>
+              <button class="key" onclick="ki('5')">5</button>
+              <button class="key" onclick="ki('6')">6</button>
+              <button class="key" onclick="ki('7')">7</button>
+              <button class="key" onclick="ki('8')">8</button>
+              <button class="key" onclick="ki('9')">9</button>
+              <button class="key z" onclick="ki('0')">0</button>
+              <button class="key del" onclick="kd()">⌫</button>
+            </div>
+            <button class="kp-submit" onclick="ks()">출결 확인</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-join"></div>
+
+    <!-- STEP 3 -->
+    <div class="step-card fade-up" id="step3card">
+      <div class="step-head">
+        <div class="step-num g">3</div>
+        <div class="step-htxt">출결 완료 — 초록 뱃지 확인</div>
+      </div>
+      <p class="step-desc">올바른 코드를 입력하면 <strong>출결 완료 팝업</strong>이 표시되고, [대강당 출결] 버튼이 초록 뱃지로 변경됩니다. 출결 시간은 Google Sheet에 자동으로 기록됩니다.</p>
+      <div class="step-tip">✅ 출결 완료 후에는 버튼이 비활성화되어 중복 출결을 방지합니다.</div>
+      <div class="phone">
+        <div class="screen">
+          <div id="sucMock" style="display:none;">
+            <div class="suc-wrap">
+              <div class="suc-icon">✅</div>
+              <div class="suc-title">출결이 완료되었습니다</div>
+              <div class="suc-time" id="sucTime">기록 시각 --:--</div>
+              <div class="suc-badge">✓ 출결완료 <span id="sucTimeBadge">--:--</span></div>
+            </div>
+          </div>
+          <div id="waitMock" class="suc-wait">↑ STEP 2에서 2580을 입력해 보세요</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-join"></div>
+
+    <!-- STEP 4 -->
+    <div class="step-card fade-up">
+      <div class="step-head">
+        <div class="step-num" style="background:#6b3fa0;">4</div>
+        <div class="step-htxt">버튼을 눌러 기능 확인하기</div>
+      </div>
+      <p class="step-desc">명찰의 각 버튼을 눌러 기능을 직접 확인해 보세요. 사전안내문·설문·식권·러닝센터 시설안내·실습관련 IT 문의·대강당 출결 기능을 한 페이지에서 모두 이용할 수 있습니다.</p>
+      <div class="step-tip">💡 기능 안내 및 색상 테마 탭에서 각 버튼의 상세 기능 설명을 확인할 수 있습니다.</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          사전안내문 — 교육 과정 안내사항 확인
+        </div>
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          설문 — 교육 만족도 설문 참여
+        </div>
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          식권 — 식당 이용을 위한 모바일 식권
+        </div>
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          러닝센터 시설안내 — 시설 이용 안내
+        </div>
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          실습관련 IT 문의 — 담당자 팀즈로 연결
+          <div style="font-size:12px; color:#999; margin-top:4px;">* 실습 계정 제공 과정에서만 활성화</div>
+        </div>
+        <div style="background:#f9f9f9; border-radius:8px; padding:11px 15px; font-size:14px; color:#333;">
+          대강당 출결 — PASSCODE 입력으로 출결 확인
+          <div style="font-size:12px; color:#999; margin-top:4px;">* 대강당 모듈 진행 과정에서만 활성화</div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+</div><!-- /panel-2 -->
+
+<div class="footer">
+  <strong>LG Electronics · 교육서비스센터</strong><br>
+  이헌정 사원 ｜ heonjeong.lee@lgepartner.com
 </div>
-
-<!-- ── 출결 안내 팝업 ── -->
-<div class="notice-overlay" id="noticeOverlay">
-  <div class="notice-sheet">
-    <div class="notice-icon">🔐</div>
-    <div class="notice-title">대강당 출결을 진행해 주세요!</div>
-    <div class="notice-body">
-      대강당 입장 전 반드시 출결을 완료해야 합니다.<br>
-      <strong>담당자에게 패스코드를 확인</strong>하신 후<br>
-      아래 버튼을 눌러 출결을 진행해 주세요.
-    </div>
-    <button class="notice-btn" onclick="closeNoticeAndOpenPasscode()">지금 출결하기</button>
-    <button class="notice-skip" onclick="closeNotice()">나중에 할게요</button>
-  </div>
-</div>
-
-<!-- ── 패스코드 출결 팝업 ── -->
-<div class="pc-overlay" id="pcOverlay">
-  <div class="pc-modal">
-    <button class="pc-modal-close" onclick="closePasscode()">✕</button>
-    <div class="pc-title">대강당 출결</div>
-    <div class="pc-sub" id="pcSub">담당자에게 안내받은<br>4자리 패스코드를 입력해주세요</div>
-    <div class="pc-dots">
-      <div class="pc-dot" id="dot0"></div>
-      <div class="pc-dot" id="dot1"></div>
-      <div class="pc-dot" id="dot2"></div>
-      <div class="pc-dot" id="dot3"></div>
-    </div>
-    <div class="pc-keypad">
-      <button class="pc-key" onclick="pcInput('1')">1</button>
-      <button class="pc-key" onclick="pcInput('2')">2</button>
-      <button class="pc-key" onclick="pcInput('3')">3</button>
-      <button class="pc-key" onclick="pcInput('4')">4</button>
-      <button class="pc-key" onclick="pcInput('5')">5</button>
-      <button class="pc-key" onclick="pcInput('6')">6</button>
-      <button class="pc-key" onclick="pcInput('7')">7</button>
-      <button class="pc-key" onclick="pcInput('8')">8</button>
-      <button class="pc-key" onclick="pcInput('9')">9</button>
-      <button class="pc-key empty"></button>
-      <button class="pc-key" onclick="pcInput('0')">0</button>
-      <button class="pc-key del" onclick="pcDelete()">⌫</button>
-    </div>
-    <div class="pc-error-msg" id="pcErrorMsg"></div>
-    <div class="pc-done" id="pcDone">
-      <div class="pc-done-icon">✅</div>
-      <div class="pc-done-text">출결이 완료되었습니다</div>
-      <div class="pc-done-sub" id="pcDoneTime"></div>
-    </div>
-  </div>
-</div>
-
-<!-- 식당이용 -->
-<div class="dining-overlay" id="diningOverlay">
-  <button class="dining-close" onclick="closeDining()">✕</button>
-  <div class="dining-landscape" id="diningLandscape">
-    <div class="dining-badge" id="diningBadge">
-      <div class="dining-badge-logo" id="diningBadgeLogo">LG</div>
-      <div class="dining-badge-text">
-        <div class="dining-badge-title">러닝센터 식당 이용</div>
-        <div class="dining-badge-sub">본 화면을 직원에게 제시해주세요</div>
-      </div>
-    </div>
-    <div class="dining-inner">
-      <div class="dining-course">
-        <div class="dining-course-name" id="diningCourseName"></div>
-        <div class="dining-divider" id="diningDivider"></div>
-        <div class="dining-schedule" id="diningSchedule"></div>
-      </div>
-      <div class="dining-person">
-        <span class="dining-person-name" id="diningName"></span>
-        <span class="dining-person-sep">·</span>
-        <span class="dining-person-info" id="diningGrade"></span>
-        <span class="dining-person-sep">·</span>
-        <span class="dining-person-info" id="diningDept"></span>
-        <span class="dining-person-sep" id="diningPlaceSep" style="display:none">·</span>
-        <span class="dining-person-info" id="diningPlace" style="display:none"></span>
-      </div>
-    </div>
-    <div class="dining-marquee-wrap">
-      <div class="dining-marquee-track">
-        <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
-        <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
-        <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
-        <span>본 식권은 교육 일정 기간 내에서만 사용이 가능합니다.</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 전체화면 -->
-<div class="fs-overlay" id="fsOverlay">
-  <div class="fs-topbar">
-    <div class="fs-topbar-left">
-      <div class="fs-topbar-logo">LG</div>
-      <span class="fs-topbar-title">모바일 명찰</span>
-    </div>
-    <button class="fs-close-btn" onclick="closeFullscreen()">✕</button>
-  </div>
-  <div class="fs-card">
-    <div class="fs-card-header">
-      <div class="fs-card-logo">LG</div>
-      <div class="fs-card-course">
-        <div class="fs-card-course-name" id="fsCourseName"></div>
-        <div class="fs-card-schedule" id="fsSchedule"></div>
-      </div>
-    </div>
-    <div class="fs-card-body">
-      <div class="fs-name-row">
-        <div class="fs-name" id="fsName"></div>
-      </div>
-      <div class="fs-divider"></div>
-      <div class="fs-info-list">
-        <div class="fs-info-item"><span class="fs-info-label">직급</span><span class="fs-info-value" id="fsGrade"></span></div>
-        <div class="fs-info-item"><span class="fs-info-label">소속부서</span><span class="fs-info-value" id="fsDept"></span></div>
-        <div class="fs-info-item" id="fsPlaceRow" style="display:none"><span class="fs-info-label">장소</span><span class="fs-info-value" id="fsPlace"></span></div>
-        <div class="fs-info-item"><span class="fs-info-label">반/팀</span><span class="fs-info-value" id="fsBanTeam"></span></div>
-        <div class="fs-info-item" id="fsIdRow" style="display:none"><span class="fs-info-label">ID</span><span class="fs-info-value" id="fsId"></span></div>
-        <div class="fs-info-item" id="fsPwRow" style="display:none"><span class="fs-info-label">PW</span><span class="fs-info-value" id="fsPw"></span></div>
-      </div>
-    </div>
-    <div class="fs-card-footer">
-      <div class="fs-role-pill" id="fsRolePill">교육생</div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
-  let employeeData = [], currentData = null, isFlipped = false;
-  let wakeLock = null;
 
-  // ── 출결 안내 팝업 ──────────────────────────────────────
-  function showCheckinNotice() {
-    document.getElementById('noticeOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
+
+/* ── PASSCODE ── */
+let pc = '';
+function ki(n) {
+  if (pc.length >= 4) return;
+  pc += n; updatePc();
+  if (pc.length === 4) setTimeout(ks, 280);
+}
+function kd() { pc = pc.slice(0,-1); updatePc(); }
+function updatePc() {
+  document.getElementById('pcDisplay').textContent = pc.padEnd(4,'　');
+  [0,1,2,3].forEach(i => document.getElementById('d'+i).classList.toggle('filled', i < pc.length));
+}
+function ks() {
+  if (pc === '2580' || pc === '1379') { showSuccess(); return; }
+  if (pc.length === 4) {
+    const d = document.getElementById('pcDisplay');
+    d.style.color = '#c00';
+    setTimeout(() => { d.style.color=''; pc=''; updatePc(); }, 800);
   }
-  function closeNotice() {
-    document.getElementById('noticeOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function closeNoticeAndOpenPasscode() {
-    closeNotice();
-    setTimeout(() => {
-      const btn = document.getElementById('btnCheckin');
-      if (btn && btn.style.display !== 'none') openPasscode({ stopPropagation: () => {} });
-    }, 180);
-  }
+}
+function showSuccess() {
+  const now = new Date();
+  const t = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('waitMock').style.display = 'none';
+  document.getElementById('sucMock').style.display = 'block';
+  document.getElementById('sucTime').textContent = '기록 시각 ' + t;
+  document.getElementById('sucTimeBadge').textContent = t;
+  setTimeout(() => document.getElementById('step3card').scrollIntoView({behavior:'smooth', block:'center'}), 250);
+}
 
-    // ── 패스코드 출결 ──────────────────────────────────────
-  let pcBuffer = '';
-  let pcCorrect = '';   // 과정별 패스코드 (lookup 때 수신)
+/* ── COPY ── */
+function copyText(el) {
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const o = el.textContent;
+    el.textContent = '✓ 복사됨'; el.style.color='var(--green)';
+    setTimeout(() => { el.textContent=o; el.style.color=''; }, 1200);
+  });
+}
+function copyCtaText(el) {
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    const o = el.textContent;
+    el.textContent = '✓ 복사됨';
+    el.style.background = 'rgba(255,255,255,0.35)';
+    setTimeout(() => { el.textContent=o; el.style.background=''; }, 1200);
+  });
+}
 
-  function openPasscode(e) {
-    e.stopPropagation();
-    const btn = document.getElementById('btnCheckin');
-    if (!currentData || btn.classList.contains('done') || btn.classList.contains('inactive')) return;
-    pcCorrect = currentData.passcode || '';
-    pcBuffer = '';
-    updateDots();
-    document.getElementById('pcErrorMsg').textContent = '';
-    document.getElementById('pcDone').classList.remove('visible');
-    document.getElementById('pcSub').style.display = '';
-    document.getElementById('pcOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+/* ── BUTTON POPUP ── */
+const btnData = {
+  1: { color:'#A50034', chip:'교육 전 필독', title:'📄 사전안내문',
+       desc:'교육 목적·일정·진행 방식·준비물 등 과정 전반의 안내사항이 담겨 있습니다.',
+       items:['교육 목표 및 Why·What·How 안내','일정 및 장소 상세 정보','교육 참가 대상 안내'] },
+  2: { color:'#1a5dbf', chip:'교육 만족도', title:'📝 설문',
+       desc:'교육 종료 후 만족도 설문에 참여할 수 있습니다. 과정 개선에 소중한 의견이 반영됩니다.',
+       items:['과정 전반 만족도 평가','모듈별 학습 효과 피드백','자유의견 작성 가능'] },
+  3: { color:'#c75000', chip:'식당 이용', title:'🍱 식권',
+       desc:'러닝센터 내 식당 이용을 위한 모바일 식권입니다. 별도 종이 식권 없이 화면을 보여주시면 됩니다.',
+       items:['조식·중식·석식 식권 표시','이름·소속·반/팀 자동 표기','식당 입구에서 화면 제시'] },
+  4: { color:'#1a7a4a', chip:'시설 안내', title:'🏢 러닝센터 시설안내',
+       desc:'평택 디지털파크 러닝센터 이용 안내를 확인할 수 있습니다.',
+       items:['강의실·식당·휴게공간 위치','와이파이·출입 정보','생활 안내 (금주·금연 등)'] },
+  5: { color:'#1a5dbf', chip:'IT 지원', title:'💻 실습관련 IT 문의',
+       desc:'<strong style="color:#1a5dbf;">실습 계정이 제공된 과정의 경우에만 학습 로그인 정보와 함께 활성화됩니다.</strong><br><br>실습 중 로그인 오류, 프로그램 설치, 네트워크 문제 등 IT 관련 문의는 담당자에게 Teams 채팅으로 연락해 주세요.',
+       items:['로그인 오류 및 계정 문제','프로그램 설치·실행 오류','네트워크·접속 장애'] },
+  6: { color:'#555', chip:'출결 확인', title:'🏛️ 대강당 출결',
+       desc:'대강당 세션 입실 시 4자리 PASSCODE를 입력해 출결을 확인합니다. 대강당 세션이 없는 경우 비활성화됩니다.<br><br>출결 기능이 활성화된 경우, 명찰 접속 시 아래와 같은 <strong style="color:#1a7a4a;">출결 유도 팝업</strong>이 자동으로 표시되어 참가자의 출결을 유도합니다.<br><br><div style="background:#fff;border-radius:14px;padding:24px 20px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.1);margin-top:4px;"><div style="font-size:28px;margin-bottom:10px;">🔐</div><div style="font-size:15px;font-weight:900;margin-bottom:8px;">대강당 출결을 진행해 주세요!</div><div style="font-size:13px;color:#555;line-height:1.7;margin-bottom:16px;">대강당 입장 전 반드시 출결을 완료해야 합니다.<br><strong>담당자에게 패스코드를 확인</strong>하신 후<br>아래 버튼을 눌러 출결을 진행해 주세요.</div><div style="background:#1a7a4a;color:white;border-radius:10px;padding:12px;font-size:14px;font-weight:700;margin-bottom:8px;">지금 출결하기</div><div style="font-size:12px;color:#aaa;">나중에 할게요</div></div>',
+       items:['담당자가 현장에서 PASSCODE 안내','입력 즉시 Google Sheet에 시간 자동 기록','완료 시 초록 뱃지로 변경'] },
+};
+function openBtnPopup(n) {
+  const d = btnData[n];
+  document.getElementById('btnPopupContent').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:${d.color};color:white;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${n}</div>
+      <div>
+        <div style="display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;background:${d.color};color:white;margin-bottom:4px;">${d.chip}</div>
+        <div style="font-size:13px;font-weight:900;">${d.title}</div>
+      </div>
+    </div>
+    <p style="font-size:14px;color:#555;line-height:1.75;margin-bottom:14px;">${d.desc}</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      ${d.items.map(i=>`<div style="display:flex;align-items:flex-start;gap:10px;background:#f9f9f9;border-radius:8px;padding:10px 12px;font-size:14px;color:#333;"><span style="color:${d.color};font-size:13px;flex-shrink:0;">✓</span>${i}</div>`).join('')}
+    </div>
+    <button onclick="closeBtnPopup()" style="margin-top:20px;width:100%;background:${d.color};color:white;border:none;border-radius:10px;padding:13px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;">닫기</button>
+  `;
+  document.getElementById('btnPopupOverlay').style.display = 'block';
+  const popup = document.getElementById('btnPopup');
+  popup.style.display = 'block';
+  requestAnimationFrame(() => {
+    popup.style.transform = 'translate(-50%,-50%) scale(1)';
+    popup.style.opacity = '1';
+  });
+}
+function closeBtnPopup() {
+  const popup = document.getElementById('btnPopup');
+  popup.style.transform = 'translate(-50%,-50%) scale(0.9)';
+  popup.style.opacity = '0';
+  setTimeout(() => {
+    popup.style.display = 'none';
+    document.getElementById('btnPopupOverlay').style.display = 'none';
+  }, 220);
+}
 
-  function closePasscode() {
-    document.getElementById('pcOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+/* ── TAB GROUP ── */
+function switchGroup(idx, btn) {
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tg-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  window.scrollTo({top: document.querySelector('.tab-group-nav').offsetTop - 1, behavior:'smooth'});
+}
 
-  function pcInput(digit) {
-    if (pcBuffer.length >= 4) return;
-    pcBuffer += digit;
-    updateDots();
-    if (pcBuffer.length === 4) {
-      setTimeout(checkPasscode, 120);
-    }
-  }
-
-  function pcDelete() {
-    pcBuffer = pcBuffer.slice(0, -1);
-    updateDots();
-    document.getElementById('pcErrorMsg').textContent = '';
-  }
-
-  function updateDots() {
-    for (let i = 0; i < 4; i++) {
-      const dot = document.getElementById('dot' + i);
-      dot.classList.toggle('filled', i < pcBuffer.length);
-      dot.classList.remove('error');
-    }
-  }
-
-  async function checkPasscode() {
-    if (pcBuffer !== String(pcCorrect).trim()) {
-      // 틀림
-      for (let i = 0; i < 4; i++) {
-        const dot = document.getElementById('dot' + i);
-        dot.classList.remove('filled');
-        dot.classList.add('error');
-      }
-      document.getElementById('pcErrorMsg').textContent = '패스코드가 틀렸습니다. 다시 입력해주세요.';
-      setTimeout(() => { pcBuffer = ''; updateDots(); }, 600);
-      return;
-    }
-    // 맞음 → API 호출
-    document.getElementById('pcErrorMsg').textContent = '';
-    try {
-      const res = await fetch(
-        `${API_URL}?action=checkin` +
-        `&sano=${encodeURIComponent(currentData.sano)}` +
-        `&courseName=${encodeURIComponent(currentData.courseName || '')}` +
-        `&round=${encodeURIComponent(currentData.round || '')}`
-      );
-      const json = await res.json();
-      if (json.success) {
-        const t = json.timestamp ? String(json.timestamp).slice(11,16) : '';
-        document.getElementById('pcDoneTime').textContent = t ? `기록 시각  ${t}` : '';
-        document.getElementById('pcDone').classList.add('visible');
-        document.getElementById('pcSub').style.display = 'none';
-        // 도트 숨기기
-        document.querySelectorAll('.pc-dot').forEach(d => d.style.display = 'none');
-        document.querySelector('.pc-keypad').style.display = 'none';
-        // 버튼 완료 상태
-        const btn = document.getElementById('btnCheckin');
-        btn.classList.remove('armed'); btn.classList.add('done');
-        btn.textContent = t ? `✅ 출결완료 ${t}` : '✅ 출결완료';
-        setTimeout(closePasscode, 2200);
-      } else if (json.alreadyCheckedIn) {
-        const t = json.timestamp ? String(json.timestamp).slice(11,16) : '';
-        document.getElementById('pcErrorMsg').textContent =
-          `이미 출결 처리되었습니다${t ? ' (' + t + ')' : ''}.`;
-        pcBuffer = ''; updateDots();
-      } else {
-        document.getElementById('pcErrorMsg').textContent = json.message || '출결 기록에 실패했습니다.';
-        pcBuffer = ''; updateDots();
-      }
-    } catch {
-      document.getElementById('pcErrorMsg').textContent = '서버 연결에 실패했습니다.';
-      pcBuffer = ''; updateDots();
-    }
-  }
-
-  // ── 토스트 ────────────────────────────────────────────
-  let toastTimer = null;
-  function showToast(msg, type = '') {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.className = 'toast' + (type ? ' ' + type : '');
-    void el.offsetWidth;
-    el.classList.add('show');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
-  }
-
-  // ── 조회 ──────────────────────────────────────────────
-  async function lookupEmployee() {
-    const sano = document.getElementById('sanoInput').value.trim();
-    if (!sano) { showError('사번을 입력해주세요.'); return; }
-    showLoading(true); hideError(); hideBadge();
-    try {
-      const res = await fetch(`${API_URL}?action=lookup&sano=${encodeURIComponent(sano)}`);
-      const json = await res.json();
-      if (!json.success) { showError(json.message || '조회 결과가 없습니다.'); showLoading(false); return; }
-      employeeData = json.data;
-      saveRecentSano(sano);
-      if (employeeData.length === 1) {
-        document.getElementById('courseWrap').classList.remove('visible');
-        renderBadgeFromData(employeeData[0]);
-      } else {
-        const select = document.getElementById('courseSelect');
-        select.innerHTML = '<option value="">-- 과정을 선택하세요 --</option>';
-        employeeData.forEach((d, i) => {
-          const opt = document.createElement('option');
-          opt.value = i;
-          const r = formatRound(d.round), s = formatDateRange(d.startDate, d.endDate);
-          opt.textContent = [d.courseName, r, s ? `(${s})` : ''].filter(Boolean).join('  ');
-          select.appendChild(opt);
-        });
-        document.getElementById('courseWrap').classList.add('visible');
-        hideBadge();
-      }
-    } catch { showError('서버 연결에 실패했습니다. API URL을 확인해주세요.'); }
-    showLoading(false);
-  }
-
-  function renderBadge() {
-    const idx = document.getElementById('courseSelect').value;
-    if (idx === '') { hideBadge(); return; }
-    renderBadgeFromData(employeeData[parseInt(idx)]);
-  }
-
-  function renderBadgeFromData(d) {
-    currentData = d;
-    document.getElementById('badgeCourseName').textContent = d.courseName || '';
-    const r = formatRound(d.round);
-    const s = formatDateRange(d.startDate, d.endDate);
-    document.getElementById('badgeSchedule').textContent = [r, s].filter(Boolean).join('  ·  ');
-    document.getElementById('badgeName').textContent = d.name || '';
-    document.getElementById('badgeGrade').textContent = d.grade || '-';
-    document.getElementById('badgeDept').textContent = d.dept || '-';
-    document.getElementById('badgeBanTeam').textContent = [d.ban, d.team].filter(Boolean).join(' / ') || '-';
-
-    const placeRow = document.getElementById('badgePlaceRow');
-    const placeText = [d.place, d.room].filter(Boolean).join(' · ');
-    if (placeText) {
-      document.getElementById('badgePlace').textContent = placeText;
-      placeRow.style.display = 'flex';
-    } else {
-      placeRow.style.display = 'none';
-    }
-
-    const showId = !!d.loginId, showPw = !!d.loginPw;
-    const showLoginBox = showId || showPw;
-    document.getElementById('loginBox').style.display = showLoginBox ? 'block' : 'none';
-    document.getElementById('badgeIdRow').style.display = showId ? 'flex' : 'none';
-    document.getElementById('badgePwRow').style.display = showPw ? 'flex' : 'none';
-    document.getElementById('badgeId').textContent = d.loginId || '';
-    document.getElementById('badgePw').textContent = d.loginPw || '';
-
-    const roleSource = String(d.name || '') + ' ' + String(d.grade || '');
-    let role = '교육생';
-    if (roleSource.includes('담당자')) role = '담당자';
-    else if (roleSource.includes('강사')) role = '강사';
-    else if (roleSource.includes('운영자')) role = '운영자';
-    document.getElementById('rolePill').textContent = role;
-    document.getElementById('fsRolePill').textContent = role;
-
-    const pill = document.getElementById('rolePill');
-    const fsPill = document.getElementById('fsRolePill');
-    const isOps = ['담당자', '강사', '운영자'].includes(role);
-    if (isOps) {
-      pill.style.cssText = 'background:rgba(255,255,255,0.95);color:var(--lg-red);border-color:rgba(255,255,255,0.95)';
-    } else {
-      pill.style.cssText = 'background:rgba(255,255,255,0.25);color:white;border-color:rgba(255,255,255,0.45)';
-    }
-    fsPill.style.cssText = 'background:var(--lg-red-light);color:var(--lg-red)';
-
-    document.getElementById('backAvatar').textContent = d.name ? d.name[0] : '?';
-    document.getElementById('backName').textContent = d.name || '';
-    document.getElementById('backDept').textContent = [d.dept, [d.ban, d.team].filter(Boolean).join(' / ')].filter(Boolean).join(' · ');
-
-    const surveyBtn   = document.getElementById('surveyBtn');
-    const facilityBtn = document.getElementById('facilityBtn');
-    if (d.surveyUrl) { surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled'); }
-    else { surveyBtn.href = '#'; surveyBtn.classList.add('disabled'); }
-    if (d.facilityUrl) { facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled'); }
-    else { facilityBtn.href = '#'; facilityBtn.classList.add('disabled'); }
-
-    setQuickBtn('qbPreot',    d.preOtUrl);
-    setQuickBtn('qbFacility', d.facilityUrl);
-    setQuickBtn('qbSurvey',   d.surveyUrl);
-    // IT 문의 버튼: 로그인 정보(loginId/loginPw)가 있을 때만 표시
-    const itBtn = document.getElementById('qbIt');
-    if (itBtn) {
-      if (showLoginBox) {
-        itBtn.style.display = 'flex'; itBtn.style.gridColumn = 'span 2';
-        itBtn.classList.remove('disabled');
-      } else {
-        itBtn.style.display = 'none';
-      }
-    }
-
-    // 출결 버튼 초기화: 패스코드 있을 때만 활성화
-    const btnCheckin = document.getElementById('btnCheckin');
-    btnCheckin.classList.remove('done', 'armed', 'inactive');
-    if (d.passcode && String(d.passcode).trim() !== '') {
-      btnCheckin.style.display = 'flex';
-      btnCheckin.classList.add('armed');
-      btnCheckin.textContent = '🔐 대강당 출결';
-      btnCheckin.onclick = openPasscode;
-    } else {
-      btnCheckin.style.display = 'none';
-    }
-
-    isFlipped = false;
-    document.getElementById('flipper').classList.remove('flipped');
-    document.getElementById('flipHintText').textContent = '카드를 탭하면 뒷면을 볼 수 있어요';
-
-    applyTheme(d.category || '');
-
-    const wrap = document.getElementById('badgeWrap');
-    wrap.classList.remove('visible');
-    void wrap.offsetWidth;
-    wrap.classList.add('visible');
-    document.getElementById('badgeActions').style.display = 'flex';
-
-    // 패스코드 있고 아직 출결 전이면 안내 팝업
-    if (d.passcode && String(d.passcode).trim() !== '') {
-      setTimeout(showCheckinNotice, 500);
-    }
-
-    const sano = document.getElementById('sanoInput').value.trim();
-    collapseLookupCard(sano, d.name);
-
-    setTimeout(() => {
-      autoScaleInfoValues();
-      document.getElementById('flipper').style.height = document.querySelector('.badge-front').scrollHeight + 'px';
-    }, 50);
-  }
-
-  const THEMES = {
-    '본사':    { main: '#A50034', light: '#FFF0F3', border: '#F5C0CC' },
-    '아카데미': { main: '#0057B8', light: '#EEF4FF', border: '#B8D4F8' },
-    '임대사':  { main: '#00825A', light: '#E6F5EF', border: '#A0D9C3' },
-    '세일즈':  { main: '#6B21A8', light: '#F5F0FF', border: '#D9CEFF' },
-  };
-  function applyTheme(category) {
-    const theme = THEMES[category] || THEMES['본사'];
-    const r = document.documentElement;
-    r.style.setProperty('--lg-red',        theme.main);
-    r.style.setProperty('--lg-red-light',  theme.light);
-    r.style.setProperty('--lg-red-border', theme.border);
-  }
-
-  function flipCard() {
-    isFlipped = !isFlipped;
-    const flipper = document.getElementById('flipper');
-    flipper.classList.toggle('flipped', isFlipped);
-    const front = document.querySelector('.badge-front');
-    const back = document.querySelector('.badge-back');
-    flipper.style.height = (isFlipped ? back.scrollHeight : front.scrollHeight) + 'px';
-    document.getElementById('flipHintText').textContent = isFlipped
-      ? '앞면으로 돌아가려면 아래 버튼을 누르세요'
-      : '카드를 탭하면 뒷면을 볼 수 있어요';
-  }
-
-  function handleBtnClick(e, type) {
-    e.stopPropagation();
-    const btn = document.getElementById(type === 'survey' ? 'surveyBtn' : 'facilityBtn');
-    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) e.preventDefault();
-  }
-
-  function setQuickBtn(id, url) {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    if (url) { btn.href = url; btn.classList.remove('disabled'); }
-    else { btn.href = '#'; btn.classList.add('disabled'); }
-  }
-
-  function handleQuickClick(e, type) {
-    e.stopPropagation();
-    const btn = e.currentTarget;
-    if (btn.classList.contains('disabled') || !btn.href || btn.href.endsWith('#')) e.preventDefault();
-  }
-
-  async function openDining(e) {
-    e.stopPropagation();
-    const d = currentData || {};
-    const r = formatRound(d.round);
-    const s = formatDateRange(d.startDate, d.endDate);
-    document.getElementById('diningCourseName').textContent = d.courseName || '';
-    document.getElementById('diningSchedule').textContent   = [r, s].filter(Boolean).join('  ·  ');
-    document.getElementById('diningName').textContent       = d.name || '';
-    document.getElementById('diningGrade').textContent      = d.grade || '';
-    document.getElementById('diningDept').textContent       = d.dept || '';
-
-    const diningPlaceSep = document.getElementById('diningPlaceSep');
-    const diningPlace    = document.getElementById('diningPlace');
-    const diningPlaceText = [d.place, d.room].filter(Boolean).join(' · ');
-    if (diningPlaceText) {
-      diningPlace.textContent = diningPlaceText; diningPlace.style.display = 'inline'; diningPlaceSep.style.display = 'inline';
-    } else {
-      diningPlace.style.display = 'none'; diningPlaceSep.style.display = 'none';
-    }
-
-    const theme = THEMES[d.category] || THEMES['본사'];
-    document.getElementById('diningLandscape').style.background = theme.main;
-    document.getElementById('diningBadgeLogo').style.color = theme.main;
-
-    document.getElementById('diningOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    autoFitDiningText();
-    setTimeout(autoFitDiningText, 100);
-    setTimeout(autoFitDiningText, 350);
-    try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch {}
-  }
-
-  function autoFitDiningText() {
-    const nameEl = document.getElementById('diningCourseName');
-    const maxW = nameEl.parentElement.clientWidth;
-    if (!maxW) return;
-    nameEl.style.fontSize = '72px'; let size = 72;
-    while (nameEl.scrollWidth > maxW && size > 24) { size -= 1; nameEl.style.fontSize = size + 'px'; }
-    const scheduleEl = document.getElementById('diningSchedule');
-    scheduleEl.style.fontSize = '72px'; let schedSize = 72;
-    while (scheduleEl.scrollWidth > maxW && schedSize > 20) { schedSize -= 1; scheduleEl.style.fontSize = schedSize + 'px'; }
-    scheduleEl.style.fontSize = Math.min(schedSize, size * 0.8) + 'px';
-  }
-
-  function closeDining() {
-    document.getElementById('diningOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-    if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
-  }
-
-  function openFullscreen() {
-    if (isFlipped) return;
-    document.getElementById('fsCourseName').textContent = document.getElementById('badgeCourseName').textContent;
-    document.getElementById('fsSchedule').textContent   = document.getElementById('badgeSchedule').textContent;
-    document.getElementById('fsName').textContent       = document.getElementById('badgeName').textContent;
-    document.getElementById('fsGrade').textContent      = document.getElementById('badgeGrade').textContent;
-    document.getElementById('fsDept').textContent       = document.getElementById('badgeDept').textContent;
-    document.getElementById('fsBanTeam').textContent    = document.getElementById('badgeBanTeam').textContent;
-    const showPlace = document.getElementById('badgePlaceRow').style.display !== 'none';
-    document.getElementById('fsPlaceRow').style.display = showPlace ? 'flex' : 'none';
-    document.getElementById('fsPlace').textContent = document.getElementById('badgePlace').textContent;
-    const showId = document.getElementById('badgeIdRow').style.display !== 'none';
-    const showPw = document.getElementById('badgePwRow').style.display !== 'none';
-    document.getElementById('fsIdRow').style.display = showId ? 'flex' : 'none';
-    document.getElementById('fsPwRow').style.display = showPw ? 'flex' : 'none';
-    document.getElementById('fsId').textContent = document.getElementById('badgeId').textContent;
-    document.getElementById('fsPw').textContent = document.getElementById('badgePw').textContent;
-    document.getElementById('fsOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    setTimeout(autoScaleFsValues, 50);
-  }
-
-  function closeFullscreen() {
-    document.getElementById('fsOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  function formatDate(val) {
-    if (!val) return '';
-    const str = String(val).trim();
-    if (!str || str === 'undefined' || str === 'null') return '';
-    const d = new Date(str);
-    if (!isNaN(d.getTime())) return `${d.getMonth()+1}/${d.getDate()}`;
-    return str;
-  }
-  function formatDateRange(startDate, endDate) {
-    const s = formatDate(startDate), e = formatDate(endDate);
-    if (!s && !e) return '';
-    if (!e || s === e) return s;
-    return `${s} ~ ${e}`;
-  }
-  function formatRound(val) {
-    if (!val || String(val).trim() === '') return '';
-    const str = String(val).trim();
-    return str.includes('차') ? str : str + '차';
-  }
-
-  function autoScaleInfoValues() {
-    document.querySelectorAll('.info-value').forEach(el => {
-      el.style.fontSize = '17px'; let size = 17;
-      while (el.scrollWidth > el.offsetWidth && size > 13) { size -= 0.5; el.style.fontSize = size + 'px'; }
-    });
-  }
-  function autoScaleFsValues() {
-    document.querySelectorAll('.fs-info-value').forEach(el => {
-      el.style.fontSize = '24px'; let size = 24;
-      while (el.scrollWidth > el.offsetWidth && size > 16) { size -= 0.5; el.style.fontSize = size + 'px'; }
-    });
-  }
-
-  function collapseLookupCard(sano, name) {
-    document.getElementById('summarySano').textContent = sano;
-    document.getElementById('summaryName').textContent = name || '';
-    document.getElementById('lookupCard').classList.add('collapsed');
-  }
-  function expandLookupCard() { document.getElementById('lookupCard').classList.remove('collapsed'); }
-
-  function hideBadge() {
-    document.getElementById('badgeWrap').classList.remove('visible');
-    document.getElementById('badgeActions').style.display = 'none';
-    expandLookupCard();
-  }
-  function showLoading(v) { document.getElementById('loading').classList.toggle('visible', v); }
-  function showError(msg) { const el = document.getElementById('errorMsg'); el.textContent = msg; el.classList.add('visible'); }
-  function hideError()    { document.getElementById('errorMsg').classList.remove('visible'); }
-
-  const RECENT_KEY = 'lg_badge_recent_sanos';
-  function getRecentSanos() { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch { return []; } }
-  function saveRecentSano(sano) {
-    let list = getRecentSanos().filter(s => s !== sano);
-    list.unshift(sano); if (list.length > 5) list = list.slice(0, 5);
-    localStorage.setItem(RECENT_KEY, JSON.stringify(list)); renderRecentList();
-  }
-  function removeRecentSano(sano) {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(getRecentSanos().filter(s => s !== sano))); renderRecentList();
-  }
-  function renderRecentList() {
-    const list = getRecentSanos();
-    const wrap = document.getElementById('recentWrap');
-    const container = document.getElementById('recentList');
-    if (!list.length) { wrap.classList.remove('visible'); return; }
-    wrap.classList.add('visible'); container.innerHTML = '';
-    list.forEach(sano => {
-      const chip = document.createElement('div');
-      chip.className = 'recent-chip';
-      chip.innerHTML = `<span onclick="selectRecentSano('${sano}')">${sano}</span><span class="chip-del" onclick="removeRecentSano('${sano}')">✕</span>`;
-      container.appendChild(chip);
-    });
-  }
-  function selectRecentSano(sano) { document.getElementById('sanoInput').value = sano; lookupEmployee(); }
-
-  renderRecentList();
-  document.getElementById('sanoInput').addEventListener('keydown', e => { if (e.key === 'Enter') lookupEmployee(); });
 </script>
-
 </body>
 </html>
