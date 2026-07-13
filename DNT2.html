@@ -1148,10 +1148,14 @@
 
     const surveyBtn   = document.getElementById('surveyBtn');
     const facilityBtn = document.getElementById('facilityBtn');
-    if (d.surveyUrl) { surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled'); }
-    else { surveyBtn.href = '#'; surveyBtn.classList.add('disabled'); }
-    if (d.facilityUrl) { facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled'); }
-    else { facilityBtn.href = '#'; facilityBtn.classList.add('disabled'); }
+    if (surveyBtn) {
+      if (d.surveyUrl) { surveyBtn.href = d.surveyUrl; surveyBtn.classList.remove('disabled'); }
+      else { surveyBtn.href = '#'; surveyBtn.classList.add('disabled'); }
+    }
+    if (facilityBtn) {
+      if (d.facilityUrl) { facilityBtn.href = d.facilityUrl; facilityBtn.classList.remove('disabled'); }
+      else { facilityBtn.href = '#'; facilityBtn.classList.add('disabled'); }
+    }
 
     setQuickBtn('qbPreot',    d.preOtUrl);
     setQuickBtn('qbFacility', d.facilityUrl);
