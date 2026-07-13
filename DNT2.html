@@ -354,54 +354,6 @@
     margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .flip-hint svg { width: 13px; height: 13px; opacity: 0.7; }
-  .action-btn.quiz .btn-icon { background: #FFF8E1; }
-  .action-btn.lodging .btn-icon { background: #E8F5E9; }
-  .action-btn.coming .btn-icon { background: #F3F0FF; }
-
-  /* 퀴즈 선택 팝업 */
-  .quiz-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5); z-index: 300;
-    backdrop-filter: blur(3px);
-  }
-  .quiz-overlay.active { display: flex; align-items: center; justify-content: center; }
-  .quiz-popup {
-    background: white; border-radius: 20px;
-    width: calc(100% - 48px); max-width: 360px;
-    padding: 24px 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-    animation: popIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  @keyframes popIn {
-    from { transform: scale(0.9); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-  }
-  .quiz-popup-title {
-    font-size: 17px; font-weight: 700; color: #111;
-    margin-bottom: 6px;
-  }
-  .quiz-popup-sub {
-    font-size: 13px; color: #777; margin-bottom: 18px;
-  }
-  .quiz-option-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-  .quiz-option {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px; border: 1.5px solid #eee;
-    border-radius: 12px; background: white;
-    cursor: pointer; text-decoration: none;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .quiz-option:active { background: #FFF8E1; border-color: #F4C430; }
-  .quiz-option .qo-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
-  .quiz-option .qo-label { font-size: 15px; font-weight: 600; color: #111; }
-  .quiz-option .qo-desc { font-size: 12px; color: #888; margin-top: 2px; }
-  .quiz-option .qo-arrow { margin-left: auto; font-size: 18px; color: #bbb; }
-  .quiz-cancel {
-    width: 100%; padding: 13px; border: 1px solid #eee;
-    border-radius: 10px; background: white; font-size: 14px;
-    color: #888; cursor: pointer; font-family: inherit; font-weight: 500;
-  }
-  .quiz-cancel:active { background: #f5f5f5; }
-
 
   .action-btn.dining {
     width: 100%; text-align: left;
@@ -634,6 +586,58 @@
     margin-top: 12px; font-size: 13px; color: var(--text-muted);
     background: none; border: none; cursor: pointer; padding: 4px 8px;
   }
+
+  /* ── 뒷면 새 버튼 ── */
+  .action-btn.quiz .btn-icon { background: #FFF8E1; }
+  .action-btn.quiz .btn-label { color: #8B6000; }
+  .action-btn.quiz .btn-desc { color: #A07820; }
+  .action-btn.quiz .btn-arrow { color: #C49A00; }
+
+  .action-btn.lodging .btn-icon { background: #E8F5E9; }
+  .action-btn.lodging .btn-label { color: #1B5E20; }
+  .action-btn.coming .btn-icon { background: #F3E8FF; }
+  .action-btn.coming .btn-label { color: #4A148C; }
+
+  /* ── 퀴즈 선택 팝업 ── */
+  .quiz-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 300;
+    backdrop-filter: blur(3px);
+    align-items: center; justify-content: center;
+  }
+  .quiz-overlay.open { display: flex; }
+  .quiz-popup {
+    background: white; border-radius: 20px;
+    width: calc(100% - 48px); max-width: 360px;
+    padding: 24px 20px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    animation: popIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  .quiz-popup-title { font-size: 17px; font-weight: 700; color: #111; margin-bottom: 4px; }
+  .quiz-popup-sub   { font-size: 13px; color: #888; margin-bottom: 18px; }
+  .quiz-option-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .quiz-option {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border: 1.5px solid #eee;
+    border-radius: 12px; background: white;
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .quiz-option:active { background: #FFF8E1; border-color: #F4C430; }
+  .quiz-option .qo-icon  { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+  .quiz-option .qo-label { font-size: 15px; font-weight: 600; color: #111; }
+  .quiz-option .qo-desc  { font-size: 12px; color: #888; margin-top: 2px; }
+  .quiz-option .qo-arrow { margin-left: auto; font-size: 18px; color: #bbb; }
+  .quiz-cancel {
+    width: 100%; padding: 13px; border: 1px solid #eee;
+    border-radius: 10px; background: white; font-size: 14px;
+    color: #888; cursor: pointer; font-family: inherit; font-weight: 500;
+  }
+  .quiz-cancel:active { background: #f5f5f5; }
 </style>
 </head>
 <body>
@@ -779,7 +783,7 @@
               </div>
               <span class="btn-arrow">›</span>
             </button>
-            <button class="action-btn lodging disabled" onclick="return false;">
+            <button class="action-btn lodging disabled" disabled>
               <div class="btn-icon">🏨</div>
               <div class="btn-text">
                 <div class="btn-label">숙소 확인</div>
@@ -787,7 +791,7 @@
               </div>
               <span class="btn-arrow">›</span>
             </button>
-            <button class="action-btn coming disabled" onclick="return false;">
+            <button class="action-btn coming disabled" disabled>
               <div class="btn-icon">⚙️</div>
               <div class="btn-text">
                 <div class="btn-label">기능 추가 중</div>
@@ -936,6 +940,41 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- 퀴즈 선택 팝업 -->
+<div class="quiz-overlay" id="quizOverlay" onclick="closeQuizPopup(event)">
+  <div class="quiz-popup" onclick="event.stopPropagation()">
+    <div class="quiz-popup-title">🧩 퀴즈 플랫폼 선택</div>
+    <div class="quiz-popup-sub">참여할 퀴즈 플랫폼을 선택해주세요</div>
+    <div class="quiz-option-list">
+      <a class="quiz-option" href="#" target="_blank" id="quizMenti">
+        <div class="qo-icon">📊</div>
+        <div>
+          <div class="qo-label">멘티미터</div>
+          <div class="qo-desc">Mentimeter 실시간 퀴즈</div>
+        </div>
+        <div class="qo-arrow">›</div>
+      </a>
+      <a class="quiz-option" href="#" target="_blank" id="quizQuizN">
+        <div class="qo-icon">🎯</div>
+        <div>
+          <div class="qo-label">퀴즈앤</div>
+          <div class="qo-desc">Quiz&amp; 인터랙티브 퀴즈</div>
+        </div>
+        <div class="qo-arrow">›</div>
+      </a>
+      <a class="quiz-option" href="#" target="_blank" id="quizHtml">
+        <div class="qo-icon">💻</div>
+        <div>
+          <div class="qo-label">HTML 퀴즈</div>
+          <div class="qo-desc">자체 제작 퀴즈 사이트</div>
+        </div>
+        <div class="qo-arrow">›</div>
+      </a>
+    </div>
+    <button class="quiz-cancel" onclick="closeQuizPopup()">닫기</button>
+  </div>
+</div>
 
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbyns6C0iK7sE2hnSD4-H-uLYaW85DQvZDAIDh7rHYTUgjX030Zl22g5CMuvuXtZbulp/exec';
@@ -1412,52 +1451,15 @@
   renderRecentList();
   document.getElementById('sanoInput').addEventListener('keydown', e => { if (e.key === 'Enter') lookupEmployee(); });
 
-function openQuizPopup() {
-  document.getElementById('quizOverlay').classList.add('active');
-}
-function closeQuizPopup(e) {
-  if (!e || e.target === document.getElementById('quizOverlay')) {
-    document.getElementById('quizOverlay').classList.remove('active');
+  function openQuizPopup() {
+    document.getElementById('quizOverlay').classList.add('open');
   }
-}
-
+  function closeQuizPopup(e) {
+    if (!e || e.target === document.getElementById('quizOverlay')) {
+      document.getElementById('quizOverlay').classList.remove('open');
+    }
+  }
 </script>
-
-
-  <!-- 퀴즈 선택 팝업 -->
-  <div class="quiz-overlay" id="quizOverlay" onclick="closeQuizPopup(event)">
-    <div class="quiz-popup" onclick="event.stopPropagation()">
-      <div class="quiz-popup-title">🧩 퀴즈 플랫폼 선택</div>
-      <div class="quiz-popup-sub">참여할 퀴즈 플랫폼을 선택해주세요</div>
-      <div class="quiz-option-list">
-        <a class="quiz-option" href="#" target="_blank" id="quizMenti">
-          <div class="qo-icon">📊</div>
-          <div>
-            <div class="qo-label">멘티미터</div>
-            <div class="qo-desc">Mentimeter 실시간 퀴즈</div>
-          </div>
-          <div class="qo-arrow">›</div>
-        </a>
-        <a class="quiz-option" href="#" target="_blank" id="quizQuizN">
-          <div class="qo-icon">🎯</div>
-          <div>
-            <div class="qo-label">퀴즈앤</div>
-            <div class="qo-desc">Quiz&amp; 인터랙티브 퀴즈</div>
-          </div>
-          <div class="qo-arrow">›</div>
-        </a>
-        <a class="quiz-option" href="#" target="_blank" id="quizHtml">
-          <div class="qo-icon">💻</div>
-          <div>
-            <div class="qo-label">HTML 퀴즈</div>
-            <div class="qo-desc">자체 제작 퀴즈 사이트</div>
-          </div>
-          <div class="qo-arrow">›</div>
-        </a>
-      </div>
-      <button class="quiz-cancel" onclick="closeQuizPopup()">닫기</button>
-    </div>
-  </div>
 
 </body>
 </html>
